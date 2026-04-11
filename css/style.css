@@ -1,0 +1,154 @@
+/* 폰트 및 기본 설정 */
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+body {
+    font-family: 'Jua', 'Noto Sans KR', sans-serif;
+    background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+    overflow: hidden;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 애니메이션 정의 */
+@keyframes wiggle {
+    0%,
+    100% {
+        transform: rotate(-3deg);
+    }
+    50% {
+        transform: rotate(3deg);
+    }
+}
+
+@keyframes pulse-custom {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.animate-wiggle {
+    animation: wiggle 2s ease-in-out infinite;
+}
+
+.pulse-slow {
+    animation: pulse-custom 2s ease-in-out infinite;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* UI 요소 스타일 */
+.character-card {
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.character-card:hover {
+    transform: translateY(-5px);
+}
+
+.character-card.selected {
+    background: #EFF6FF;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+    transform: scale(1.05);
+}
+
+.mission-spot {
+    transition: all 0.3s;
+    cursor: pointer;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.mission-spot:active {
+    transform: translate(-50%, -50%) scale(0.95);
+}
+
+.mission-spot:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    z-index: 20;
+}
+
+/* 완료된 지역 투명화 및 별명 부여 */
+.mission-spot.completed .spot-content {
+    background-color: #e5e7eb;
+    border-color: #9ca3af;
+    filter: grayscale(100%);
+    opacity: 0.8;
+}
+
+.mission-spot.completed::after {
+    content: '⭐';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    font-size: 4rem;
+    z-index: 30;
+    animation: bounce 0.5s;
+    filter: none;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.spot-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1rem;
+    border-radius: 2rem;
+    border-width: 6px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 130px;
+}
+
+/* 커스텀 스크롤바 */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

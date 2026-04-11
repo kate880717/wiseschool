@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>슬기로운 학교생활</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="h-screen w-screen flex flex-col overflow-hidden bg-slate-50" onclick="initAudioContext()">
+    
+    <!-- 전역 음성 토글 버튼 (Fixed 위치) -->
+    <button id="global-audio-toggle" onclick="toggleAudio()" 
+        class="fixed top-4 right-4 z-[100] bg-white border-4 border-slate-200 text-3xl p-3 rounded-full shadow-lg transition-transform active:scale-95">
+        🔇 <!-- 기본 꺼짐 상태 -->
+    </button>
+
+    <!-- 1. 로그인 화면 -->
+    <div id="login-screen" class="fixed inset-0 z-50 bg-orange-50 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-[3rem] shadow-2xl max-w-lg w-full border-8 border-orange-200 text-center flex flex-col h-auto max-h-[95vh]">
+            <div class="text-6xl mb-4 animate-wiggle">🏫</div>
+            <h1 class="text-4xl text-orange-600 font-bold mb-6">슬기로운 학교생활</h1>
+
+            <!-- NAME SELECT -->
+            <div class="flex-1 flex flex-col justify-center bg-orange-50 p-6 rounded-3xl border-4 border-orange-100 mb-8">
+                <label class="block text-slate-600 mb-3 font-bold text-2xl">이름을 찾아주세요</label>
+                <select id="name-input" class="w-full p-4 rounded-xl border-4 border-slate-300 bg-white text-2xl font-bold text-center focus:border-orange-400 outline-none transition-colors" onchange="checkLoginReady()">
+                    <option value="">이름 선택</option>
+                    <option value="로딩중">로딩 중...(시트 연동 안될 시 기본)</option>
+                </select>
+            </div>
+
+            <button onclick="requestMicAndGoToPromise()" id="btn-start"
+                class="w-full bg-green-500 hover:bg-green-600 text-white text-3xl py-4 rounded-2xl shadow-xl font-bold transition-all disabled:opacity-50 disabled:grayscale"
+                disabled>
+                시작하기 ▶
+            </button>
+        </div>
+    </div>
+
+    <!-- 1.5 호흡 & 마이크 안내 모달 (친절한 권한 요청) -->
+    <div id="mic-screen" class="hidden fixed inset-0 z-50 bg-indigo-50 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-[3rem] shadow-2xl max-w-2xl w-full border-8 border-indigo-200 text-center relative">
+            <div class="text-8xl mb-4 animate-bounce">🎤</div>
+            <h2 class="text-3xl text-indigo-600 font-bold mb-6">목소리 요정 부르기</h2>
+            <div class="bg-indigo-50 p-6 rounded-3xl border-4 border-indigo-100 mb-8">
+                <p class="text-2xl md:text-3xl leading-relaxed text-slate-700 font-bold break-keep">
+                    나중에 나의 다짐을 녹음할 수 있게<br>마이크 사용을 <span class="text-indigo-600">허용</span>해주세요!
+                </p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="requestMicAccess()" class="flex-1 bg-indigo-500 text-white text-2xl py-4 rounded-2xl shadow-lg font-bold">오디오 버튼 누르기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1.5 공부 약속 화면 -->
+    <div id="promise-screen" class="hidden fixed inset-0 z-50 bg-indigo-50 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-[3rem] shadow-2xl max-w-2xl w-full border-8 border-indigo-200 text-center relative">
+            <div class="text-8xl mb-4 animate-bounce">🤙</div>
+            <h2 class="text-3xl text-indigo-600 font-bold mb-6 flex items-center justify-center gap-2">
+                ✨ 오늘의 공부 약속
+                <button onclick="playRawText('학교 안에서 지켜야 할 소중한 규칙을 익히고 실천할 수 있어요!')"
+                    class="text-3xl bg-yellow-100 p-2 rounded-full border-4 border-yellow-300 active:scale-95 transition-transform">🔊</button>
+            </h2>
+            <div class="bg-indigo-50 p-6 rounded-3xl border-4 border-indigo-100 mb-8">
+                <p id="promise-text" class="text-3xl md:text-4xl leading-relaxed text-slate-700 font-bold break-keep">
+                    "학교 안에서 지켜야 할<br>소중한 규칙을 익히고<br>실천할 수 있어요!"
+                </p>
+            </div>
+            <button onclick="initApp()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white text-3xl py-4 rounded-2xl shadow-lg font-bold">
+                네, 약속해요!
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. 캐릭터 선택 화면 -->
+    <div id="character-screen" class="hidden fixed inset-0 z-50 bg-sky-100 flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-[3rem] shadow-xl max-w-4xl w-full border-8 border-sky-200 flex flex-col h-[90vh]">
+            <h1 class="text-3xl md:text-4xl text-sky-700 text-center font-bold mb-4 flex items-center justify-center gap-3">
+                함께할 요정을 골라주세요
+                <button onclick="playRawText('함께할 요정을 골라주세요')" class="text-2xl bg-yellow-100 p-2 rounded-full border-4 border-yellow-300 active:scale-95 transition-transform" aria-label="듣기">🔊</button>
+            </h1>
+
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4 flex-1 items-center">
+                <div class="character-card bg-white p-4 rounded-3xl border-4 border-slate-200 text-center h-full flex flex-col justify-center" onclick="selectCharacter('🛡️','안전이')">
+                    <div class="text-6xl md:text-7xl mb-2">🛡️</div>
+                    <div class="text-2xl font-bold text-slate-700 char-name">안전이</div>
+                </div>
+                <div class="character-card bg-white p-4 rounded-3xl border-4 border-slate-200 text-center h-full flex flex-col justify-center" onclick="selectCharacter('💝','다정이')">
+                    <div class="text-6xl md:text-7xl mb-2">💝</div>
+                    <div class="text-2xl font-bold text-slate-700 char-name">다정이</div>
+                </div>
+                <div class="character-card bg-white p-4 rounded-3xl border-4 border-slate-200 text-center h-full flex flex-col justify-center" onclick="selectCharacter('🕊️','사뿐이')">
+                    <div class="text-6xl md:text-7xl mb-2">🕊️</div>
+                    <div class="text-2xl font-bold text-slate-700 char-name">사뿐이</div>
+                </div>
+                <div class="character-card bg-white p-4 rounded-3xl border-4 border-slate-200 text-center h-full flex flex-col justify-center" onclick="selectCharacter('😊','방글이')">
+                    <div class="text-6xl md:text-7xl mb-2">😊</div>
+                    <div class="text-2xl font-bold text-slate-700 char-name">방글이</div>
+                </div>
+                <div class="character-card bg-white p-4 rounded-3xl border-4 border-slate-200 text-center h-full flex flex-col justify-center" onclick="selectCharacter('📖','배움이')">
+                    <div class="text-6xl md:text-7xl mb-2">📖</div>
+                    <div class="text-2xl font-bold text-slate-700 char-name">배움이</div>
+                </div>
+            </div>
+
+            <button onclick="startGame()" id="btn-char" class="w-full bg-sky-500 hover:bg-sky-600 text-white text-3xl py-5 rounded-3xl shadow-lg font-bold transition-all disabled:opacity-50" disabled>
+                출발! 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. 지도(메인) 화면 -->
+    <div id="map-screen" class="hidden fixed inset-0 z-40 bg-green-50 flex flex-col">
+        <header class="h-20 bg-white shadow-md flex items-center justify-between px-4 z-10 border-b-4 border-green-200">
+            <div class="flex items-center gap-3">
+                <div id="char-emoji" class="text-4xl"></div>
+                <div class="leading-tight hidden md:block border-r-2 pr-4 border-slate-200">
+                    <div class="text-xl text-slate-500 font-bold">나의 탐험 기록</div>
+                    <div class="text-3xl font-bold text-slate-700" id="player-name"></div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col items-center pl-8 md:pl-0">
+                <div id="top-status-text" class="text-2xl font-bold text-green-600 text-center">1단계 탐험 중</div>
+                <div class="flex items-center gap-1 mt-1" id="star-container">
+                    <!-- 별이 채워짐 -->
+                </div>
+            </div>
+            <div class="w-10"></div> <!-- Spacer for global button -->
+        </header>
+
+        <main class="flex-1 relative overflow-hidden bg-[#e6f4f1]">
+            <div class="absolute inset-4 md:inset-8 bg-white rounded-[2rem] border-8 border-[#8edecb] shadow-inner overflow-hidden">
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80%] h-[70%] bg-orange-50 rounded-[2rem] border-8 border-orange-100 opacity-50"></div>
+
+                <div class="mission-spot" style="top: 25%; left: 25%;" data-mission="classroom" onclick="loadQuiz('classroom')">
+                    <div class="spot-content border-blue-400">
+                        <div class="text-7xl pulse-slow">🏫</div>
+                        <div class="text-2xl font-bold mt-2 text-slate-700 spot-name">교실</div>
+                    </div>
+                </div>
+                <div class="mission-spot" style="top: 25%; left: 75%;" data-mission="specialroom" onclick="loadQuiz('specialroom')">
+                    <div class="spot-content border-purple-400">
+                        <div class="text-7xl pulse-slow">🔬</div>
+                        <div class="text-2xl font-bold mt-2 text-slate-700 spot-name">특별실</div>
+                    </div>
+                </div>
+                <div class="mission-spot" style="top: 50%; left: 15%;" data-mission="restroom" onclick="loadQuiz('restroom')">
+                    <div class="spot-content border-pink-400">
+                        <div class="text-7xl pulse-slow">🚽</div>
+                        <div class="text-2xl font-bold mt-2 text-slate-700 spot-name">화장실</div>
+                    </div>
+                </div>
+                <div class="mission-spot" style="top: 50%; left: 85%;" data-mission="hallway" onclick="loadQuiz('hallway')">
+                    <div class="spot-content border-green-400">
+                        <div class="text-7xl pulse-slow">👣</div>
+                        <div class="text-2xl font-bold mt-2 text-slate-700 spot-name">복도</div>
+                    </div>
+                </div>
+                <div class="mission-spot" style="top: 75%; left: 30%;" data-mission="cafeteria" onclick="loadQuiz('cafeteria')">
+                    <div class="spot-content border-orange-400">
+                        <div class="text-7xl pulse-slow">🍱</div>
+                        <div class="text-2xl font-bold mt-2 text-slate-700 spot-name">급식실</div>
+                    </div>
+                </div>
+                <div class="mission-spot" style="top: 75%; left: 70%;" data-mission="library" onclick="loadQuiz('library')">
+                    <div class="spot-content border-indigo-400">
+                        <div class="text-7xl pulse-slow">📚</div>
+                        <div class="text-2xl font-bold mt-2 text-slate-700 spot-name">도서관</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 4. 퀴즈 화면 -->
+    <div id="quiz-screen" class="hidden fixed inset-0 z-50 bg-sky-50 flex flex-col">
+        <header class="h-20 flex items-center justify-between px-4 bg-white shadow-sm z-10 border-b-4 border-sky-100">
+            <button onclick="returnToMap()" class="text-xl bg-white border-4 border-slate-200 px-4 py-2 rounded-2xl font-bold text-slate-500">↩ 나가기</button>
+            <div class="flex items-center gap-3">
+                <span id="loc-icon" class="text-3xl"></span>
+                <span id="loc-name" class="text-2xl text-sky-700 font-bold"></span>
+            </div>
+            <button onclick="replayAudio()" class="text-3xl bg-yellow-100 p-3 rounded-full border-4 border-yellow-300 active:scale-95 transition-transform" aria-label="문제 듣기">🔊</button>
+        </header>
+
+        <section class="flex-1 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden">
+            <div class="bg-white w-full max-w-4xl rounded-[2.5rem] p-8 shadow-xl border-8 border-sky-200 min-h-[300px] flex flex-col items-center justify-center relative z-20">
+                <span id="quiz-badge" class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-sky-500 text-white px-6 py-2 rounded-full text-lg font-bold border-4 border-white shadow-md">문제 1</span>
+                <div class="text-6xl mb-4 animate-bounce">🤔</div>
+                <h2 id="q-text" class="text-3xl md:text-5xl text-slate-700 font-bold leading-relaxed break-keep mt-4 mb-4"></h2>
+            </div>
+            
+            <div class="absolute bottom-4 right-4 z-30 flex flex-col items-end animate-float pointer-events-none">
+                <div class="bg-white/95 backdrop-blur px-6 py-4 rounded-[2rem] shadow-2xl mb-2 text-xl font-bold border-4 border-orange-200 text-slate-700 text-center max-w-xs">
+                    <span id="quiz-hint-text">"정답이 뭘까?"</span>
+                </div>
+                <div id="quiz-fairy" class="text-8xl filter drop-shadow-xl transform scale-x-[-1] mr-4">🧚</div>
+            </div>
+        </section>
+
+        <!-- 단답형 선택지 영역 -->
+        <section class="h-[25vh] md:h-[30vh] flex w-full gap-4 p-4 z-20">
+            <button id="btn-c1" onclick="checkAnswer(1)" class="flex-1 bg-white rounded-[2rem] border-b-8 border-slate-300 flex items-center justify-center active:border-b-0 active:translate-y-2 transition-all p-4 shadow-xl">
+                <span class="text-2xl md:text-4xl text-slate-700 font-bold break-keep">선택지 1</span>
+            </button>
+            <button id="btn-c2" onclick="checkAnswer(2)" class="flex-1 bg-white rounded-[2rem] border-b-8 border-slate-300 flex items-center justify-center active:border-b-0 active:translate-y-2 transition-all p-4 shadow-xl">
+                <span class="text-2xl md:text-4xl text-slate-700 font-bold break-keep">선택지 2</span>
+            </button>
+        </section>
+    </div>
+
+    <!-- 5. 피드백 모달 -->
+    <div id="feedback" class="hidden fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2.5rem] p-8 max-w-2xl w-full text-center shadow-2xl animate-[pulse-custom_0.3s_ease-out] border-8 border-white relative">
+            <div id="fb-fairy-icon" class="absolute -top-12 -right-10 text-9xl animate-bounce filter drop-shadow-lg">🧚</div>
+            <div id="fb-icon" class="text-8xl mb-4"></div>
+            <h3 id="fb-title" class="text-4xl font-bold mb-4"></h3>
+
+            <div class="bg-slate-50 p-6 rounded-3xl mb-6 relative">
+                <button onclick="playFeedbackAudio()" class="absolute -top-5 -right-5 text-2xl bg-yellow-100 p-3 rounded-full border-4 border-yellow-300 active:scale-95 transition-transform shadow-md" aria-label="설명 듣기">🔊</button>
+                <p id="fb-desc" class="text-2xl md:text-3xl text-slate-700 font-bold break-keep leading-relaxed"></p>
+            </div>
+
+            <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-sky-500 text-white text-3xl py-5 rounded-2xl shadow-lg font-bold border-b-8 border-sky-700 active:border-b-0 active:translate-y-2">다음 문제 ▶</button>
+            <button id="success-btn" onclick="completeMission()" class="hidden w-full bg-green-500 text-white text-3xl py-5 rounded-2xl shadow-lg font-bold border-b-8 border-green-700 active:border-b-0 active:translate-y-2">미션 완료! ⭐</button>
+            <button id="retry-btn" onclick="retryQuestion()" class="hidden w-full bg-orange-500 text-white text-3xl py-5 rounded-2xl shadow-lg font-bold border-b-8 border-orange-700 active:border-b-0 active:translate-y-2">다시 생각해요 🔄</button>
+        </div>
+    </div>
+
+    <!-- 오답 다시 풀기 (틀린 문제 다시 풀어보기) -->
+    <div id="retry-modal" class="hidden fixed inset-0 z-[65] bg-black/80 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2.5rem] p-8 max-w-lg w-full text-center shadow-2xl border-8 border-orange-300">
+            <div class="text-7xl mb-4">📝</div>
+            <h3 class="text-3xl font-bold text-orange-600 mb-4">틀린 문제 다시 풀어보기</h3>
+            <p class="text-xl text-slate-700 mb-6 break-keep leading-relaxed">
+                어려웠던 문제들을 요정과 함께 다시 복습해요.<br>
+                이제는 <span class="font-bold text-green-600">완벽하게</span> 할 수 있어요!
+            </p>
+            <button onclick="startRetryMode()" class="w-full bg-orange-500 hover:bg-orange-600 text-white text-2xl py-4 rounded-2xl shadow-lg font-bold">
+                다시 풀어볼래요! 💪
+            </button>
+        </div>
+    </div>
+
+    <!-- 6. 최종 녹음 뷰 -->
+    <div id="recording-screen" class="hidden fixed inset-0 z-[68] bg-orange-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[3rem] p-8 max-w-2xl w-full text-center shadow-2xl border-8 border-orange-200">
+            <div class="text-6xl mb-4 animate-bounce">🎙️</div>
+            <h2 class="text-3xl text-orange-700 font-bold mb-4">나의 다짐 남기기</h2>
+            <div class="bg-orange-100 p-6 rounded-2xl mb-6">
+                <p class="text-2xl font-bold text-slate-700 break-keep">"슬기로운 학교 생활을 위해 어떤 규칙이 필요할까요?<br>친구의 생각을 마이크를 눌러 목소리로 남겨주세요!"</p>
+                <button onclick="playRawText('슬기로운 학교 생활을 위해 어떤 규칙이 필요할까요? 친구의 생각을 마이크를 눌러 목소리로 남겨주세요!')" class="mt-4 text-2xl bg-yellow-100 p-2 rounded-full border-4 border-yellow-300 active:scale-95 transition-transform">🔊</button>
+            </div>
+            
+            <div class="flex flex-col gap-4 mb-6">
+                <!-- 명시적 디자인: 시작버튼과 정지버튼 분리 -->
+                <button id="btn-record-start" onclick="startRecordingUser()" class="w-full bg-slate-100 border-8 border-slate-300 py-6 rounded-[2rem] flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all shadow-lg text-slate-500">
+                    <span class="text-6xl mb-2">🎤</span>
+                    <span class="text-3xl font-bold">녹음 시작하기</span>
+                </button>
+                
+                <button id="btn-record-stop" onclick="stopRecordingUser()" class="hidden w-full bg-red-100 border-8 border-red-500 py-6 rounded-[2rem] flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all shadow-lg text-red-600 animate-pulse">
+                    <span class="text-6xl mb-2">⏹️</span>
+                    <span class="text-3xl font-bold">녹음 완료(멈춤)</span>
+                </button>
+
+                <div id="recording-status" class="text-2xl font-bold text-slate-500 h-8 mt-2">버튼을 눌러 내 목소리를 녹음해요</div>
+                <audio id="audio-playback" controls class="hidden w-full mt-4 rounded-full shadow-md"></audio>
+            </div>
+
+            <div id="post-record-actions" class="hidden flex gap-3">
+                <button onclick="discardRecording()" class="flex-1 bg-slate-200 text-slate-700 text-xl py-3 rounded-xl font-bold">다시하기</button>
+                <button onclick="submitResults()" id="btn-submit" class="flex-1 bg-green-500 hover:bg-green-600 text-white text-xl py-3 rounded-xl font-bold shadow-lg">제출하고 다했상 받기</button>
+            </div>
+            <!-- 제출 중 모달 -->
+            <div id="submitting-overlay" class="hidden absolute inset-0 bg-white/90 rounded-[3rem] flex flex-col items-center justify-center z-50">
+                <div class="text-6xl mb-4 animate-spin">⏳</div>
+                <div class="text-2xl font-bold text-slate-600">결과를 저장하고 있어요...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. 통합 결과 리포트 (레이더 차트 + 신호등 + 수료증) -->
+    <div id="report-screen" class="hidden fixed inset-0 z-[70] bg-slate-100 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-[3rem] max-w-5xl w-full shadow-2xl my-4 overflow-hidden relative flex flex-col md:flex-row border-8 border-amber-200">
+            
+            <!-- 인증서 파트 -->
+            <div class="flex-1 bg-amber-50 p-8 text-center border-b-4 md:border-b-0 md:border-r-4 border-dashed border-slate-300 flex flex-col justify-center">
+                <div class="text-7xl mb-4">🏆</div>
+                <h1 class="text-4xl md:text-5xl font-bold text-amber-800 mb-6 font-serif">위대한 탐험가 상</h1>
+                <div class="text-3xl font-bold text-slate-600 mb-8">
+                    <span id="report-name-display" class="text-indigo-600 underline decoration-4 text-4xl">홍길동</span> 어린이
+                </div>
+                <p class="text-2xl text-slate-600 font-bold leading-relaxed break-keep mb-8">
+                    위 어린이는 학교생활의 소중한 규칙을<br>훌륭하게 이해하고 익혔기에<br>이 상장을 수여합니다.
+                </p>
+                <div id="report-date" class="text-xl text-gray-500 font-bold"></div>
+            </div>
+
+            <!-- 결과 피드백 및 차트 파트 -->
+            <div class="flex-1 p-6 md:p-8 bg-white flex flex-col justify-center">
+                <h3 class="text-3xl font-bold text-center text-slate-700 mb-4 flex items-center justify-center gap-2">
+                    📊 나의 탐험 결과
+                </h3>
+                
+                <div class="w-full max-w-[320px] mx-auto mb-6 relative aspect-square">
+                    <canvas id="radar-chart"></canvas>
+                </div>
+                
+                <!-- 신호등 렌더링 영역 (잘한 곳=초록불) -->
+                <div id="traffic-light-feedback" class="grid grid-cols-3 gap-3 mb-8">
+                </div>
+                
+                <div class="flex flex-col gap-3">
+                    <button onclick="downloadReport()" class="w-full bg-green-500 hover:bg-green-600 text-white text-2xl py-4 rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2">
+                        <span class="text-3xl">📥</span> 수료증 기기에 저장하기
+                    </button>
+                    <button onclick="location.reload()" class="w-full bg-white hover:bg-slate-100 text-slate-500 text-xl py-4 rounded-2xl font-bold border-4 border-slate-200">
+                        처음으로
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
