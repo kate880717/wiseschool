@@ -244,14 +244,14 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
   font-size: clamp(3rem, 7vw, 5rem);
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: grayscale(100%) opacity(0.3);
+  filter: grayscale(100%) brightness(0.85) opacity(0.75);
   background: transparent; border: none; padding: 0.25rem;
 }
 .star-btn.filled {
   filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 24px rgba(255, 105, 180, 0.5));
   animation: star-burst 0.6s ease-out;
 }
-.star-btn:hover { transform: scale(1.25) rotate(-10deg); }
+.star-btn:hover { transform: scale(1.25) rotate(-10deg); filter: grayscale(50%) opacity(1); }
 
 .mic-waves { display: flex; gap: 6px; align-items: center; justify-content: center; height: 75px; }
 .mic-wave {
@@ -682,7 +682,11 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
     
     <div class="bg-gradient-to-br from-rose-50 to-pink-50 p-3 rounded-2xl border-4 border-rose-200 mb-3 relative">
       <button class="absolute -top-3 -right-3 text-xl bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow-md" onclick="speakText(document.getElementById('mid-prompt-text').textContent)">🔊</button>
-      <p id="mid-prompt-text" class="txt-lg text-slate-700 font-bold leading-relaxed">방금 배운 학교 규칙 중 하나를 골라 말해보세요!</p>
+      <p id="mid-prompt-text" class="txt-lg text-slate-700 font-bold leading-relaxed mb-2">방금 배운 학교 규칙 중 하나를 골라 말해보세요!</p>
+      <div class="bg-white/70 p-2 rounded-xl border-2 border-rose-300 mt-2">
+        <p class="text-base text-rose-600 font-cute mb-1">💬 이렇게 말해봐요</p>
+        <p class="text-lg font-bold text-rose-700 font-title leading-snug">"저는 복도에서 사뿐사뿐 걸을 거예요"<br>"화장실 문은 똑똑 노크하고 들어갈래요"</p>
+      </div>
     </div>
     
     <div id="mid-transcript" class="live-transcript mb-3">
@@ -739,11 +743,15 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
     
     <div class="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 rounded-2xl border-4 border-emerald-200 mb-3 relative">
       <button class="absolute -top-3 -right-3 text-xl bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow-md" onclick="speakText(document.getElementById('final-prompt').textContent)">🔊</button>
-      <p id="final-prompt" class="txt-md text-emerald-800 font-bold leading-relaxed text-center">
+      <p id="final-prompt" class="txt-md text-emerald-800 font-bold leading-relaxed text-center mb-2">
         🌈 오늘 배운 학교 규칙 중에서<br>
         친구들에게 알려주고 싶은 것을<br>
         목소리로 들려주세요!
       </p>
+      <div class="bg-white/70 p-2 rounded-xl border-2 border-emerald-300 mt-2 text-center">
+        <p class="text-base text-emerald-600 font-cute mb-1">💬 이렇게 말해봐요</p>
+        <p class="text-lg font-bold text-emerald-700 font-title leading-snug">"친구들아, 도서관에서는 소곤소곤 말해야 해"<br>"급식실에서는 잘 먹겠습니다 인사를 하자"</p>
+      </div>
     </div>
     
     <div id="final-transcript" class="live-transcript mb-3">
