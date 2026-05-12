@@ -9,10 +9,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Hi+Melody&family=Jua&family=Single+Day&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
 <style>
 :root {
-  --font-cute: 'Hi Melody', 'Gaegu', 'Apple SD Gothic Neo', sans-serif;
+  --font-cute: 'Gowun Dodum', 'Jua', 'Apple SD Gothic Neo', sans-serif;
   --font-body: 'Gowun Dodum', 'Jua', sans-serif;
   --font-title: 'Jua', 'Do Hyeon', sans-serif;
   --font-chunky: 'Do Hyeon', 'Black Han Sans', sans-serif;
@@ -122,7 +122,6 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
 }
 @keyframes rainbow-shift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-/* 균형 잡힌 텍스트 크기 - 저학년에 충분히 크되 빽빽하지 않게 */
 .txt-q { font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.4; font-family: var(--font-title); word-break: keep-all; overflow-wrap: break-word; }
 .txt-md { font-size: clamp(1.2rem, 2.4vw, 1.6rem); line-height: 1.5; word-break: keep-all; overflow-wrap: break-word; }
 .txt-lg { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-family: var(--font-title); word-break: keep-all; overflow-wrap: break-word; }
@@ -213,6 +212,11 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
   10%, 30% { transform: scale(1.15); }
   20%, 40% { transform: scale(1); }
 }
+@keyframes celebration {
+  0% { transform: scale(0) rotate(0); opacity: 0; }
+  50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
+  100% { transform: scale(1) rotate(360deg); opacity: 1; }
+}
 
 .animate-wiggle { animation: wiggle 2s ease-in-out infinite; }
 .animate-bounce-soft { animation: bounce-soft 2s ease-in-out infinite; }
@@ -222,6 +226,7 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
 .animate-float-slow { animation: float-slow 3s ease-in-out infinite; }
 .animate-heart-beat { animation: heart-beat 1.5s ease-in-out infinite; }
 .animate-glow { animation: glow-pulse 2s ease-in-out infinite; }
+.animate-celebration { animation: celebration 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
 .tts-text { word-break: keep-all; overflow-wrap: break-word; }
 .tts-text .tts-char { display: inline-block; transition: all 0.2s ease-out; }
@@ -242,7 +247,6 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
   animation: pop-in 0.5s ease-out, float-up 2.5s ease-out 0.3s forwards;
 }
 
-/* 별점 - 적당히 크게 (저학년 손가락 잘 닿게) */
 .star-rating { display: flex; gap: 0.5rem; justify-content: center; }
 .star-btn {
   font-size: clamp(2.4rem, 5.5vw, 3.5rem);
@@ -276,11 +280,15 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
 }
 .mission-spot:hover { transform: translate(-50%, -50%) scale(1.15) rotate(-3deg); z-index: 20; }
 .mission-spot:active { transform: translate(-50%, -50%) scale(0.95); }
+.mission-spot.completed .spot-inner {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-color: #f59e0b;
+}
 .mission-spot.completed::after {
   content: '⭐';
   position: absolute; top: -25px; right: -25px;
-  font-size: 4rem;
-  animation: pop-in 0.5s, float-slow 2s ease-in-out 0.5s infinite;
+  font-size: 3.5rem;
+  animation: celebration 0.8s, float-slow 2s ease-in-out 0.8s infinite;
   filter: drop-shadow(0 6px 12px rgba(255,180,0,0.5));
 }
 .spot-inner {
@@ -416,15 +424,6 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
   transform: scale(1.06) !important;
 }
 
-.mode-card { transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
-.mode-card:hover { transform: translateY(-5px) scale(1.04); }
-.mode-card .inner-card {
-  border-radius: 1.5rem;
-  padding: 1.25rem;
-  border: 5px solid;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-}
-
 .step-card { border-radius: 1.25rem; border-width: 3px; padding: 0.75rem 1rem; }
 
 .replay-card {
@@ -436,7 +435,6 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
 }
 .replay-card audio { width: 100%; margin-top: 0.4rem; }
 
-/* 녹음 화면 전용 - 컨텐츠 균형 */
 .rec-screen .prompt-box { padding: 0.85rem 1rem; border-radius: 1.25rem; }
 .rec-screen .star-box { padding: 0.6rem 0.9rem; border-radius: 1.25rem; }
 .rec-screen .star-rating { gap: 0.4rem; }
@@ -458,9 +456,9 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
   <div class="card" style="max-width: 580px;">
     <div class="text-7xl mb-2 animate-wiggle text-center">🏫</div>
     <h1 class="txt-hero text-rainbow text-center mb-2">슬기로운 학교생활</h1>
-    <p class="text-xl text-center text-pink-400 font-cute mb-4">우리 모두의 행복한 학교 만들기 🌈</p>
+    <p class="text-xl text-center text-pink-500 font-title mb-4">우리 모두의 행복한 학교 만들기 🌈</p>
     <div class="bg-gradient-to-br from-pink-50 to-orange-50 p-4 rounded-3xl border-4 border-pink-200 mb-3">
-      <label class="block text-2xl font-cute font-bold mb-2 text-pink-600 text-center">😊 이름을 찾아주세요</label>
+      <label class="block text-2xl font-bold mb-2 text-pink-600 text-center font-title">😊 이름을 찾아주세요</label>
       <select id="name-select" class="w-full p-3 rounded-2xl border-4 border-pink-200 bg-white text-xl font-bold text-center outline-none focus:border-pink-400" onchange="onNameSelected()">
         <option value="">이름 선택하기 ✨</option>
       </select>
@@ -468,7 +466,7 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
     <button id="btn-login-start" class="btn-3d bg-green-400 border-green-600 text-white w-full text-2xl py-3 animate-glow" onclick="goToMicPermission()" disabled>
       🚀 시작하기
     </button>
-    <p class="text-base text-pink-400 mt-2 text-center font-cute">선생님께서 등록한 이름이 안 보이면 알려주세요!</p>
+    <p class="text-base text-pink-500 mt-2 text-center font-title">선생님께서 등록한 이름이 안 보이면 알려주세요!</p>
   </div>
 </div>
 
@@ -480,9 +478,9 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
     <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-4 rounded-3xl border-4 border-indigo-200 mb-4">
       <p class="txt-md font-bold text-center font-title text-slate-700">
         내 다짐을 <span class="text-pink-500">목소리</span>로 남기려면<br>
-        마이크 사용을 <span class="text-pink-500">허용</span>해주세요!
+        마이크 사용을 <span class="text-pink-500">허용</span>해 주세요!
       </p>
-      <p class="text-base text-purple-400 mt-2 text-center font-cute">💡 이 질문은 한 번만 해요</p>
+      <p class="text-base text-purple-500 mt-2 text-center font-title">💡 이 질문은 한 번만 해요</p>
     </div>
     <button class="btn-3d bg-indigo-500 border-indigo-700 text-white w-full text-2xl py-3" onclick="requestMic()">
       🎙️ 마이크 허용하기
@@ -490,41 +488,7 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
   </div>
 </div>
 
-<!-- 3. 모드 선택 -->
-<div class="screen" id="screen-mode">
-  <div class="card card-full" style="max-width: 950px;">
-    <h2 class="txt-hero text-rainbow text-center mb-2">📚 오늘은 몇 문제?</h2>
-    <p class="text-xl text-center text-purple-400 font-cute mb-4">자기만의 속도로 도전해보세요</p>
-    <div class="flex-1 grid grid-cols-3 gap-3 items-stretch my-2 min-h-0">
-      <button class="mode-card" onclick="selectMode(3)">
-        <div class="inner-card bg-gradient-to-br from-emerald-100 to-emerald-200 border-emerald-400 h-full flex flex-col justify-center">
-          <div class="text-5xl md:text-7xl mb-2">🌱</div>
-          <div class="text-xl md:text-2xl font-bold text-emerald-700 font-cute">짧게</div>
-          <div class="text-4xl md:text-5xl font-bold text-emerald-600 my-2 font-title">3문제</div>
-          <div class="text-sm md:text-base text-emerald-700 font-cute">중간 녹음 없음</div>
-        </div>
-      </button>
-      <button class="mode-card" onclick="selectMode(5)">
-        <div class="inner-card bg-gradient-to-br from-sky-100 to-sky-200 border-sky-400 h-full flex flex-col justify-center">
-          <div class="text-5xl md:text-7xl mb-2">🌿</div>
-          <div class="text-xl md:text-2xl font-bold text-sky-700 font-cute">알맞게</div>
-          <div class="text-4xl md:text-5xl font-bold text-sky-600 my-2 font-title">5문제</div>
-          <div class="text-sm md:text-base text-sky-700 font-cute">중간 녹음 1번 ⭐</div>
-        </div>
-      </button>
-      <button class="mode-card" onclick="selectMode(10)">
-        <div class="inner-card bg-gradient-to-br from-orange-100 to-orange-200 border-orange-400 h-full flex flex-col justify-center">
-          <div class="text-5xl md:text-7xl mb-2">🌳</div>
-          <div class="text-xl md:text-2xl font-bold text-orange-700 font-cute">충분하게</div>
-          <div class="text-4xl md:text-5xl font-bold text-orange-600 my-2 font-title">10문제</div>
-          <div class="text-sm md:text-base text-orange-700 font-cute">중간 녹음 2번 ⭐⭐</div>
-        </div>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- 4. 오늘의 약속 -->
+<!-- 3. 오늘의 약속 -->
 <div class="screen" id="screen-promise">
   <div class="card" style="max-width: 640px;">
     <div class="text-7xl mb-2 text-center animate-heart-beat">🤝</div>
@@ -534,7 +498,7 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
     </h2>
     <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-3xl border-4 border-purple-200 mb-4">
       <p id="promise-text" class="txt-q text-slate-700 font-bold tts-text text-center">
-        학교 안에서 지켜야 할<br>소중한 규칙을 익히고<br>실천할 수 있어요!
+        오늘은 학교 곳곳을 탐험하며<br>소중한 규칙을 익혀볼 거예요!
       </p>
     </div>
     <button class="btn-3d bg-purple-500 border-purple-700 text-white w-full text-2xl py-3" onclick="goToCharacter()">
@@ -543,18 +507,74 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
   </div>
 </div>
 
-<!-- 5. 캐릭터 선택 -->
+<!-- 4. 캐릭터 선택 -->
 <div class="screen" id="screen-character">
   <div class="card card-full" style="max-width: 1000px;">
     <h2 class="txt-hero text-rainbow text-center mb-2 flex items-center justify-center gap-2">
       💕 함께할 친구 골라요
       <button class="text-xl bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText('함께할 친구를 골라요')">🔊</button>
     </h2>
-    <p class="text-xl text-center text-pink-400 font-cute mb-3">마음에 드는 친구를 콕!</p>
+    <p class="text-xl text-center text-pink-500 font-title mb-3">마음에 드는 친구를 콕!</p>
     <div class="flex-1 grid grid-cols-3 md:grid-cols-5 gap-3 my-2 items-center" id="character-grid"></div>
-    <button id="btn-char-go" class="btn-3d bg-pink-500 border-pink-700 text-white w-full text-2xl py-3" onclick="goToMap()" disabled>
-      🚀 출발하기
+    <button id="btn-char-go" class="btn-3d bg-pink-500 border-pink-700 text-white w-full text-2xl py-3" onclick="goToPreRecord()" disabled>
+      🚀 다음으로
     </button>
+  </div>
+</div>
+
+<!-- 5. 사전 녹음 -->
+<div class="screen" id="screen-pre-record">
+  <div class="card card-full rec-screen" style="max-width: 800px;">
+    <div class="text-center mb-2">
+      <div class="text-5xl mb-1 animate-heart-beat">🌱</div>
+      <h2 class="txt-hero text-rainbow">탐험 출발 다짐</h2>
+      <p class="text-lg text-purple-600 font-title">탐험을 떠나기 전, 내 다짐을 남겨봐요!</p>
+    </div>
+    
+    <div class="prompt-box bg-gradient-to-br from-sky-50 to-cyan-50 border-4 border-sky-200 mb-3 relative">
+      <button class="absolute -top-2 -right-2 text-base bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText(document.getElementById('pre-prompt').textContent)">🔊</button>
+      <p id="pre-prompt" class="txt-lg text-sky-800 font-bold text-center mb-2">
+        🌟 어떤 학교 규칙을 잘 지키고 싶나요?
+      </p>
+      <div class="bg-white/80 p-2 rounded-xl border-2 border-sky-300 text-center">
+        <p class="text-base text-sky-700 font-title font-bold">💬 예시: "복도에서 사뿐사뿐 걸을 거예요"</p>
+      </div>
+    </div>
+    
+    <div id="pre-transcript" class="live-transcript mb-3">🗣️ 내가 한 말이 여기에 나와요</div>
+    
+    <details class="mb-3 text-left">
+      <summary class="cursor-pointer text-lg text-purple-600 font-bold font-title">⌨️ 키보드로 입력하기</summary>
+      <textarea id="pre-keyboard" class="w-full p-3 rounded-xl border-4 border-purple-300 mt-2 text-xl font-bold text-slate-800 font-title bg-white" rows="2" placeholder="여기에 직접 써도 돼요" oninput="onPreKeyboardInput()"></textarea>
+      <button id="pre-keyboard-submit" class="btn-3d bg-purple-500 border-purple-700 text-white w-full text-xl py-2 mt-2" onclick="submitPreByKeyboard()" disabled>
+        📝 키보드로 보내기
+      </button>
+    </details>
+    
+    <div class="mic-waves mb-2" id="pre-waves" style="display:none"><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div></div>
+    
+    <button id="pre-rec-btn" class="btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2" onclick="togglePreRecording()">
+      🎤 녹음 시작
+    </button>
+    
+    <div id="pre-after" class="hidden">
+      <audio id="pre-audio" controls class="w-full mb-2 rounded-full"></audio>
+      <div class="star-box bg-gradient-to-br from-yellow-50 to-amber-50 border-4 border-yellow-300 mb-2 text-center">
+        <p class="text-xl font-bold mb-1 font-title text-amber-700">⭐ 내 녹음 어땠어요?</p>
+        <div class="star-rating" id="pre-stars">
+          <button class="star-btn" onclick="ratePreRecording(1)">⭐</button>
+          <button class="star-btn" onclick="ratePreRecording(2)">⭐</button>
+          <button class="star-btn" onclick="ratePreRecording(3)">⭐</button>
+          <button class="star-btn" onclick="ratePreRecording(4)">⭐</button>
+          <button class="star-btn" onclick="ratePreRecording(5)">⭐</button>
+        </div>
+        <p class="text-sm text-amber-700 mt-1 font-title">별 3개 이하면 다시 녹음해요!</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn-3d bg-slate-300 border-slate-500 text-slate-700 flex-1 text-lg py-2" onclick="preReRecord()">🔄 다시 녹음</button>
+        <button id="pre-continue-btn" class="btn-3d bg-green-500 border-green-700 text-white flex-1 text-lg py-2" onclick="preContinue()" disabled>🗺️ 탐험 시작!</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -565,7 +585,7 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
       <div class="flex items-center gap-2">
         <div id="map-char" class="text-4xl animate-float-slow"></div>
         <div class="leading-tight">
-          <div class="text-sm text-pink-400 font-cute">탐험가</div>
+          <div class="text-sm text-pink-500 font-title">탐험가</div>
           <div class="text-xl font-bold text-pink-600 font-title" id="map-name"></div>
         </div>
       </div>
@@ -579,7 +599,7 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
     <main class="flex-1 relative bg-gradient-to-br from-green-50 via-sky-50 to-purple-50 rounded-3xl border-4 border-pink-200 overflow-hidden" id="map-arena" style="min-height: 50vh;"></main>
     
     <div class="text-center mt-2">
-      <div class="tutorial-bubble inline-block">✨ 가고 싶은 장소를 콕! 눌러주세요</div>
+      <div class="tutorial-bubble inline-block">✨ 모든 장소를 탐험해 보세요!</div>
     </div>
   </div>
 </div>
@@ -588,13 +608,13 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
 <div class="screen" id="screen-quiz">
   <div class="card card-full" style="max-width: 1000px;">
     <header class="quiz-header">
-      <button class="btn-3d bg-slate-200 border-slate-400 text-slate-700 px-3 py-2 text-base" onclick="exitQuiz()">↩ 나가기</button>
+      <button class="btn-3d bg-slate-200 border-slate-400 text-slate-700 px-3 py-2 text-base" onclick="exitToMap()">↩ 지도로</button>
       <div class="flex items-center gap-2">
         <span id="loc-icon" class="text-3xl"></span>
         <span id="loc-name" class="text-xl font-bold text-pink-600 font-title"></span>
       </div>
       <div class="text-center">
-        <div class="text-base text-purple-400 font-cute"><span id="q-num">1</span>/<span id="q-total">5</span></div>
+        <div class="text-base text-purple-500 font-title"><span id="q-num">1</span>/<span id="q-total">3</span></div>
         <div class="text-2xl font-title">⭐ <span id="q-score">0</span></div>
       </div>
     </header>
@@ -635,108 +655,57 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
   </div>
 </div>
 
-<!-- 9. 중간 녹음 -->
-<div class="screen" id="screen-mid-record">
-  <div class="card card-full rec-screen text-center" style="max-width: 720px;">
-    <div class="text-5xl mb-1 animate-heart-beat">🎙️</div>
-    <h2 class="txt-hero text-rainbow mb-1">잠깐!</h2>
-    <p class="text-lg text-purple-400 mb-3 font-cute" id="mid-record-prompt-num">[중간 녹음 1/N]</p>
-    
-    <div class="prompt-box bg-gradient-to-br from-rose-50 to-pink-50 border-4 border-rose-200 mb-3 relative">
-      <button class="absolute -top-2 -right-2 text-base bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText(document.getElementById('mid-prompt-text').textContent)">🔊</button>
-      <p id="mid-prompt-text" class="txt-lg text-slate-700 font-bold mb-2">방금 배운 학교 규칙 중 하나를 골라 말해보세요!</p>
-      <div class="bg-white/80 p-2 rounded-xl border-2 border-rose-300">
-        <p class="text-base text-rose-600 font-cute">💬 예시: "복도에서 사뿐사뿐 걸을 거예요"</p>
-      </div>
-    </div>
-    
-    <div id="mid-transcript" class="live-transcript mb-3">🗣️ 말한 내용이 여기에 나와요</div>
-    
-    <details class="mb-3 text-left">
-      <summary class="cursor-pointer text-lg text-purple-500 font-bold font-cute">⌨️ 또는 키보드로 입력하기</summary>
-      <textarea id="mid-keyboard" class="w-full p-3 rounded-xl border-4 border-purple-300 mt-2 text-xl font-bold text-slate-800 font-title bg-white" rows="2" placeholder="여기에 직접 써도 돼요" oninput="onMidKeyboardInput()"></textarea>
-      <button id="mid-keyboard-submit" class="btn-3d bg-purple-500 border-purple-700 text-white w-full text-xl py-2 mt-2" onclick="submitMidByKeyboard()" disabled>
-        📝 글로 보내기
-      </button>
-    </details>
-    
-    <div class="mic-waves mb-2" id="mid-waves" style="display:none"><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div></div>
-    
-    <button id="mid-rec-btn" class="btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2" onclick="toggleMidRecording()">
-      🎤 녹음 시작
-    </button>
-    
-    <div id="mid-after" class="hidden">
-      <audio id="mid-audio" controls class="w-full mb-2 rounded-full"></audio>
-      <div class="star-box bg-gradient-to-br from-yellow-50 to-amber-50 border-4 border-yellow-300 mb-2">
-        <p class="text-xl font-bold mb-1 font-title text-amber-700">⭐ 내 녹음 어땠어요?</p>
-        <div class="star-rating" id="mid-stars">
-          <button class="star-btn" onclick="rateMidRecording(1)">⭐</button>
-          <button class="star-btn" onclick="rateMidRecording(2)">⭐</button>
-          <button class="star-btn" onclick="rateMidRecording(3)">⭐</button>
-          <button class="star-btn" onclick="rateMidRecording(4)">⭐</button>
-          <button class="star-btn" onclick="rateMidRecording(5)">⭐</button>
-        </div>
-        <p class="text-sm text-amber-600 mt-1 font-cute">별 3개 이하면 다시 녹음해요!</p>
-      </div>
-      <div class="flex gap-2">
-        <button class="btn-3d bg-slate-300 border-slate-500 text-slate-700 flex-1 text-lg py-2" onclick="midReRecord()">🔄 다시 녹음</button>
-        <button id="mid-continue-btn" class="btn-3d bg-green-500 border-green-700 text-white flex-1 text-lg py-2" onclick="midContinue()" disabled>▶ 계속하기</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 10. 최종 녹음 -->
-<div class="screen" id="screen-final-record">
+<!-- 9. 사후 녹음 -->
+<div class="screen" id="screen-post-record">
   <div class="card card-full rec-screen" style="max-width: 820px;">
-    <h2 class="txt-hero text-rainbow text-center mb-2 flex items-center justify-center gap-2">
-      🎙️ 내 생각 들려주기
-      <button class="text-xl bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText('오늘 배운 학교 규칙 중에서 친구들에게 알려주고 싶은 것을 말해보세요')">🔊</button>
-    </h2>
+    <div class="text-center mb-2">
+      <div class="text-5xl mb-1 animate-heart-beat">🎉</div>
+      <h2 class="txt-hero text-rainbow">탐험 마무리</h2>
+      <p class="text-lg text-purple-600 font-title">6장소 모두 탐험 완료! 마지막으로...</p>
+    </div>
     
     <div class="prompt-box bg-gradient-to-br from-emerald-50 to-teal-50 border-4 border-emerald-200 mb-3 relative">
-      <button class="absolute -top-2 -right-2 text-base bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText(document.getElementById('final-prompt').textContent)">🔊</button>
-      <p id="final-prompt" class="txt-lg text-emerald-800 font-bold text-center mb-2">
-        🌈 오늘 배운 학교 규칙 중에서 알려주고 싶은 것을 말해주세요!
+      <button class="absolute -top-2 -right-2 text-base bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText(document.getElementById('post-prompt').textContent)">🔊</button>
+      <p id="post-prompt" class="txt-lg text-emerald-800 font-bold text-center mb-2">
+        🌈 오늘 배운 학교 규칙 중에서 친구들에게 알려주고 싶은 것을 말해 주세요!
       </p>
       <div class="bg-white/80 p-2 rounded-xl border-2 border-emerald-300 text-center">
-        <p class="text-base text-emerald-600 font-cute">💬 예시: "도서관에서는 소곤소곤 말해야 해"</p>
+        <p class="text-base text-emerald-700 font-title font-bold">💬 예시: "도서관에서는 소곤소곤 말해야 해요"</p>
       </div>
     </div>
     
-    <div id="final-transcript" class="live-transcript mb-3">🗣️ 내가 한 말이 여기에 나와요</div>
+    <div id="post-transcript" class="live-transcript mb-3">🗣️ 내가 한 말이 여기에 나와요</div>
     
     <details class="mb-3 text-left">
-      <summary class="cursor-pointer text-lg text-purple-500 font-bold font-cute">⌨️ 또는 키보드로 입력</summary>
-      <textarea id="final-keyboard" class="w-full p-3 rounded-xl border-4 border-purple-300 mt-2 text-xl font-bold text-slate-800 font-title bg-white" rows="2" oninput="onFinalKeyboardInput()"></textarea>
-      <button id="final-keyboard-submit" class="btn-3d bg-purple-500 border-purple-700 text-white w-full text-xl py-2 mt-2" onclick="submitFinalByKeyboard()" disabled>
-        📝 글로 보내기
+      <summary class="cursor-pointer text-lg text-purple-600 font-bold font-title">⌨️ 키보드로 입력하기</summary>
+      <textarea id="post-keyboard" class="w-full p-3 rounded-xl border-4 border-purple-300 mt-2 text-xl font-bold text-slate-800 font-title bg-white" rows="2" oninput="onPostKeyboardInput()"></textarea>
+      <button id="post-keyboard-submit" class="btn-3d bg-purple-500 border-purple-700 text-white w-full text-xl py-2 mt-2" onclick="submitPostByKeyboard()" disabled>
+        📝 키보드로 보내기
       </button>
     </details>
     
-    <div class="mic-waves mb-2" id="final-waves" style="display:none"><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div></div>
+    <div class="mic-waves mb-2" id="post-waves" style="display:none"><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div></div>
     
-    <button id="final-rec-btn" class="btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2" onclick="toggleFinalRecording()">
+    <button id="post-rec-btn" class="btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2" onclick="togglePostRecording()">
       🎤 녹음 시작
     </button>
     
-    <div id="final-after" class="hidden">
-      <audio id="final-audio" controls class="w-full mb-2 rounded-full"></audio>
+    <div id="post-after" class="hidden">
+      <audio id="post-audio" controls class="w-full mb-2 rounded-full"></audio>
       <div class="star-box bg-gradient-to-br from-yellow-50 to-amber-50 border-4 border-yellow-300 mb-2 text-center">
         <p class="text-xl font-bold mb-1 font-title text-amber-700">⭐ 잘 말한 것 같아요?</p>
-        <div class="star-rating" id="final-stars">
-          <button class="star-btn" onclick="rateFinalRecording(1)">⭐</button>
-          <button class="star-btn" onclick="rateFinalRecording(2)">⭐</button>
-          <button class="star-btn" onclick="rateFinalRecording(3)">⭐</button>
-          <button class="star-btn" onclick="rateFinalRecording(4)">⭐</button>
-          <button class="star-btn" onclick="rateFinalRecording(5)">⭐</button>
+        <div class="star-rating" id="post-stars">
+          <button class="star-btn" onclick="ratePostRecording(1)">⭐</button>
+          <button class="star-btn" onclick="ratePostRecording(2)">⭐</button>
+          <button class="star-btn" onclick="ratePostRecording(3)">⭐</button>
+          <button class="star-btn" onclick="ratePostRecording(4)">⭐</button>
+          <button class="star-btn" onclick="ratePostRecording(5)">⭐</button>
         </div>
-        <p class="text-sm text-amber-600 mt-1 font-cute">⚠️ 별 3개 이하면 다시 녹음</p>
+        <p class="text-sm text-amber-700 mt-1 font-title">⚠️ 별 3개 이하면 다시 녹음</p>
       </div>
       <div class="flex gap-2">
-        <button class="btn-3d bg-slate-300 border-slate-500 text-slate-700 flex-1 text-lg py-2" onclick="finalReRecord()">🔄 다시 녹음</button>
-        <button id="final-submit-btn" class="btn-3d bg-emerald-500 border-emerald-700 text-white flex-1 text-lg py-2" onclick="submitAll()" disabled>📤 제출하기</button>
+        <button class="btn-3d bg-slate-300 border-slate-500 text-slate-700 flex-1 text-lg py-2" onclick="postReRecord()">🔄 다시 녹음</button>
+        <button id="post-submit-btn" class="btn-3d bg-emerald-500 border-emerald-700 text-white flex-1 text-lg py-2" onclick="submitAll()" disabled>📤 제출하기</button>
       </div>
     </div>
     
@@ -747,45 +716,45 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
   </div>
 </div>
 
-<!-- 11. 내 목소리 다시 듣기 -->
+<!-- 10. 내 목소리 다시 듣기 -->
 <div class="screen" id="screen-listen-back">
   <div class="card card-full" style="max-width: 900px;">
-    <div class="text-center mb-2">
+    <div class="text-center mb-3">
       <div class="text-6xl mb-1 animate-heart-beat">🎧</div>
       <h2 class="txt-hero text-rainbow">내 목소리 다시 듣기</h2>
-      <p class="text-lg text-purple-500 font-cute mt-1">오늘 녹음한 내 목소리예요!</p>
+      <p class="text-xl text-purple-600 font-title mt-1">탐험 시작 다짐과 마무리 소감을 들어봐요!</p>
     </div>
     
-    <div class="flex-1 overflow-y-auto no-scrollbar p-1 space-y-2" id="recording-list"></div>
+    <div class="flex-1 overflow-y-auto no-scrollbar p-1 space-y-3" id="recording-list"></div>
     
-    <button class="btn-3d bg-green-500 border-green-700 text-white w-full text-2xl py-3 mt-2 animate-glow" onclick="goToReport()">
+    <button class="btn-3d bg-green-500 border-green-700 text-white w-full text-3xl py-5 mt-3 animate-glow" onclick="goToReport()">
       🏆 결과 보러 가기
     </button>
   </div>
 </div>
 
-<!-- 12. 결과 리포트 -->
+<!-- 11. 결과 리포트 -->
 <div class="screen" id="screen-report">
   <div class="card card-full no-scrollbar" style="max-width: 1100px;">
     <div class="text-center mb-2">
       <div class="text-6xl mb-1 animate-bounce-soft">🏆</div>
-      <h2 class="txt-hero text-rainbow">정말 멋져요!</h2>
-      <p class="text-2xl text-pink-500 mt-1 font-cute"><span id="report-name" class="font-bold text-pink-600 font-title"></span> 어린이</p>
+      <h2 class="txt-hero text-rainbow">탐험 완료!</h2>
+      <p class="text-2xl text-pink-600 mt-1 font-title"><span id="report-name" class="font-bold text-pink-700"></span> 학생</p>
     </div>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
       <div class="bg-gradient-to-br from-slate-50 to-pink-50 p-3 rounded-2xl border-4 border-pink-200">
-        <p class="text-lg font-bold text-center mb-2 font-cute text-pink-600">📊 내가 배운 영역</p>
+        <p class="text-lg font-bold text-center mb-2 font-title text-pink-600">📊 내가 배운 영역</p>
         <div style="height: 220px; position: relative;"><canvas id="radar-chart"></canvas></div>
       </div>
       <div class="bg-gradient-to-br from-slate-50 to-sky-50 p-3 rounded-2xl border-4 border-sky-200">
-        <p class="text-lg font-bold text-center mb-2 font-cute text-sky-600">🚦 영역별 결과</p>
+        <p class="text-lg font-bold text-center mb-2 font-title text-sky-600">🚦 영역별 결과</p>
         <div id="traffic-lights" class="grid grid-cols-3 gap-2"></div>
       </div>
     </div>
     
     <div class="bg-gradient-to-br from-pink-50 to-purple-50 p-3 rounded-2xl border-4 border-pink-200 mb-3 text-center">
-      <p class="text-xl font-bold text-pink-700 mb-2 font-cute">🌟 오늘 모은 스티커</p>
+      <p class="text-xl font-bold text-pink-700 mb-2 font-title">🌟 오늘 모은 스티커</p>
       <div id="report-stickers" class="flex flex-wrap justify-center gap-2"></div>
     </div>
     
@@ -802,30 +771,35 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
 <div class="modal" id="modal-instructions">
   <div class="modal-content">
     <h3 class="txt-hero text-rainbow text-center mb-3">📖 활동 안내</h3>
-    <div class="space-y-2 text-base font-cute">
+    <div class="space-y-2 text-base font-title">
       <div class="step-card bg-gradient-to-r from-pink-50 to-rose-50 border-pink-200">
-        <p class="font-bold text-pink-700 text-lg">1️⃣ 이름 찾기</p>
-        <p class="text-slate-600 pl-5">선생님이 등록한 이름 중 내 이름을 골라요</p>
+        <p class="font-bold text-pink-700 text-lg">1️⃣ 이름 찾기 + 마이크 허용</p>
+        <p class="text-slate-600 pl-5">내 이름 고르고, 마이크 한 번만 허용해요</p>
       </div>
       <div class="step-card bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200">
-        <p class="font-bold text-orange-700 text-lg">2️⃣ 마이크 켜기 (한 번만!)</p>
-        <p class="text-slate-600 pl-5">내 목소리를 녹음하려면 마이크 허락이 필요해요</p>
-      </div>
-      <div class="step-card bg-gradient-to-r from-yellow-50 to-lime-50 border-yellow-200">
-        <p class="font-bold text-yellow-700 text-lg">3️⃣ 문제 풀기 🎯</p>
-        <p class="text-slate-600 pl-5">두 개 중 알맞은 것 골라요. 어려우면 💡 도움받기</p>
-      </div>
-      <div class="step-card bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
-        <p class="font-bold text-green-700 text-lg">4️⃣ 중간/최종 녹음 🎤</p>
-        <p class="text-slate-600 pl-5">내 목소리로 또는 ⌨️ 글로 보내기 가능</p>
+        <p class="font-bold text-orange-700 text-lg">2️⃣ 약속 + 친구 캐릭터</p>
+        <p class="text-slate-600 pl-5">오늘의 약속을 읽고 함께할 친구를 골라요</p>
       </div>
       <div class="step-card bg-gradient-to-r from-sky-50 to-cyan-50 border-sky-200">
-        <p class="font-bold text-sky-700 text-lg">5️⃣ 내 목소리 듣기 🎧</p>
-        <p class="text-slate-600 pl-5">오늘 녹음한 내 목소리를 들으며 성장 확인!</p>
+        <p class="font-bold text-sky-700 text-lg">3️⃣ 탐험 출발 다짐 🌱</p>
+        <p class="text-slate-600 pl-5">어떤 학교 규칙을 지키고 싶은지 녹음해요</p>
+      </div>
+      <div class="step-card bg-gradient-to-r from-yellow-50 to-lime-50 border-yellow-200">
+        <p class="font-bold text-yellow-700 text-lg">4️⃣ 6장소 탐험 🗺️</p>
+        <p class="text-slate-600 pl-5">교실·특별실·화장실·복도·급식실·도서관 모두 가야 해요!</p>
+      </div>
+      <div class="step-card bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+        <p class="font-bold text-green-700 text-lg">5️⃣ 탐험 마무리 🎉</p>
+        <p class="text-slate-600 pl-5">오늘 배운 규칙 중 알려주고 싶은 것을 녹음해요</p>
+      </div>
+      <div class="step-card bg-gradient-to-r from-purple-50 to-fuchsia-50 border-purple-200">
+        <p class="font-bold text-purple-700 text-lg">6️⃣ 내 목소리 듣고 수료증 받기 🏆</p>
+        <p class="text-slate-600 pl-5">사전·사후 녹음 듣고 결과까지 확인!</p>
       </div>
       <div class="bg-slate-50 p-2 rounded-xl mt-2">
         <p class="text-slate-600 text-sm">🔊 = 문장 듣기 | 💡 = 힌트 | ❓ = 설명서</p>
         <p class="text-slate-600 text-sm">⭐ 별점 3개 이하면 다시 녹음 가능</p>
+        <p class="text-slate-600 text-sm">⌨️ = 키보드로 입력하기 (녹음 대신)</p>
       </div>
     </div>
     <button class="btn-3d bg-sky-500 border-sky-700 text-white w-full text-xl py-2 mt-3" onclick="closeInstructions()">알겠어요! ✨</button>
@@ -835,16 +809,20 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
 <script>
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwfoeClzOEET_Y8MySwaW4kAp7tzSK9PqH2u6OKiK8qvLMK4x9b63HzlmNiiGvY03s-MQ/exec';
 
+const QUESTIONS_PER_LOCATION = 3;
+const LOCATION_ORDER = ['classroom','specialroom','restroom','hallway','cafeteria','library'];
+
 const state = {
   name: null, grade: null, cls: null,
   character: null, characterName: null,
-  questionCount: 5,
-  questionIndex: 0,
-  questions: [],
+  currentLocationId: null,
+  currentLocationQs: [],
+  currentQIndex: 0,
+  completedLocations: new Set(),
   answers: [],
   helpCount: 0,
-  midRecordings: [],
-  finalRecording: null,
+  preRecording: null,
+  postRecording: null,
   stickers: [],
   audioCtx: null,
   mediaRecorder: null,
@@ -854,6 +832,10 @@ const state = {
   isProcessing: false,
   ttsTimeouts: [],
 };
+
+function studentName() {
+  return state.name ? `${state.name} 학생` : '학생';
+}
 
 const defaultStudents = [
   { grade: '1', cls: '1', name: '홍길동' },
@@ -876,36 +858,42 @@ const defaultMissions = {
     qs: [
       { q: '수업 시간에 화장실에 가고 싶으면 어떻게 해야 할까요?', c1: '손 들고 말해요', c2: '조용히 혼자 가요', ans: 1, h: '선생님이 걱정하지 않아야 해요', f: '맞아요! 선생님께 알리는 게 예의예요', x: '몰래 가면 위험할 수 있어요', exHelp: '"선생님, 화장실 다녀와도 될까요?"' },
       { q: '발표할 때는 어떤 목소리로 해야 할까요?', c1: '들리지 않게 작게', c2: '잘 들리게 또박또박', ans: 2, h: '친구가 잘 들어야 해요', f: '정답이에요! 또박또박 말해야 잘 전달돼요', x: '너무 작으면 친구가 못 들어요', exHelp: '"안녕하세요. 제 생각은요..." 처럼 또박또박' },
+      { q: '친구가 발표할 때는 어떻게 해야 할까요?', c1: '딴짓하며 들어요', c2: '집중해서 들어요', ans: 2, h: '친구의 마음이 어떨까요?', f: '훌륭해요! 경청은 가장 큰 응원이에요', x: '딴짓하면 친구가 속상해요', exHelp: '눈을 맞추고 끝까지 들어 보세요' },
     ]
   },
   specialroom: { icon: '🔬', name: '특별실', position: { top: '28%', left: '78%' },
     qs: [
       { q: '과학실 실험 도구는 어떻게 다뤄야 할까요?', c1: '마음대로 만져요', c2: '선생님 허락 받아요', ans: 2, h: '위험할 수 있어요', f: '훌륭해요! 안전이 가장 중요해요', x: '마음대로 만지면 다칠 수 있어요', exHelp: '"선생님, 이거 만져봐도 될까요?"' },
       { q: '수업 끝나고 사용한 물건은 어떻게 해야 할까요?', c1: '그냥 두고 가요', c2: '정리하고 가요', ans: 2, h: '다음 친구를 생각해요', f: '딩동댕! 정리정돈은 배려예요', x: '안 치우면 다음 친구가 불편해요', exHelp: '"제자리에 정리하고 가요"' },
+      { q: '음악실에서 악기는 어떻게 다뤄야 할까요?', c1: '함부로 두드려요', c2: '소중하게 다뤄요', ans: 2, h: '여러 친구가 함께 쓰는 물건이에요', f: '맞아요! 악기는 소중하게 다뤄야 해요', x: '망가지면 다음 친구가 못 써요', exHelp: '두 손으로 살살 다루기' },
     ]
   },
   restroom: { icon: '🚽', name: '화장실', position: { top: '55%', left: '18%' },
     qs: [
       { q: '화장실 문을 열기 전엔 어떻게 해야 할까요?', c1: '벌컥 열어요', c2: '똑똑 노크해요', ans: 2, h: '안에 친구가 있을 수 있어요', f: '맞아요! 노크는 예의예요', x: '갑자기 열면 친구가 놀라요', exHelp: '"똑똑똑" 노크 후 잠깐 기다려요' },
-      { q: '화장실을 다 쓴 후에는 어떻게 해야 할까요?', c1: '물 내리고 나와요', c2: '그냥 얼른 나와요', ans: 1, h: '다음 사람도 깨끗하게', f: '잘했어요! 기본 예절이에요', x: '물 안 내리면 지저분해져요', exHelp: '"손잡이를 눌러 물 내리기"' },
+      { q: '화장실을 다 쓴 후에는 어떻게 해야 할까요?', c1: '물 내리고 나와요', c2: '그냥 얼른 나와요', ans: 1, h: '다음 사람도 깨끗하게 써야 해요', f: '잘했어요! 기본 예절이에요', x: '물 안 내리면 지저분해져요', exHelp: '"손잡이를 눌러 물 내리기"' },
+      { q: '화장실에서 나오기 전에 꼭 해야 할 일은?', c1: '바로 나와요', c2: '비누로 손을 씻어요', ans: 2, h: '눈에 안 보이는 세균이 있어요', f: '맞아요! 손 씻기는 건강의 시작', x: '손 안 씻으면 병이 생길 수 있어요', exHelp: '비누 거품으로 30초 이상 꼼꼼히' },
     ]
   },
   hallway: { icon: '👣', name: '복도', position: { top: '55%', left: '82%' },
     qs: [
       { q: '복도에서는 어떻게 다녀야 할까요?', c1: '신나게 뛰어요', c2: '사뿐사뿐 걸어요', ans: 2, h: '다른 반이 공부 중일 수 있어요', f: '맞아요! 조심조심 걸어요', x: '뛰면 다칠 수 있고 시끄러워요', exHelp: '"사뿐사뿐 걸어다녀요"' },
       { q: '선생님을 만나면 어떻게 인사해야 할까요?', c1: '멈춰서 인사', c2: '뛰면서 인사', ans: 1, h: '예의를 갖춰요', f: '참 잘했어요!', x: '예의 없으면 서운하세요', exHelp: '"안녕하세요!" 하고 공손하게' },
+      { q: '복도에서 친구와 마주치면?', c1: '몸으로 밀어요', c2: '비켜서 양보해요', ans: 2, h: '서로를 배려해요', f: '훌륭해요! 배려가 따뜻해요', x: '밀치면 친구가 다칠 수 있어요', exHelp: '"먼저 가세요" 하고 살짝 비키기' },
     ]
   },
   cafeteria: { icon: '🍱', name: '급식실', position: { top: '80%', left: '32%' },
     qs: [
-      { q: '음식을 받을 때 인사는 어떻게 할까요?', c1: '잘 먹겠습니다', c2: '빨리 주세요', ans: 1, h: '준비해주신 분께 감사', f: '멋져요! 감사한 마음이 따뜻해요', x: '감사 인사가 예의예요', exHelp: '"잘 먹겠습니다!" 하고 인사해요' },
+      { q: '음식을 받을 때 인사는 어떻게 할까요?', c1: '잘 먹겠습니다', c2: '빨리 주세요', ans: 1, h: '준비해주신 분께 감사해요', f: '멋져요! 감사한 마음이 따뜻해요', x: '감사 인사가 예의예요', exHelp: '"잘 먹겠습니다!" 하고 인사해요' },
       { q: '싫어하는 반찬은 어떻게 해야 할까요?', c1: '바닥에 버려요', c2: '조금이라도 먹어봐요', ans: 2, h: '많은 분의 땀이 들어있어요', f: '맞아요! 음식을 아껴요', x: '음식을 버리면 안 돼요', exHelp: '"한 입만 먹어보기"' },
+      { q: '다 먹은 식판은 어떻게 해야 할까요?', c1: '자리에 그냥 두어요', c2: '정해진 곳에 정리해요', ans: 2, h: '다음 친구도 와요', f: '딩동댕! 마무리까지 깔끔하게', x: '안 치우면 식당이 지저분해요', exHelp: '"잘 먹었습니다" 하고 정리하기' },
     ]
   },
   library: { icon: '📚', name: '도서관', position: { top: '80%', left: '68%' },
     qs: [
       { q: '도서관에서 이야기할 때 어떻게 해야 할까요?', c1: '큰 소리로', c2: '소곤소곤', ans: 2, h: '책 읽는 친구를 생각해요', f: '딩동댕! 조용히 해요', x: '떠들면 방해돼요', exHelp: '"소곤소곤" 작게 말해요' },
-      { q: '다 읽은 책은 어떻게 정리해야 할까요?', c1: '책상 위에 둬요', c2: '원래 자리에 꽂아요', ans: 2, h: '다음 친구도 찾을 수 있게', f: '맞아요! 제자리에 두세요', x: '아무 데나 두면 안 돼요', exHelp: '"빌렸던 자리에 꽂기"' },
+      { q: '다 읽은 책은 어떻게 정리해야 할까요?', c1: '책상 위에 둬요', c2: '원래 자리에 꽂아요', ans: 2, h: '다음 친구도 찾을 수 있게 해요', f: '맞아요! 제자리에 두세요', x: '아무 데나 두면 안 돼요', exHelp: '"빌렸던 자리에 꽂기"' },
+      { q: '책을 볼 때는 어떻게 다뤄야 할까요?', c1: '구겨도 돼요', c2: '깨끗하게 봐요', ans: 2, h: '책은 친구들이 함께 봐요', f: '훌륭해요! 책은 소중해요', x: '책이 망가지면 못 봐요', exHelp: '깨끗한 손으로 살살 넘기기' },
     ]
   },
 };
@@ -951,7 +939,7 @@ async function loadDataFromGAS() {
     
     if (data.missionsData && Object.keys(data.missionsData).length > 0) {
       Object.keys(data.missionsData).forEach(key => {
-        if (defaultMissions[key] && data.missionsData[key].data && data.missionsData[key].data.qs) {
+        if (defaultMissions[key] && data.missionsData[key].data && data.missionsData[key].data.qs && data.missionsData[key].data.qs.length > 0) {
           defaultMissions[key].qs = data.missionsData[key].data.qs.map(q => ({
             q: q.q, c1: q.c1, c2: q.c2, ans: q.ans, h: q.h, f: q.f, x: q.x,
             exHelp: q.exHelp || q.h
@@ -983,7 +971,7 @@ function initCharacters() {
   characters.forEach(c => {
     const card = document.createElement('button');
     card.className = 'char-card p-3 rounded-3xl border-4 border-slate-200 hover:border-pink-300 flex flex-col items-center bg-gradient-to-br from-white to-pink-50';
-    card.innerHTML = `<div class="text-5xl md:text-6xl mb-1">${c.emoji}</div><div class="text-base md:text-xl font-bold text-slate-700 font-cute">${c.name}</div>`;
+    card.innerHTML = `<div class="text-5xl md:text-6xl mb-1">${c.emoji}</div><div class="text-base md:text-xl font-bold text-slate-700 font-title">${c.name}</div>`;
     card.onclick = () => selectCharacter(c, card);
     grid.appendChild(card);
   });
@@ -1001,7 +989,7 @@ function toggleSpeaker() {
   btn.classList.toggle('on', !state.isMuted);
   if (!state.isMuted) {
     initAudio();
-    if (state.name) setTimeout(() => speakText(`${state.name}야, 안녕! 같이 학교 규칙 배워볼까?`), 200);
+    if (state.name) setTimeout(() => speakText(`${studentName()}, 안녕하세요! 같이 학교 규칙을 배워볼까요?`), 200);
   }
 }
 
@@ -1062,7 +1050,7 @@ function speakWithHighlight(elementId, text) {
 }
 
 function getPersonalizedPromiseText() {
-  return `${state.name || '친구'}야, 학교 안에서 지켜야 할 소중한 규칙을 익히고 실천할 수 있어요`;
+  return `${studentName()}, 오늘은 학교 곳곳을 탐험하며 소중한 규칙을 익혀볼 거예요`;
 }
 
 function playCorrectSound() {
@@ -1137,7 +1125,7 @@ function onNameSelected() {
 
 function goToMicPermission() {
   if (sessionStorage.getItem('micGranted') === 'true') {
-    setupRecorder().then(() => showScreen('mode'));
+    setupRecorder().then(() => { showScreen('promise'); setTimeout(() => speakWithHighlight('promise-text', getPersonalizedPromiseText()), 400); });
   } else {
     showScreen('mic');
   }
@@ -1149,10 +1137,11 @@ async function requestMic() {
     state.mediaStream = stream;
     state.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
     sessionStorage.setItem('micGranted', 'true');
-    showScreen('mode');
+    showScreen('promise');
+    setTimeout(() => speakWithHighlight('promise-text', getPersonalizedPromiseText()), 400);
   } catch (e) {
     alert('마이크 사용을 허용해야 녹음을 할 수 있어요!');
-    showScreen('mode');
+    showScreen('promise');
   }
 }
 
@@ -1162,12 +1151,6 @@ async function setupRecorder() {
     state.mediaStream = stream;
     state.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
   } catch (e) { console.warn('마이크 설정 실패', e); }
-}
-
-function selectMode(count) {
-  state.questionCount = count;
-  showScreen('promise');
-  setTimeout(() => speakWithHighlight('promise-text', getPersonalizedPromiseText()), 400);
 }
 
 function goToCharacter() { showScreen('character'); }
@@ -1180,68 +1163,66 @@ function selectCharacter(c, btnEl) {
   document.getElementById('btn-char-go').disabled = false;
 }
 
+function goToPreRecord() {
+  showScreen('pre-record');
+  if (!state.isMuted) setTimeout(() => speakText(`${studentName()}, 탐험을 떠나기 전, 어떤 학교 규칙을 잘 지키고 싶은지 말해 주세요!`), 500);
+}
+
 function goToMap() {
   showScreen('map');
   document.getElementById('map-char').textContent = state.character;
   document.getElementById('map-name').textContent = state.name;
-  prepareQuestions();
   renderMissionSpots();
   updateMapProgress();
-  if (!state.isMuted) setTimeout(() => speakText(`${state.name}야, 지도가 나왔어. 가고 싶은 장소를 골라봐!`), 500);
-}
-
-function prepareQuestions() {
-  const allQs = [];
-  Object.keys(missions).forEach(mId => {
-    missions[mId].qs.forEach(q => allQs.push({ ...q, missionId: mId }));
-  });
-  for (let i = allQs.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [allQs[i], allQs[j]] = [allQs[j], allQs[i]];
-  }
-  state.questions = allQs.slice(0, state.questionCount);
-  state.questionIndex = 0;
-  state.answers = [];
+  if (!state.isMuted) setTimeout(() => speakText(`${studentName()}, 지도가 나왔어요. 6개 장소를 모두 탐험해 보세요!`), 500);
 }
 
 function renderMissionSpots() {
   const arena = document.getElementById('map-arena');
   arena.innerHTML = '';
-  Object.entries(missions).forEach(([id, m]) => {
+  LOCATION_ORDER.forEach(id => {
+    const m = missions[id];
     const spot = document.createElement('div');
-    spot.className = 'mission-spot';
+    spot.className = 'mission-spot' + (state.completedLocations.has(id) ? ' completed' : '');
     spot.style.top = m.position.top;
     spot.style.left = m.position.left;
     spot.dataset.mission = id;
     spot.innerHTML = `<div class="spot-inner"><div class="text-5xl md:text-6xl">${m.icon}</div><div class="text-lg md:text-xl font-bold mt-1 text-slate-700 font-title">${m.name}</div></div>`;
-    spot.onclick = () => startQuiz();
+    spot.onclick = () => startLocation(id);
     arena.appendChild(spot);
   });
 }
 
 function updateMapProgress() {
-  const done = state.questionIndex;
-  const total = state.questionCount;
+  const done = state.completedLocations.size;
+  const total = LOCATION_ORDER.length;
   document.getElementById('map-progress').style.width = `${(done / total) * 100}%`;
   document.getElementById('map-status').textContent = 
-    done === 0 ? '탐험 시작!' : done >= total ? '탐험 완료!' : `${done}/${total} 문제 완료`;
+    done === 0 ? '탐험 시작!' : done >= total ? '탐험 완료! 🎉' : `${done}/${total} 장소 완료`;
   const col = document.getElementById('sticker-collection');
   col.innerHTML = state.stickers.slice(-10).map(s => `<span class="text-2xl">${s}</span>`).join('');
 }
 
-function startQuiz() {
-  if (state.questionIndex >= state.questions.length) { goToFinalRecord(); return; }
+function startLocation(locationId) {
+  if (state.completedLocations.has(locationId)) {
+    // 이미 완료한 장소는 다시 안 풀게
+    if (!state.isMuted) speakText('이미 다녀온 장소예요. 다른 장소도 가 봐요!');
+    return;
+  }
+  state.currentLocationId = locationId;
+  state.currentLocationQs = missions[locationId].qs.slice(0, QUESTIONS_PER_LOCATION);
+  state.currentQIndex = 0;
   showScreen('quiz');
   renderQuestion();
 }
 
 function renderQuestion() {
-  const q = state.questions[state.questionIndex];
-  const m = missions[q.missionId];
+  const q = state.currentLocationQs[state.currentQIndex];
+  const m = missions[state.currentLocationId];
   document.getElementById('loc-icon').textContent = m.icon;
   document.getElementById('loc-name').textContent = m.name;
-  document.getElementById('q-num').textContent = state.questionIndex + 1;
-  document.getElementById('q-total').textContent = state.questionCount;
+  document.getElementById('q-num').textContent = state.currentQIndex + 1;
+  document.getElementById('q-total').textContent = state.currentLocationQs.length;
   document.getElementById('q-score').textContent = state.answers.filter(a => a.correct).length;
   
   const qEl = document.getElementById('q-text');
@@ -1269,17 +1250,17 @@ function renderQuestion() {
 }
 
 function replayQuestion() {
-  const q = state.questions[state.questionIndex];
+  const q = state.currentLocationQs[state.currentQIndex];
   speakWithHighlight('q-text', q.q);
 }
 
 function useHelp() {
-  const q = state.questions[state.questionIndex];
+  const q = state.currentLocationQs[state.currentQIndex];
   state.helpCount++;
   document.getElementById('fb-icon').textContent = '💡';
   document.getElementById('fb-title').textContent = '도움말이에요!';
   document.getElementById('fb-title').className = 'text-3xl font-bold mb-3 text-amber-600 font-title';
-  document.getElementById('fb-desc').innerHTML = `<div class="mb-2">${q.h}</div><div class="bg-gradient-to-br from-amber-50 to-yellow-50 p-3 rounded-xl border-2 border-amber-200 mt-2"><p class="text-base text-amber-700 mb-1 font-cute">💬 이렇게 말해요</p><p class="text-xl font-bold text-amber-800 font-title">${q.exHelp || q.h}</p></div>`;
+  document.getElementById('fb-desc').innerHTML = `<div class="mb-2">${q.h}</div><div class="bg-gradient-to-br from-amber-50 to-yellow-50 p-3 rounded-xl border-2 border-amber-200 mt-2"><p class="text-base text-amber-700 mb-1 font-title">💬 이렇게 말해요</p><p class="text-xl font-bold text-amber-800 font-title">${q.exHelp || q.h}</p></div>`;
   const btn = document.getElementById('fb-action');
   btn.textContent = '👍 알겠어요!';
   btn.className = 'btn-3d bg-amber-500 border-amber-700 text-white w-full text-2xl py-3';
@@ -1294,9 +1275,9 @@ function useHelp() {
 function checkAnswer(choiceNum) {
   if (state.isProcessing) return;
   state.isProcessing = true;
-  const q = state.questions[state.questionIndex];
+  const q = state.currentLocationQs[state.currentQIndex];
   const isCorrect = choiceNum === q.ans;
-  state.answers.push({ q: q.q, correct: isCorrect, missionId: q.missionId, helpUsed: state.helpCount > 0 });
+  state.answers.push({ q: q.q, correct: isCorrect, missionId: state.currentLocationId, helpUsed: state.helpCount > 0 });
   state.helpCount = 0;
   const btn = document.getElementById('btn-c' + choiceNum);
   btn.classList.add(isCorrect ? 'correct' : 'wrong');
@@ -1314,14 +1295,14 @@ function checkAnswer(choiceNum) {
 
 function showFeedback(q, isCorrect) {
   document.getElementById('fb-icon').textContent = isCorrect ? '🎉' : '🤔';
-  const namePrefix = state.name ? `${state.name}야! ` : '';
-  document.getElementById('fb-title').textContent = isCorrect ? `${namePrefix}정답이에요!` : '괜찮아요! 다시 생각해봐요';
+  const namePrefix = state.name ? `${studentName()}, ` : '';
+  document.getElementById('fb-title').textContent = isCorrect ? `${namePrefix}정답이에요!` : '괜찮아요! 다시 생각해 봐요';
   document.getElementById('fb-title').className = `text-3xl font-bold mb-3 font-title ${isCorrect ? 'text-green-600' : 'text-orange-500'}`;
   document.getElementById('fb-desc').textContent = isCorrect ? q.f : q.x;
   const btn = document.getElementById('fb-action');
   btn.className = `btn-3d ${isCorrect ? 'bg-green-500 border-green-700' : 'bg-orange-500 border-orange-700'} text-white w-full text-2xl py-3`;
   if (!isCorrect) {
-    btn.textContent = '🔄 다시 해볼래요!';
+    btn.textContent = '🔄 다시 해 볼래요!';
     btn.onclick = () => {
       document.getElementById('modal-feedback').classList.remove('active');
       state.answers.pop();
@@ -1333,7 +1314,8 @@ function showFeedback(q, isCorrect) {
       state.isProcessing = false;
     };
   } else {
-    btn.textContent = state.questionIndex + 1 >= state.questionCount ? '🏁 모두 끝!' : '▶ 다음 문제';
+    const isLast = state.currentQIndex + 1 >= state.currentLocationQs.length;
+    btn.textContent = isLast ? '🏁 장소 완료!' : '▶ 다음 문제';
     btn.onclick = () => {
       document.getElementById('modal-feedback').classList.remove('active');
       proceedAfterFeedback();
@@ -1344,276 +1326,274 @@ function showFeedback(q, isCorrect) {
 }
 
 function proceedAfterFeedback() {
-  state.questionIndex++;
-  updateMapProgress();
-  const shouldMidRecord = (
-    (state.questionCount === 5 && state.questionIndex === 5) ||
-    (state.questionCount === 10 && (state.questionIndex === 5 || state.questionIndex === 10))
-  );
-  if (shouldMidRecord) { startMidRecording(); return; }
-  if (state.questionIndex >= state.questionCount) { goToFinalRecord(); }
-  else { renderQuestion(); }
+  state.currentQIndex++;
+  if (state.currentQIndex >= state.currentLocationQs.length) {
+    // 이 장소 완료
+    completeLocation();
+  } else {
+    renderQuestion();
+  }
 }
 
-function exitQuiz() {
-  if (confirm('정말 나갈까요? 진행 상황이 사라져요.')) location.reload();
+function completeLocation() {
+  state.completedLocations.add(state.currentLocationId);
+  const locName = missions[state.currentLocationId].name;
+  // 완료 축하
+  confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+  if (!state.isMuted) speakText(`${locName} 탐험 완료! 잘했어요!`);
+  
+  // 모든 장소 완료 확인
+  if (state.completedLocations.size >= LOCATION_ORDER.length) {
+    setTimeout(() => goToPostRecord(), 1500);
+  } else {
+    setTimeout(() => { showScreen('map'); renderMissionSpots(); updateMapProgress(); }, 1200);
+  }
 }
 
-// 중간 녹음
-function startMidRecording() {
-  showScreen('mid-record');
-  const midNum = state.midRecordings.length + 1;
-  const totalMid = state.questionCount === 5 ? 1 : 2;
-  document.getElementById('mid-record-prompt-num').textContent = `[중간 녹음 ${midNum}/${totalMid}]`;
-  document.getElementById('mid-transcript').textContent = '🗣️ 말한 내용이 여기에 나와요';
-  document.getElementById('mid-transcript').classList.remove('recording');
-  document.getElementById('mid-keyboard').value = '';
-  document.getElementById('mid-after').classList.add('hidden');
-  document.getElementById('mid-rec-btn').classList.remove('hidden');
-  document.getElementById('mid-rec-btn').innerHTML = '🎤 녹음 시작';
-  document.getElementById('mid-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
-  document.getElementById('mid-waves').style.display = 'none';
-  resetStarRating('mid-stars');
-  document.getElementById('mid-continue-btn').disabled = true;
-  document.getElementById('mid-continue-btn').textContent = '▶ 계속하기';
-  document.getElementById('mid-keyboard-submit').disabled = true;
-  if (!state.isMuted) setTimeout(() => speakText(`${state.name}야, 잠깐! 지금까지 배운 학교 규칙 중 하나를 골라 말해볼까?`), 500);
+function exitToMap() {
+  if (confirm('이 장소 탐험을 그만두고 지도로 돌아갈까요? (이 장소 진행은 사라져요)')) {
+    // 이 장소에 대한 미완료 답변 제거
+    state.answers = state.answers.filter(a => a.missionId !== state.currentLocationId);
+    showScreen('map');
+    renderMissionSpots();
+    updateMapProgress();
+  }
 }
 
-let midRecorder = null;
-let midChunks = [];
-let midTranscriptText = '';
-let isMidRecording = false;
+// ===== 사전 녹음 =====
+let preRecorder = null;
+let preChunks = [];
+let preTranscriptText = '';
+let isPreRecording = false;
 
-async function toggleMidRecording() {
-  if (!isMidRecording) await startMidRec();
-  else stopMidRec();
+async function togglePreRecording() {
+  if (!isPreRecording) await startPreRec();
+  else stopPreRec();
 }
 
-async function startMidRec() {
+async function startPreRec() {
   initAudio();
   if (!state.mediaStream) {
     try { state.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
     catch(e) { alert('마이크가 필요해요!'); return; }
   }
-  midChunks = [];
-  midTranscriptText = '';
-  isMidRecording = true;
-  midRecorder = new MediaRecorder(state.mediaStream, { mimeType: 'audio/webm' });
-  midRecorder.ondataavailable = e => { if (e.data.size > 0) midChunks.push(e.data); };
-  midRecorder.onstop = onMidRecStop;
-  midRecorder.start();
-  startSpeechRecognition('mid');
-  document.getElementById('mid-rec-btn').innerHTML = '⏹️ 녹음 멈춤';
-  document.getElementById('mid-rec-btn').className = 'btn-3d bg-slate-600 border-slate-800 text-white w-full text-2xl py-3 mb-2 animate-pulse-ring';
-  document.getElementById('mid-waves').style.display = 'flex';
-  document.getElementById('mid-transcript').classList.add('recording');
-  document.getElementById('mid-transcript').textContent = '🎙️ 듣고 있어요...';
+  preChunks = [];
+  preTranscriptText = '';
+  isPreRecording = true;
+  preRecorder = new MediaRecorder(state.mediaStream, { mimeType: 'audio/webm' });
+  preRecorder.ondataavailable = e => { if (e.data.size > 0) preChunks.push(e.data); };
+  preRecorder.onstop = onPreRecStop;
+  preRecorder.start();
+  startSpeechRecognition('pre');
+  document.getElementById('pre-rec-btn').innerHTML = '⏹️ 녹음 멈춤';
+  document.getElementById('pre-rec-btn').className = 'btn-3d bg-slate-600 border-slate-800 text-white w-full text-2xl py-3 mb-2 animate-pulse-ring';
+  document.getElementById('pre-waves').style.display = 'flex';
+  document.getElementById('pre-transcript').classList.add('recording');
+  document.getElementById('pre-transcript').textContent = '🎙️ 듣고 있어요...';
 }
 
-function stopMidRec() {
-  if (midRecorder && isMidRecording) {
-    midRecorder.stop();
-    isMidRecording = false;
+function stopPreRec() {
+  if (preRecorder && isPreRecording) {
+    preRecorder.stop();
+    isPreRecording = false;
     stopSpeechRecognition();
-    document.getElementById('mid-waves').style.display = 'none';
+    document.getElementById('pre-waves').style.display = 'none';
   }
 }
 
-function onMidRecStop() {
-  const blob = new Blob(midChunks, { type: 'audio/webm' });
+function onPreRecStop() {
+  const blob = new Blob(preChunks, { type: 'audio/webm' });
   const hasAudio = blob.size > 1000;
-  document.getElementById('mid-audio').src = URL.createObjectURL(blob);
+  document.getElementById('pre-audio').src = URL.createObjectURL(blob);
   const reader = new FileReader();
-  reader.onloadend = () => { state._lastMidBlob = reader.result; };
+  reader.onloadend = () => { state._lastPreBlob = reader.result; };
   reader.readAsDataURL(blob);
-  document.getElementById('mid-rec-btn').classList.add('hidden');
-  document.getElementById('mid-after').classList.remove('hidden');
-  document.getElementById('mid-transcript').classList.remove('recording');
-  const recognized = midTranscriptText.trim();
-  const typed = document.getElementById('mid-keyboard').value.trim();
+  document.getElementById('pre-rec-btn').classList.add('hidden');
+  document.getElementById('pre-after').classList.remove('hidden');
+  document.getElementById('pre-transcript').classList.remove('recording');
+  const recognized = preTranscriptText.trim();
+  const typed = document.getElementById('pre-keyboard').value.trim();
   let displayText;
   if (recognized) displayText = '✏️ ' + recognized;
   else if (typed) displayText = '✏️ ' + typed;
   else if (hasAudio) displayText = '🎵 목소리는 잘 녹음됐어요! (글자 변환은 안 됐지만 괜찮아요)';
-  else displayText = '⚠️ 녹음이 안 됐어요. 다시 시도해보세요';
-  document.getElementById('mid-transcript').textContent = displayText;
-  if (!state.isMuted) setTimeout(() => speakText('녹음을 들어보고 별점을 매겨보세요'), 500);
+  else displayText = '⚠️ 녹음이 안 됐어요. 다시 시도해 보세요';
+  document.getElementById('pre-transcript').textContent = displayText;
+  if (!state.isMuted) setTimeout(() => speakText('녹음을 들어 보고 별점을 매겨 보세요'), 500);
 }
 
-function rateMidRecording(stars) {
-  state._lastMidStars = stars;
-  document.querySelectorAll('#mid-stars .star-btn').forEach((b, i) => {
+function ratePreRecording(stars) {
+  state._lastPreStars = stars;
+  document.querySelectorAll('#pre-stars .star-btn').forEach((b, i) => {
     if (i < stars) b.classList.add('filled');
     else b.classList.remove('filled');
   });
-  const continueBtn = document.getElementById('mid-continue-btn');
+  const continueBtn = document.getElementById('pre-continue-btn');
   if (stars <= 3) {
     continueBtn.disabled = true;
     continueBtn.textContent = '⚠️ 별 4개 이상';
-    if (!state.isMuted) speakText('별 3개 이하예요. 다시 녹음해볼까요?');
+    if (!state.isMuted) speakText('별 3개 이하예요. 다시 녹음해 볼까요?');
   } else {
     continueBtn.disabled = false;
-    continueBtn.textContent = '▶ 계속하기';
-    if (!state.isMuted) speakText('잘했어요!');
+    continueBtn.textContent = '🗺️ 탐험 시작!';
+    if (!state.isMuted) speakText('잘했어요! 이제 탐험을 시작해요');
   }
 }
 
-function midReRecord() {
-  document.getElementById('mid-after').classList.add('hidden');
-  document.getElementById('mid-rec-btn').classList.remove('hidden');
-  document.getElementById('mid-rec-btn').innerHTML = '🎤 녹음 시작';
-  document.getElementById('mid-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
-  document.getElementById('mid-transcript').textContent = '🗣️ 말한 내용이 여기에 나와요';
-  document.getElementById('mid-keyboard').value = '';
-  resetStarRating('mid-stars');
-  midTranscriptText = '';
+function preReRecord() {
+  document.getElementById('pre-after').classList.add('hidden');
+  document.getElementById('pre-rec-btn').classList.remove('hidden');
+  document.getElementById('pre-rec-btn').innerHTML = '🎤 녹음 시작';
+  document.getElementById('pre-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
+  document.getElementById('pre-transcript').textContent = '🗣️ 내가 한 말이 여기에 나와요';
+  document.getElementById('pre-keyboard').value = '';
+  resetStarRating('pre-stars');
+  preTranscriptText = '';
 }
 
-function midContinue() {
-  state.midRecordings.push({
-    text: midTranscriptText.trim() || document.getElementById('mid-keyboard').value.trim() || '',
-    audio: state._lastMidBlob,
-    stars: state._lastMidStars || 5,
-    index: state.questionIndex
-  });
-  if (state.questionIndex >= state.questionCount) { goToFinalRecord(); }
-  else { showScreen('quiz'); renderQuestion(); }
+function preContinue() {
+  state.preRecording = {
+    text: preTranscriptText.trim() || document.getElementById('pre-keyboard').value.trim() || '',
+    audio: state._lastPreBlob,
+    stars: state._lastPreStars || 5
+  };
+  goToMap();
 }
 
-function onMidKeyboardInput() {
-  const text = document.getElementById('mid-keyboard').value.trim();
-  document.getElementById('mid-keyboard-submit').disabled = text.length === 0;
+function onPreKeyboardInput() {
+  const text = document.getElementById('pre-keyboard').value.trim();
+  document.getElementById('pre-keyboard-submit').disabled = text.length === 0;
 }
 
-function submitMidByKeyboard() {
-  const text = document.getElementById('mid-keyboard').value.trim();
+function submitPreByKeyboard() {
+  const text = document.getElementById('pre-keyboard').value.trim();
   if (!text) return;
-  state.midRecordings.push({ text: text, audio: null, stars: 5, index: state.questionIndex });
-  if (state.questionIndex >= state.questionCount) { goToFinalRecord(); }
-  else { showScreen('quiz'); renderQuestion(); }
+  state.preRecording = { text: text, audio: null, stars: 5 };
+  goToMap();
 }
 
-// 최종 녹음
-function goToFinalRecord() {
-  showScreen('final-record');
-  document.getElementById('final-transcript').textContent = '🗣️ 내가 한 말이 여기에 나와요';
-  document.getElementById('final-keyboard').value = '';
-  document.getElementById('final-after').classList.add('hidden');
-  document.getElementById('final-rec-btn').classList.remove('hidden');
-  document.getElementById('final-rec-btn').innerHTML = '🎤 녹음 시작';
-  document.getElementById('final-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
-  document.getElementById('final-waves').style.display = 'none';
-  resetStarRating('final-stars');
-  document.getElementById('final-keyboard-submit').disabled = true;
-  if (!state.isMuted) setTimeout(() => speakText(`${state.name}야, 오늘 배운 학교 규칙 중에서 친구들에게 알려주고 싶은 것을 말해봐!`), 500);
+// ===== 사후 녹음 =====
+function goToPostRecord() {
+  showScreen('post-record');
+  document.getElementById('post-transcript').textContent = '🗣️ 내가 한 말이 여기에 나와요';
+  document.getElementById('post-keyboard').value = '';
+  document.getElementById('post-after').classList.add('hidden');
+  document.getElementById('post-rec-btn').classList.remove('hidden');
+  document.getElementById('post-rec-btn').innerHTML = '🎤 녹음 시작';
+  document.getElementById('post-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
+  document.getElementById('post-waves').style.display = 'none';
+  resetStarRating('post-stars');
+  document.getElementById('post-keyboard-submit').disabled = true;
+  // 큰 축하
+  confetti({ particleCount: 300, spread: 120, origin: { y: 0.4 } });
+  if (!state.isMuted) setTimeout(() => speakText(`${studentName()}, 6장소 모두 탐험 완료! 오늘 배운 학교 규칙 중에서 친구들에게 알려주고 싶은 것을 말해 보세요!`), 700);
 }
 
-let finalRecorder = null;
-let finalChunks = [];
-let finalTranscriptText = '';
-let isFinalRecording = false;
+let postRecorder = null;
+let postChunks = [];
+let postTranscriptText = '';
+let isPostRecording = false;
 
-async function toggleFinalRecording() {
-  if (!isFinalRecording) await startFinalRec();
-  else stopFinalRec();
+async function togglePostRecording() {
+  if (!isPostRecording) await startPostRec();
+  else stopPostRec();
 }
 
-async function startFinalRec() {
+async function startPostRec() {
   initAudio();
   if (!state.mediaStream) {
     try { state.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
     catch(e) { alert('마이크가 필요해요'); return; }
   }
-  finalChunks = [];
-  finalTranscriptText = '';
-  isFinalRecording = true;
-  finalRecorder = new MediaRecorder(state.mediaStream, { mimeType: 'audio/webm' });
-  finalRecorder.ondataavailable = e => { if (e.data.size > 0) finalChunks.push(e.data); };
-  finalRecorder.onstop = onFinalRecStop;
-  finalRecorder.start();
-  startSpeechRecognition('final');
-  document.getElementById('final-rec-btn').innerHTML = '⏹️ 녹음 멈춤';
-  document.getElementById('final-rec-btn').className = 'btn-3d bg-slate-600 border-slate-800 text-white w-full text-2xl py-3 mb-2 animate-pulse-ring';
-  document.getElementById('final-waves').style.display = 'flex';
-  document.getElementById('final-transcript').classList.add('recording');
-  document.getElementById('final-transcript').textContent = '🎙️ 듣고 있어요...';
+  postChunks = [];
+  postTranscriptText = '';
+  isPostRecording = true;
+  postRecorder = new MediaRecorder(state.mediaStream, { mimeType: 'audio/webm' });
+  postRecorder.ondataavailable = e => { if (e.data.size > 0) postChunks.push(e.data); };
+  postRecorder.onstop = onPostRecStop;
+  postRecorder.start();
+  startSpeechRecognition('post');
+  document.getElementById('post-rec-btn').innerHTML = '⏹️ 녹음 멈춤';
+  document.getElementById('post-rec-btn').className = 'btn-3d bg-slate-600 border-slate-800 text-white w-full text-2xl py-3 mb-2 animate-pulse-ring';
+  document.getElementById('post-waves').style.display = 'flex';
+  document.getElementById('post-transcript').classList.add('recording');
+  document.getElementById('post-transcript').textContent = '🎙️ 듣고 있어요...';
 }
 
-function stopFinalRec() {
-  if (finalRecorder && isFinalRecording) {
-    finalRecorder.stop();
-    isFinalRecording = false;
+function stopPostRec() {
+  if (postRecorder && isPostRecording) {
+    postRecorder.stop();
+    isPostRecording = false;
     stopSpeechRecognition();
-    document.getElementById('final-waves').style.display = 'none';
+    document.getElementById('post-waves').style.display = 'none';
   }
 }
 
-function onFinalRecStop() {
-  const blob = new Blob(finalChunks, { type: 'audio/webm' });
+function onPostRecStop() {
+  const blob = new Blob(postChunks, { type: 'audio/webm' });
   const hasAudio = blob.size > 1000;
-  document.getElementById('final-audio').src = URL.createObjectURL(blob);
+  document.getElementById('post-audio').src = URL.createObjectURL(blob);
   const reader = new FileReader();
-  reader.onloadend = () => { state._lastFinalBlob = reader.result; };
+  reader.onloadend = () => { state._lastPostBlob = reader.result; };
   reader.readAsDataURL(blob);
-  document.getElementById('final-rec-btn').classList.add('hidden');
-  document.getElementById('final-after').classList.remove('hidden');
-  document.getElementById('final-transcript').classList.remove('recording');
-  const recognized = finalTranscriptText.trim();
-  const typed = document.getElementById('final-keyboard').value.trim();
+  document.getElementById('post-rec-btn').classList.add('hidden');
+  document.getElementById('post-after').classList.remove('hidden');
+  document.getElementById('post-transcript').classList.remove('recording');
+  const recognized = postTranscriptText.trim();
+  const typed = document.getElementById('post-keyboard').value.trim();
   let displayText;
   if (recognized) displayText = '✏️ ' + recognized;
   else if (typed) displayText = '✏️ ' + typed;
   else if (hasAudio) displayText = '🎵 목소리는 잘 녹음됐어요! (글자 변환은 안 됐지만 괜찮아요)';
-  else displayText = '⚠️ 녹음이 안 됐어요. 다시 시도해보세요';
-  document.getElementById('final-transcript').textContent = displayText;
-  if (!state.isMuted) setTimeout(() => speakText('녹음을 들어보고 별점을 매겨주세요'), 500);
+  else displayText = '⚠️ 녹음이 안 됐어요. 다시 시도해 보세요';
+  document.getElementById('post-transcript').textContent = displayText;
+  if (!state.isMuted) setTimeout(() => speakText('녹음을 들어 보고 별점을 매겨 주세요'), 500);
 }
 
-function rateFinalRecording(stars) {
-  state._lastFinalStars = stars;
-  document.querySelectorAll('#final-stars .star-btn').forEach((b, i) => {
+function ratePostRecording(stars) {
+  state._lastPostStars = stars;
+  document.querySelectorAll('#post-stars .star-btn').forEach((b, i) => {
     if (i < stars) b.classList.add('filled');
     else b.classList.remove('filled');
   });
-  const submitBtn = document.getElementById('final-submit-btn');
+  const submitBtn = document.getElementById('post-submit-btn');
   if (stars <= 3) {
     submitBtn.disabled = true;
     submitBtn.textContent = '⚠️ 별 4개 이상';
-    if (!state.isMuted) speakText('별 3개 이하예요. 다시 녹음해볼까요?');
+    if (!state.isMuted) speakText('별 3개 이하예요. 다시 녹음해 볼까요?');
   } else {
     submitBtn.disabled = false;
     submitBtn.textContent = '📤 제출하기';
-    if (!state.isMuted) speakText('잘했어요! 제출해주세요');
+    if (!state.isMuted) speakText('잘했어요! 제출해 주세요');
   }
 }
 
-function finalReRecord() {
-  document.getElementById('final-after').classList.add('hidden');
-  document.getElementById('final-rec-btn').classList.remove('hidden');
-  document.getElementById('final-rec-btn').innerHTML = '🎤 녹음 시작';
-  document.getElementById('final-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
-  document.getElementById('final-transcript').textContent = '🗣️ 내가 한 말이 여기에 나와요';
-  document.getElementById('final-keyboard').value = '';
-  resetStarRating('final-stars');
-  finalTranscriptText = '';
+function postReRecord() {
+  document.getElementById('post-after').classList.add('hidden');
+  document.getElementById('post-rec-btn').classList.remove('hidden');
+  document.getElementById('post-rec-btn').innerHTML = '🎤 녹음 시작';
+  document.getElementById('post-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
+  document.getElementById('post-transcript').textContent = '🗣️ 내가 한 말이 여기에 나와요';
+  document.getElementById('post-keyboard').value = '';
+  resetStarRating('post-stars');
+  postTranscriptText = '';
 }
 
-function onFinalKeyboardInput() {
-  const text = document.getElementById('final-keyboard').value.trim();
-  document.getElementById('final-keyboard-submit').disabled = text.length === 0;
+function onPostKeyboardInput() {
+  const text = document.getElementById('post-keyboard').value.trim();
+  document.getElementById('post-keyboard-submit').disabled = text.length === 0;
 }
 
-function submitFinalByKeyboard() {
-  const text = document.getElementById('final-keyboard').value.trim();
+function submitPostByKeyboard() {
+  const text = document.getElementById('post-keyboard').value.trim();
   if (!text) return;
-  finalTranscriptText = text;
-  state._lastFinalBlob = null;
-  state._lastFinalStars = 5;
+  postTranscriptText = text;
+  state._lastPostBlob = null;
+  state._lastPostStars = 5;
   submitAll();
 }
 
-// 음성 인식
+// ===== 음성 인식 =====
 function initSpeechRecognition() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) { console.warn('음성 인식 미지원'); return; }
@@ -1639,12 +1619,12 @@ function startSpeechRecognition(target) {
       if (e.results[i].isFinal) finalText += t + ' ';
       else interim += t;
     }
-    if (target === 'mid') {
-      midTranscriptText += finalText;
-      transcriptEl.innerHTML = '🎙️ ' + midTranscriptText + ' <span class="interim">' + interim + '</span>';
+    if (target === 'pre') {
+      preTranscriptText += finalText;
+      transcriptEl.innerHTML = '🎙️ ' + preTranscriptText + ' <span class="interim">' + interim + '</span>';
     } else {
-      finalTranscriptText += finalText;
-      transcriptEl.innerHTML = '🎙️ ' + finalTranscriptText + ' <span class="interim">' + interim + '</span>';
+      postTranscriptText += finalText;
+      transcriptEl.innerHTML = '🎙️ ' + postTranscriptText + ' <span class="interim">' + interim + '</span>';
     }
   };
   state.recognition.onerror = e => {
@@ -1652,7 +1632,7 @@ function startSpeechRecognition(target) {
     if (e.error === 'not-allowed') transcriptEl.textContent = '⚠️ 마이크 권한이 필요해요';
   };
   state.recognition.onend = () => {
-    const isRecording = (target === 'mid' && isMidRecording) || (target === 'final' && isFinalRecording);
+    const isRecording = (target === 'pre' && isPreRecording) || (target === 'post' && isPostRecording);
     if (isRecording) {
       try { state.recognition.start(); } catch(e) {}
     }
@@ -1686,15 +1666,15 @@ function popSticker(emoji) {
 }
 
 async function submitAll() {
-  state.finalRecording = {
-    text: finalTranscriptText.trim() || document.getElementById('final-keyboard').value.trim() || '',
-    audio: state._lastFinalBlob,
-    stars: state._lastFinalStars || 5
+  state.postRecording = {
+    text: postTranscriptText.trim() || document.getElementById('post-keyboard').value.trim() || '',
+    audio: state._lastPostBlob,
+    stars: state._lastPostStars || 5
   };
-  document.getElementById('final-after').classList.add('hidden');
+  document.getElementById('post-after').classList.add('hidden');
   document.getElementById('submit-overlay').classList.remove('hidden');
   const results = {};
-  Object.keys(missions).forEach(mId => {
+  LOCATION_ORDER.forEach(mId => {
     const mAns = state.answers.filter(a => a.missionId === mId);
     if (mAns.length === 0) results[mId] = '미응시';
     else if (mAns.every(a => a.correct)) results[mId] = '통과';
@@ -1703,15 +1683,18 @@ async function submitAll() {
   const payload = {
     name: state.name, grade: state.grade, cls: state.cls,
     character: state.characterName,
-    questionCount: state.questionCount,
+    questionCount: state.answers.length,
     helpCount: state.answers.filter(a => a.helpUsed).length,
     accuracy: state.answers.length > 0 ? Math.round((state.answers.filter(a => a.correct).length / state.answers.length) * 100) : 0,
+    completedLocations: Array.from(state.completedLocations),
     results: results,
     answers: state.answers,
-    midRecordings: state.midRecordings.map(r => ({ text: r.text, stars: r.stars, audio: r.audio })),
-    audioBase64: state.finalRecording.audio,
-    finalText: state.finalRecording.text,
-    finalStars: state.finalRecording.stars
+    preRecording: state.preRecording ? { text: state.preRecording.text, stars: state.preRecording.stars, audio: state.preRecording.audio } : null,
+    audioBase64: state.postRecording.audio,
+    finalText: state.postRecording.text,
+    finalStars: state.postRecording.stars,
+    // 호환 (기존 시트 구조)
+    midRecordings: state.preRecording ? [state.preRecording] : []
   };
   if (GAS_API_URL && GAS_API_URL.trim() !== '') {
     try { await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) }); }
@@ -1727,24 +1710,26 @@ function showListenBack() {
   showScreen('listen-back');
   const list = document.getElementById('recording-list');
   list.innerHTML = '';
-  const hasAny = state.midRecordings.some(r => r.audio) || state.finalRecording?.audio;
+  const hasAny = state.preRecording?.audio || state.postRecording?.audio;
   if (!hasAny) { goToReport(); return; }
-  state.midRecordings.forEach((rec, i) => {
-    if (!rec.audio) return;
+  
+  if (state.preRecording?.audio) {
     const card = document.createElement('div');
-    card.className = 'replay-card bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200';
-    const stars = '⭐'.repeat(Math.max(0, Math.min(5, rec.stars || 0)));
-    card.innerHTML = `<div class="flex items-center justify-between mb-1 gap-2 flex-wrap"><div class="flex items-center gap-2"><span class="text-2xl">🎙️</span><h3 class="text-lg font-bold text-rose-600 font-title">중간 녹음 ${i + 1}</h3></div><span class="text-xl">${stars}</span></div><p class="text-base font-bold text-slate-700 mb-1 font-cute">"${rec.text || '(텍스트 없음)'}"</p><audio src="${rec.audio}" controls preload="none"></audio>`;
-    list.appendChild(card);
-  });
-  if (state.finalRecording?.audio) {
-    const card = document.createElement('div');
-    card.className = 'replay-card bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-300';
-    const stars = '⭐'.repeat(Math.max(0, Math.min(5, state.finalRecording.stars || 0)));
-    card.innerHTML = `<div class="flex items-center justify-between mb-1 gap-2 flex-wrap"><div class="flex items-center gap-2"><span class="text-2xl">🌟</span><h3 class="text-lg font-bold text-emerald-600 font-title">최종 녹음</h3></div><span class="text-xl">${stars}</span></div><p class="text-base font-bold text-slate-700 mb-1 font-cute">"${state.finalRecording.text || '(텍스트 없음)'}"</p><audio src="${state.finalRecording.audio}" controls preload="none"></audio>`;
+    card.className = 'replay-card bg-gradient-to-br from-sky-50 to-cyan-50 border-sky-300';
+    const stars = '⭐'.repeat(Math.max(0, Math.min(5, state.preRecording.stars || 0)));
+    card.innerHTML = `<div class="flex items-center justify-between mb-2 gap-2 flex-wrap"><div class="flex items-center gap-2"><span class="text-3xl">🌱</span><h3 class="text-2xl font-bold text-sky-600 font-title">탐험 출발 다짐</h3></div><span class="text-2xl">${stars}</span></div><p class="text-2xl font-bold text-slate-800 mb-2 font-title leading-snug">"${state.preRecording.text || '(텍스트 없음)'}"</p><audio src="${state.preRecording.audio}" controls preload="none"></audio>`;
     list.appendChild(card);
   }
-  if (!state.isMuted) setTimeout(() => speakText(`${state.name}야, 오늘 녹음한 너의 목소리를 들어볼까?`), 500);
+  
+  if (state.postRecording?.audio) {
+    const card = document.createElement('div');
+    card.className = 'replay-card bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-300';
+    const stars = '⭐'.repeat(Math.max(0, Math.min(5, state.postRecording.stars || 0)));
+    card.innerHTML = `<div class="flex items-center justify-between mb-2 gap-2 flex-wrap"><div class="flex items-center gap-2"><span class="text-3xl">🎉</span><h3 class="text-2xl font-bold text-emerald-600 font-title">탐험 마무리</h3></div><span class="text-2xl">${stars}</span></div><p class="text-2xl font-bold text-slate-800 mb-2 font-title leading-snug">"${state.postRecording.text || '(텍스트 없음)'}"</p><audio src="${state.postRecording.audio}" controls preload="none"></audio>`;
+    list.appendChild(card);
+  }
+  
+  if (!state.isMuted) setTimeout(() => speakText(`${studentName()}, 오늘 녹음한 다짐과 소감을 들어 볼까요?`), 500);
 }
 
 function goToReport() {
@@ -1755,13 +1740,14 @@ function goToReport() {
   renderReportStickers();
   confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
   playStickerSound();
-  if (!state.isMuted) setTimeout(() => speakText(`${state.name}야, 축하해! 정말 멋진 탐험가야!`), 800);
+  if (!state.isMuted) setTimeout(() => speakText(`${studentName()}, 축하해요! 6장소 모두 탐험한 진짜 탐험가예요!`), 800);
 }
 
 function renderTrafficLights() {
   const container = document.getElementById('traffic-lights');
   container.innerHTML = '';
-  Object.entries(missions).forEach(([id, m]) => {
+  LOCATION_ORDER.forEach(id => {
+    const m = missions[id];
     const mAns = state.answers.filter(a => a.missionId === id);
     let lightBg = '#cbd5e1';
     if (mAns.length === 0) lightBg = '#cbd5e1';
@@ -1769,7 +1755,7 @@ function renderTrafficLights() {
     else lightBg = '#f59e0b';
     const card = document.createElement('div');
     card.className = 'bg-white p-2 rounded-xl border-2 border-pink-100 flex flex-col items-center';
-    card.innerHTML = `<div class="w-9 h-9 rounded-full mb-1" style="background:${lightBg};box-shadow: 0 0 12px ${lightBg}80"></div><div class="text-2xl">${m.icon}</div><div class="text-sm font-bold font-cute">${m.name}</div>`;
+    card.innerHTML = `<div class="w-9 h-9 rounded-full mb-1" style="background:${lightBg};box-shadow: 0 0 12px ${lightBg}80"></div><div class="text-2xl">${m.icon}</div><div class="text-sm font-bold font-title">${m.name}</div>`;
     container.appendChild(card);
   });
 }
@@ -1778,7 +1764,8 @@ function renderRadar() {
   const ctx = document.getElementById('radar-chart');
   if (!ctx) return;
   const labels = [], data = [];
-  Object.entries(missions).forEach(([id, m]) => {
+  LOCATION_ORDER.forEach(id => {
+    const m = missions[id];
     labels.push(m.name);
     const mAns = state.answers.filter(a => a.missionId === id);
     if (mAns.length === 0) data.push(40);
@@ -1794,7 +1781,7 @@ function renderRadar() {
 
 function renderReportStickers() {
   const c = document.getElementById('report-stickers');
-  c.innerHTML = state.stickers.map(s => `<span class="text-4xl animate-pop-in">${s}</span>`).join('') || '<span class="text-base text-slate-400 font-cute">아직 모은 스티커가 없어요</span>';
+  c.innerHTML = state.stickers.map(s => `<span class="text-4xl animate-pop-in">${s}</span>`).join('') || '<span class="text-base text-slate-400 font-title">아직 모은 스티커가 없어요</span>';
 }
 
 function downloadCertificate() {
@@ -1814,12 +1801,13 @@ function downloadCertificate() {
   ctx.fillText('위대한 탐험가 상', 400, 290);
   ctx.fillStyle = '#333';
   ctx.font = 'bold 50px "Jua", sans-serif';
-  ctx.fillText(`${state.name} 어린이`, 400, 400);
-  ctx.font = '32px sans-serif'; ctx.fillStyle = '#475569';
-  ctx.fillText('학교생활의 소중한 규칙을', 400, 490);
-  ctx.fillText('훌륭하게 익히고 실천하였기에', 400, 540);
-  ctx.fillText('이 상장을 수여합니다', 400, 590);
-  ctx.font = 'bold 28px sans-serif'; ctx.fillStyle = '#0369a1';
+  ctx.fillText(`${state.name} 학생`, 400, 400);
+  ctx.font = '30px sans-serif'; ctx.fillStyle = '#475569';
+  ctx.fillText('학교 곳곳을 탐험하며 소중한 규칙을', 400, 480);
+  ctx.fillText('훌륭하게 익히고 실천하였기에', 400, 525);
+  ctx.fillText('이 상장을 수여합니다', 400, 570);
+  ctx.font = 'bold 26px sans-serif'; ctx.fillStyle = '#0369a1';
+  ctx.fillText(`✨ 탐험한 장소: ${state.completedLocations.size}/6 ✨`, 400, 650);
   ctx.fillText(`모은 스티커: ${state.stickers.length}개`, 400, 690);
   ctx.font = '100px Arial';
   ctx.fillText(state.character || '⭐', 400, 820);
