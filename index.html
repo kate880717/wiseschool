@@ -3,1559 +3,1838 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>안전탐험</title>
+<title>슬기로운 학교생활 🏫</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@18.3.1",
-    "react/": "https://esm.sh/react@18.3.1/",
-    "react-dom": "https://esm.sh/react-dom@18.3.1",
-    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-    "framer-motion": "https://esm.sh/framer-motion@11.11.1?deps=react@18.3.1,react-dom@18.3.1",
-    "lucide-react": "https://esm.sh/lucide-react@0.454.0?deps=react@18.3.1,react-dom@18.3.1"
-  }
-}
-</script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Hi+Melody&family=Jua&family=Single+Day&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&family=Do+Hyeon&family=Gowun+Dodum&family=Hi+Melody&family=Yeon+Sung&family=Black+Han+Sans&display=swap');
-@font-face {
-  font-family: 'Cafe24Ssurround';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/Cafe24Ssurround.woff') format('woff');
-  font-display: swap;
-}
-* { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-html, body {
-  margin: 0; padding: 0;
-  width: 100%; height: 100%;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-body {
-  font-family: 'Cafe24Ssurround','Gowun Dodum','Jua','Gaegu','맑은 고딕',sans-serif;
-  background:
-    radial-gradient(circle at 15% 25%, rgba(255,192,203,0.45) 0%, transparent 45%),
-    radial-gradient(circle at 85% 70%, rgba(255,217,61,0.4) 0%, transparent 45%),
-    radial-gradient(circle at 50% 90%, rgba(176,224,230,0.35) 0%, transparent 45%),
-    linear-gradient(135deg,#FFE5F1 0%,#FFF9E5 50%,#E5F4FF 100%);
+:root {
+  --font-cute: 'Hi Melody', 'Gaegu', 'Apple SD Gothic Neo', sans-serif;
+  --font-body: 'Gowun Dodum', 'Jua', sans-serif;
+  --font-title: 'Jua', 'Do Hyeon', sans-serif;
+  --font-chunky: 'Do Hyeon', 'Black Han Sans', sans-serif;
+  --rainbow: linear-gradient(135deg, #ff6b9d 0%, #ffa552 20%, #ffd95a 40%, #5ddbb8 60%, #7cc5ff 80%, #c5a3ff 100%);
+  --rainbow-soft: linear-gradient(135deg, #ffe0ec 0%, #fff0e0 25%, #fff8d0 50%, #d0f5e8 75%, #e8d5ff 100%);
 }
 
-/* ===== ⭐ 반응형 스케일 디자인 (모든 기기에서 동일 레이아웃, 잘림/스크롤 없음) ===== */
-#scaler-wrap {
+* { font-family: var(--font-body); box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+body {
+  background: var(--rainbow-soft);
+  background-attachment: fixed;
+  position: relative;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  color: #475569;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(circle at 12% 20%, rgba(255, 182, 193, 0.5) 0%, transparent 12%),
+    radial-gradient(circle at 88% 12%, rgba(255, 255, 150, 0.5) 0%, transparent 10%),
+    radial-gradient(circle at 50% 85%, rgba(180, 220, 255, 0.5) 0%, transparent 14%),
+    radial-gradient(circle at 92% 65%, rgba(255, 200, 230, 0.4) 0%, transparent 10%),
+    radial-gradient(circle at 8% 88%, rgba(220, 200, 255, 0.5) 0%, transparent 11%);
+  pointer-events: none; z-index: 0;
+  animation: bg-drift 20s ease-in-out infinite;
+}
+@keyframes bg-drift { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-15px,10px); } }
+
+.sparkle-layer { position: fixed; inset: 0; pointer-events: none; z-index: 2; overflow: hidden; }
+.sparkle-layer span {
+  position: absolute;
+  font-size: 1.8rem; opacity: 0.45;
+  animation: drift 12s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.5));
+}
+@keyframes drift { 0% { transform: translate(0, 100vh) rotate(0deg); } 100% { transform: translate(50px, -100px) rotate(720deg); } }
+
+.stage {
   position: fixed; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
+  padding: clamp(0.5rem, 1.5vw, 1rem);
+  z-index: 10;
 }
-#scaler {
-  transform-origin: center center;
-  position: relative;
+.screen { display: none; width: 100%; height: 100%; }
+.screen.active {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
 }
-#root { width: 100%; height: 100%; }
 
-/* 폰트 유틸리티 */
-.font-cafe24 { font-family:'Cafe24Ssurround','Jua',sans-serif; }
-.font-gowun  { font-family:'Gowun Dodum','Jua',sans-serif; font-weight:700; }
-.font-jua    { font-family:'Jua','Cafe24Ssurround',sans-serif; }
-.font-gaegu  { font-family:'Gaegu',cursive; font-weight:700; }
-/* 형광펜 */
-.hi-yellow { background: linear-gradient(180deg, transparent 55%, #FFE066 55%); padding:0 4px; }
-.hi-pink   { background: linear-gradient(180deg, transparent 55%, #FFB7C5 55%); padding:0 4px; }
-.hi-blue   { background: linear-gradient(180deg, transparent 55%, #B5E2FA 55%); padding:0 4px; }
-.hi-green  { background: linear-gradient(180deg, transparent 55%, #B7E4C7 55%); padding:0 4px; }
-.hi-orange { background: linear-gradient(180deg, transparent 55%, #FFD8B0 55%); padding:0 4px; }
-/* 통통 3D 버튼 */
-.btn-cute {
-  border: 4px solid white; border-radius: 24px;
-  transition: transform 0.12s, box-shadow 0.12s;
+.card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(255,250,245,0.95));
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-radius: 2.5rem;
+  box-shadow:
+    0 25px 60px rgba(255, 107, 157, 0.18),
+    0 10px 30px rgba(124, 197, 255, 0.12),
+    inset 0 3px 0 rgba(255,255,255,0.95);
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%; max-width: 1100px;
+  max-height: 96vh;
+  display: flex; flex-direction: column;
+  position: relative; border: 6px solid white; margin: 0 auto;
+}
+.card-full {
+  height: 96vh;
+  height: 96dvh;
+  max-height: 96vh;
+  max-height: 96dvh;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+}
+.card:not(.card-full) { overflow: hidden; }
+
+.card::before {
+  content: '✨';
+  position: absolute; top: -18px; left: 25px;
+  font-size: 2.5rem;
+  animation: twinkle 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.5));
+  z-index: 5;
+}
+.card::after {
+  content: '🌸';
+  position: absolute; top: -15px; right: 30px;
+  font-size: 2.3rem;
+  animation: twinkle 2.5s ease-in-out 1s infinite;
+  filter: drop-shadow(0 4px 8px rgba(255, 192, 203, 0.5));
+  z-index: 5;
+}
+@keyframes twinkle { 0%,100% { transform: scale(1) rotate(0deg); opacity:1; } 50% { transform: scale(1.3) rotate(180deg); opacity:0.7; } }
+
+h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
+.font-cute { font-family: var(--font-cute) !important; }
+.font-title { font-family: var(--font-title) !important; }
+
+.text-rainbow {
+  background: var(--rainbow); background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  animation: rainbow-shift 4s linear infinite;
+  font-weight: bold;
+  text-shadow: 0 0 30px rgba(255, 192, 203, 0.3);
+}
+@keyframes rainbow-shift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+/* 균형 잡힌 텍스트 크기 - 저학년에 충분히 크되 빽빽하지 않게 */
+.txt-q { font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.4; font-family: var(--font-title); word-break: keep-all; overflow-wrap: break-word; }
+.txt-md { font-size: clamp(1.2rem, 2.4vw, 1.6rem); line-height: 1.5; word-break: keep-all; overflow-wrap: break-word; }
+.txt-lg { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-family: var(--font-title); word-break: keep-all; overflow-wrap: break-word; }
+.txt-hero { font-size: clamp(2.4rem, 5.5vw, 3.8rem); font-family: var(--font-chunky); word-break: keep-all; }
+
+.btn-3d {
+  border-radius: 2rem; font-weight: 700;
+  border-bottom-width: 8px; border-bottom-style: solid;
+  transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: inline-flex; align-items: center; justify-content: center;
+  gap: 0.5rem; padding: 0.85rem 1.5rem;
+  font-family: var(--font-title);
+  position: relative; overflow: hidden; cursor: pointer;
 }
-.btn-cute:active { transform: translateY(3px); }
-/* 배경 데코 */
-.bg-decor { position:absolute; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-.bg-decor > span { position:absolute; opacity:0.28; animation: bgFloat 8s ease-in-out infinite; }
-@keyframes bgFloat { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-15px) rotate(15deg); } }
-/* 흔들흔들 */
-.wiggle { animation: wiggle 2.5s ease-in-out infinite; transform-origin:center; }
-@keyframes wiggle { 0%,100% { transform:rotate(-4deg); } 50% { transform:rotate(4deg); } }
-/* 둥실둥실 */
-.float-y { animation: floatY 2.5s ease-in-out infinite; }
-@keyframes floatY { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
-/* 반짝반짝 */
-.glow-gold { animation: glowGold 2s ease-in-out infinite alternate; }
-@keyframes glowGold { 0% { filter: drop-shadow(0 0 6px rgba(255,215,0,0.4)); } 100% { filter: drop-shadow(0 0 18px rgba(255,215,0,0.9)); } }
-/* 텍스트 그림자 */
-.txt-shadow-pink { text-shadow: 3px 3px 0 #FF6B9D, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; }
-/* 녹음 펄스 */
-.pulse-record { animation: pulseRec 1.3s infinite alternate; }
-@keyframes pulseRec { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.6); } 100% { box-shadow: 0 0 0 18px rgba(239,68,68,0); } }
-/* 컨페티 */
-.confetti { position:fixed; top:-20px; width:12px; height:12px; pointer-events:none; z-index:9999; }
-@keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:0; } }
-/* 폭죽 */
-.burst-emoji { position:fixed; pointer-events:none; z-index:9998; font-size:40px; animation: burst 1.4s ease-out forwards; }
-@keyframes burst { 0% { transform: translate(0,0) scale(0); opacity:1; } 60% { opacity:1; } 100% { transform: translate(var(--x), var(--y)) scale(1.2) rotate(360deg); opacity:0; } }
-/* ⭐ 입력칸 가독성 — 저학년이 잘 보이게 (placeholder도 또렷하게) */
-textarea, input[type="text"], input[type="search"], select {
-  color: #1e293b;        /* slate-800 — 또렷한 어두운 글씨 */
-  font-weight: 700;
+.btn-3d:active:not(:disabled) { border-bottom-width: 0; transform: translateY(8px) scale(0.98); }
+.btn-3d:disabled { opacity: 0.45; cursor: not-allowed; filter: grayscale(70%); }
+.btn-3d::after {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  transform: skewX(-25deg); transition: left 0.6s;
 }
-textarea::placeholder, input::placeholder {
-  color: #475569 !important;   /* slate-600 — placeholder도 충분히 진하게 */
-  opacity: 1 !important;        /* 브라우저 기본 반투명 제거 */
-  font-weight: 600;
+.btn-3d:hover::after { left: 150%; }
+.btn-3d::before {
+  content: '';
+  position: absolute;
+  top: 8%; left: 12%; right: 12%;
+  height: 30%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+  border-radius: 100% 100% 50% 50%;
+  pointer-events: none;
 }
 
-/* 스크롤바 (혹시 모를 안전장치) */
-::-webkit-scrollbar { width: 0; height: 0; }
-</style>
-<script>
-// ⭐ 적응형 스케일 — 높이 820 기준, 너비는 뷰포트에 맞게 자동 확장
-// (좌우 letterbox 없이 모든 기기에서 꽉 차게)
-function applyScale() {
-  var stage = document.getElementById('scaler');
-  if (!stage) return;
-  var vw = window.innerWidth;
-  var vh = window.innerHeight;
-  var MIN_W = 480;       // 최소 디자인 폭 (이보다 좁으면 letterbox)
-  var BASE_H = 820;      // 디자인 기준 높이
-  var scale = vh / BASE_H;
-  var baseW = vw / scale;
-  if (baseW < MIN_W) {   // 너무 좁은 뷰포트면 폭 기준으로 맞춤
-    scale = vw / MIN_W;
-    baseW = MIN_W;
-  }
-  stage.style.width = baseW + 'px';
-  stage.style.height = BASE_H + 'px';
-  stage.style.transform = 'scale(' + scale + ')';
+.top-controls { position: fixed; top: 0.75rem; right: 0.75rem; z-index: 200; display: flex; gap: 0.5rem; }
+.ctrl-btn {
+  background: linear-gradient(135deg, white, #fffafa);
+  border: 4px solid #fbb6ce;
+  width: 60px; height: 60px; border-radius: 50%;
+  font-size: 1.8rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 0 #ec4899, 0 8px 20px rgba(236, 72, 153, 0.3);
+  transition: all 0.15s; cursor: pointer;
 }
-window.addEventListener('resize', applyScale);
-window.addEventListener('orientationchange', applyScale);
-window.addEventListener('load', applyScale);
-</script>
+.ctrl-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #ec4899; }
+.ctrl-btn.on {
+  border-color: #6ee7b7;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  box-shadow: 0 6px 0 #10b981, 0 0 25px rgba(16, 185, 129, 0.5);
+  animation: glow-mint 2s ease-in-out infinite;
+}
+@keyframes glow-mint {
+  0%,100% { box-shadow: 0 6px 0 #10b981, 0 0 25px rgba(16, 185, 129, 0.5); }
+  50% { box-shadow: 0 6px 0 #10b981, 0 0 40px rgba(16, 185, 129, 0.8); }
+}
+
+@keyframes wiggle { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes bounce-soft { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+@keyframes pop-in { 0% { transform: scale(0); opacity:0; } 60% { transform: scale(1.3); } 100% { transform: scale(1); opacity:1; } }
+@keyframes star-burst {
+  0% { transform: scale(0) rotate(0deg); filter: hue-rotate(0deg); }
+  50% { transform: scale(1.5) rotate(180deg); filter: hue-rotate(180deg) brightness(1.4); }
+  100% { transform: scale(1) rotate(360deg); filter: hue-rotate(360deg); }
+}
+@keyframes float-up {
+  from { transform: translateY(0) scale(1) rotate(0deg); opacity:1; }
+  to { transform: translateY(-300px) scale(0.3) rotate(720deg); opacity:0; }
+}
+@keyframes shake-soft {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-10px) rotate(-3deg); }
+  75% { transform: translateX(10px) rotate(3deg); }
+}
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+  70% { box-shadow: 0 0 0 30px rgba(239,68,68,0); }
+  100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+}
+@keyframes wave-bar { 0%,100% { height: 18px; } 50% { height: 60px; } }
+@keyframes float-slow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+@keyframes glow-pulse {
+  0%,100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+  50% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.95), 0 0 80px rgba(255, 192, 203, 0.6); }
+}
+@keyframes heart-beat {
+  0%, 100% { transform: scale(1); }
+  10%, 30% { transform: scale(1.15); }
+  20%, 40% { transform: scale(1); }
+}
+
+.animate-wiggle { animation: wiggle 2s ease-in-out infinite; }
+.animate-bounce-soft { animation: bounce-soft 2s ease-in-out infinite; }
+.animate-pop-in { animation: pop-in 0.5s ease-out backwards; }
+.animate-shake-soft { animation: shake-soft 0.5s ease-out; }
+.animate-pulse-ring { animation: pulse-ring 1.5s ease-out infinite; }
+.animate-float-slow { animation: float-slow 3s ease-in-out infinite; }
+.animate-heart-beat { animation: heart-beat 1.5s ease-in-out infinite; }
+.animate-glow { animation: glow-pulse 2s ease-in-out infinite; }
+
+.tts-text { word-break: keep-all; overflow-wrap: break-word; }
+.tts-text .tts-char { display: inline-block; transition: all 0.2s ease-out; }
+.tts-text .tts-char.active {
+  color: #ec4899;
+  transform: scale(1.5) translateY(-8px);
+  text-shadow:
+    0 0 12px rgba(236, 72, 153, 0.7),
+    0 6px 12px rgba(236, 72, 153, 0.4),
+    0 0 30px rgba(255, 215, 0, 0.5);
+  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6));
+}
+
+.sticker-pop {
+  position: fixed; pointer-events: none; z-index: 300;
+  font-size: 4rem;
+  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+  animation: pop-in 0.5s ease-out, float-up 2.5s ease-out 0.3s forwards;
+}
+
+/* 별점 - 적당히 크게 (저학년 손가락 잘 닿게) */
+.star-rating { display: flex; gap: 0.5rem; justify-content: center; }
+.star-btn {
+  font-size: clamp(2.4rem, 5.5vw, 3.5rem);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: grayscale(100%) brightness(0.85) opacity(0.75);
+  background: transparent; border: none; padding: 0.15rem;
+}
+.star-btn.filled {
+  filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 24px rgba(255, 105, 180, 0.5));
+  animation: star-burst 0.6s ease-out;
+}
+.star-btn:hover { transform: scale(1.2) rotate(-8deg); filter: grayscale(40%) opacity(1); }
+
+.mic-waves { display: flex; gap: 6px; align-items: center; justify-content: center; height: 50px; }
+.mic-wave {
+  width: 10px;
+  background: linear-gradient(to top, #ec4899, #f9a8d4, #fbbf24);
+  border-radius: 6px;
+  animation: wave-bar 0.8s ease-in-out infinite;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.6);
+}
+.mic-wave:nth-child(2) { animation-delay: 0.1s; }
+.mic-wave:nth-child(3) { animation-delay: 0.2s; }
+.mic-wave:nth-child(4) { animation-delay: 0.3s; }
+.mic-wave:nth-child(5) { animation-delay: 0.4s; }
+
+.mission-spot {
+  position: absolute; transform: translate(-50%, -50%);
+  transition: all 0.3s; cursor: pointer;
+}
+.mission-spot:hover { transform: translate(-50%, -50%) scale(1.15) rotate(-3deg); z-index: 20; }
+.mission-spot:active { transform: translate(-50%, -50%) scale(0.95); }
+.mission-spot.completed::after {
+  content: '⭐';
+  position: absolute; top: -25px; right: -25px;
+  font-size: 4rem;
+  animation: pop-in 0.5s, float-slow 2s ease-in-out 0.5s infinite;
+  filter: drop-shadow(0 6px 12px rgba(255,180,0,0.5));
+}
+.spot-inner {
+  background: linear-gradient(135deg, white, #fffafa);
+  padding: 0.85rem 1.25rem; border-radius: 1.75rem;
+  border: 5px solid #fbb6ce;
+  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.25);
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 130px;
+}
+.mission-spot:hover .spot-inner { box-shadow: 0 15px 35px rgba(236, 72, 153, 0.45); border-color: #ec4899; }
+
+.quiz-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 0.9rem;
+  background: linear-gradient(135deg, white, #fefcfb);
+  border-radius: 1.25rem;
+  border: 4px solid #fce7f3;
+  margin-bottom: 0.65rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.1);
+}
+
+.choice-btn {
+  background: linear-gradient(135deg, white, #fefcfb);
+  border-radius: 2rem;
+  border: 5px solid #e2e8f0;
+  border-bottom-width: 10px;
+  padding: 1.25rem 1rem;
+  font-family: var(--font-title); font-weight: 700;
+  transition: all 0.15s;
+  min-height: 110px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; line-height: 1.3;
+  cursor: pointer;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+  position: relative; overflow: hidden;
+}
+.choice-btn:active { border-bottom-width: 2px; transform: translateY(8px); }
+.choice-btn:hover { border-color: #7cc5ff; box-shadow: 0 15px 30px rgba(124, 197, 255, 0.25); }
+.choice-btn.correct {
+  background: linear-gradient(135deg, #d1fae5, #6ee7b7);
+  border-color: #10b981;
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.6);
+  animation: pop-in 0.4s;
+}
+.choice-btn.wrong {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-color: #f59e0b;
+  animation: shake-soft 0.5s;
+}
+
+.tutorial-bubble {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 4px solid #fbbf24;
+  border-radius: 1.25rem;
+  padding: 0.6rem 1.25rem;
+  font-family: var(--font-title);
+  font-weight: 700; color: #92400e;
+  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+  animation: float-slow 2.5s ease-in-out infinite;
+}
+
+.modal {
+  position: fixed; inset: 0; z-index: 250;
+  background: radial-gradient(ellipse at center, rgba(255, 192, 203, 0.5), rgba(0,0,0,0.7));
+  backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.modal.active { display: flex; }
+.modal-content {
+  background: linear-gradient(135deg, white, #fefcfb);
+  border-radius: 2.5rem;
+  padding: 1.75rem;
+  max-width: 600px; width: 100%; max-height: 88vh;
+  overflow-y: auto;
+  border: 6px solid #fef3c7;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+  animation: pop-in 0.4s ease-out;
+}
+
+.progress-pill {
+  height: 16px;
+  background: rgba(226, 232, 240, 0.6);
+  border-radius: 9px; overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+.progress-pill > div {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b9d, #ffa552, #ffd95a, #5ddbb8, #7cc5ff);
+  background-size: 200% 100%;
+  border-radius: 9px;
+  transition: width 0.5s ease-out;
+  animation: shimmer 2s linear infinite;
+}
+
+.live-transcript {
+  background: linear-gradient(135deg, #f1f5f9, #e0f2fe);
+  border: 4px dashed #94a3b8;
+  border-radius: 1.25rem;
+  padding: 0.85rem;
+  min-height: 70px;
+  font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+  font-family: var(--font-title); font-weight: 700;
+  color: #334155;
+  text-align: center;
+  word-break: keep-all;
+  display: flex; align-items: center; justify-content: center;
+}
+.live-transcript.recording {
+  background: linear-gradient(135deg, #fef2f2, #fce7f3);
+  border-color: #ec4899;
+  border-style: solid;
+  animation: glow-pink 2s ease-in-out infinite;
+}
+@keyframes glow-pink {
+  0%,100% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.4); }
+  50% { box-shadow: 0 0 40px rgba(236, 72, 153, 0.7); }
+}
+.live-transcript .interim { color: #94a3b8; font-style: italic; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.char-card { transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.char-card:hover { transform: translateY(-6px) rotate(2deg); }
+.char-card.selected {
+  background: linear-gradient(135deg, #fce7f3, #fbcfe8) !important;
+  border-color: #ec4899 !important;
+  box-shadow: 0 15px 35px rgba(236, 72, 153, 0.5) !important;
+  transform: scale(1.06) !important;
+}
+
+.mode-card { transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
+.mode-card:hover { transform: translateY(-5px) scale(1.04); }
+.mode-card .inner-card {
+  border-radius: 1.5rem;
+  padding: 1.25rem;
+  border: 5px solid;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+.step-card { border-radius: 1.25rem; border-width: 3px; padding: 0.75rem 1rem; }
+
+.replay-card {
+  background: linear-gradient(135deg, white, #fefcfb);
+  border-radius: 1.5rem;
+  padding: 0.9rem 1.15rem;
+  border: 5px solid;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+.replay-card audio { width: 100%; margin-top: 0.4rem; }
+
+/* 녹음 화면 전용 - 컨텐츠 균형 */
+.rec-screen .prompt-box { padding: 0.85rem 1rem; border-radius: 1.25rem; }
+.rec-screen .star-box { padding: 0.6rem 0.9rem; border-radius: 1.25rem; }
+.rec-screen .star-rating { gap: 0.4rem; }
+</style>
 </head>
 <body>
-<div id="scaler-wrap">
-  <div id="scaler">
-    <div id="root"></div>
+
+<div class="sparkle-layer" id="sparkle-layer"></div>
+
+<div class="top-controls">
+  <button class="ctrl-btn" id="help-btn" onclick="openInstructions()" title="사용 설명서">❓</button>
+  <button class="ctrl-btn" id="speaker-toggle" onclick="toggleSpeaker()" title="음성 켜기/끄기">🔇</button>
+</div>
+
+<div class="stage" id="stage">
+
+<!-- 1. 로그인 -->
+<div class="screen active" id="screen-login">
+  <div class="card" style="max-width: 580px;">
+    <div class="text-7xl mb-2 animate-wiggle text-center">🏫</div>
+    <h1 class="txt-hero text-rainbow text-center mb-2">슬기로운 학교생활</h1>
+    <p class="text-xl text-center text-pink-400 font-cute mb-4">우리 모두의 행복한 학교 만들기 🌈</p>
+    <div class="bg-gradient-to-br from-pink-50 to-orange-50 p-4 rounded-3xl border-4 border-pink-200 mb-3">
+      <label class="block text-2xl font-cute font-bold mb-2 text-pink-600 text-center">😊 이름을 찾아주세요</label>
+      <select id="name-select" class="w-full p-3 rounded-2xl border-4 border-pink-200 bg-white text-xl font-bold text-center outline-none focus:border-pink-400" onchange="onNameSelected()">
+        <option value="">이름 선택하기 ✨</option>
+      </select>
+    </div>
+    <button id="btn-login-start" class="btn-3d bg-green-400 border-green-600 text-white w-full text-2xl py-3 animate-glow" onclick="goToMicPermission()" disabled>
+      🚀 시작하기
+    </button>
+    <p class="text-base text-pink-400 mt-2 text-center font-cute">선생님께서 등록한 이름이 안 보이면 알려주세요!</p>
   </div>
 </div>
-<script>applyScale();</script>
-<script type="text/babel" data-type="module">
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { createRoot } from 'react-dom/client';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Volume2, VolumeX, Star, ChevronRight, RotateCcw, ShieldCheck,
-  CheckCircle2, Mic, Square, Loader2, School, Car, FlameKindling,
-  Waves, HelpCircle, Trophy, Lightbulb, X, ArrowLeft
-} from 'lucide-react';
 
-// ===== GAS API URL =====
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzuI75nXwyIpIlMPdvWlCcm3OHuOnSnv86DUDcfmUEaS87ln_Pl3Jw0KksFOHSqP5pJ/exec';
+<!-- 2. 마이크 권한 -->
+<div class="screen" id="screen-mic">
+  <div class="card" style="max-width: 580px;">
+    <div class="text-7xl mb-3 animate-bounce-soft text-center">🎤</div>
+    <h2 class="txt-hero text-rainbow text-center mb-3">목소리 친구 부르기</h2>
+    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-4 rounded-3xl border-4 border-indigo-200 mb-4">
+      <p class="txt-md font-bold text-center font-title text-slate-700">
+        내 다짐을 <span class="text-pink-500">목소리</span>로 남기려면<br>
+        마이크 사용을 <span class="text-pink-500">허용</span>해주세요!
+      </p>
+      <p class="text-base text-purple-400 mt-2 text-center font-cute">💡 이 질문은 한 번만 해요</p>
+    </div>
+    <button class="btn-3d bg-indigo-500 border-indigo-700 text-white w-full text-2xl py-3" onclick="requestMic()">
+      🎙️ 마이크 허용하기
+    </button>
+  </div>
+</div>
 
-// ===== 영역 정보 =====
-const AREA_INFO = {
-  traffic:  { name:'교통안전',   Icon:Car,           bg:'bg-red-500',     pos:{x:18, y:20} },
-  fire:     { name:'화재대피',   Icon:FlameKindling, bg:'bg-orange-500',  pos:{x:50, y:13} },
-  disaster: { name:'재난안전',   Icon:Waves,         bg:'bg-blue-500',    pos:{x:82, y:22} },
-  life:     { name:'학교생활',   Icon:School,        bg:'bg-emerald-500', pos:{x:78, y:62} },
-  guard:    { name:'안전지킴이', Icon:ShieldCheck,   bg:'bg-yellow-500',  pos:{x:30, y:72} }
-};
+<!-- 3. 모드 선택 -->
+<div class="screen" id="screen-mode">
+  <div class="card card-full" style="max-width: 950px;">
+    <h2 class="txt-hero text-rainbow text-center mb-2">📚 오늘은 몇 문제?</h2>
+    <p class="text-xl text-center text-purple-400 font-cute mb-4">자기만의 속도로 도전해보세요</p>
+    <div class="flex-1 grid grid-cols-3 gap-3 items-stretch my-2 min-h-0">
+      <button class="mode-card" onclick="selectMode(3)">
+        <div class="inner-card bg-gradient-to-br from-emerald-100 to-emerald-200 border-emerald-400 h-full flex flex-col justify-center">
+          <div class="text-5xl md:text-7xl mb-2">🌱</div>
+          <div class="text-xl md:text-2xl font-bold text-emerald-700 font-cute">짧게</div>
+          <div class="text-4xl md:text-5xl font-bold text-emerald-600 my-2 font-title">3문제</div>
+          <div class="text-sm md:text-base text-emerald-700 font-cute">중간 녹음 없음</div>
+        </div>
+      </button>
+      <button class="mode-card" onclick="selectMode(5)">
+        <div class="inner-card bg-gradient-to-br from-sky-100 to-sky-200 border-sky-400 h-full flex flex-col justify-center">
+          <div class="text-5xl md:text-7xl mb-2">🌿</div>
+          <div class="text-xl md:text-2xl font-bold text-sky-700 font-cute">알맞게</div>
+          <div class="text-4xl md:text-5xl font-bold text-sky-600 my-2 font-title">5문제</div>
+          <div class="text-sm md:text-base text-sky-700 font-cute">중간 녹음 1번 ⭐</div>
+        </div>
+      </button>
+      <button class="mode-card" onclick="selectMode(10)">
+        <div class="inner-card bg-gradient-to-br from-orange-100 to-orange-200 border-orange-400 h-full flex flex-col justify-center">
+          <div class="text-5xl md:text-7xl mb-2">🌳</div>
+          <div class="text-xl md:text-2xl font-bold text-orange-700 font-cute">충분하게</div>
+          <div class="text-4xl md:text-5xl font-bold text-orange-600 my-2 font-title">10문제</div>
+          <div class="text-sm md:text-base text-orange-700 font-cute">중간 녹음 2번 ⭐⭐</div>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
 
-// ===== 콘텐츠 =====
-const RECORD_PROMPTS = [
-  { em:'🛡️', text:'"나는 안전을 잘 지킬 거예요!" 라고 또박또박 말해 봐요' },
-  { em:'🚸', text:'"횡단보도에서는 좌우를 살펴요" 라고 말해 봐요' },
-  { em:'🚨', text:'"불이 나면 자세를 낮추고 119에 신고해요" 라고 말해 봐요' },
-  { em:'👤', text:'"낯선 사람을 따라가지 않아요" 라고 말해 봐요' },
-  { em:'🧼', text:'"급식 먹기 전에 손을 씻어요" 라고 말해 봐요' },
-  { em:'🛒', text:'"가족을 잃으면 안내 데스크에 가요" 라고 말해 봐요' },
-  { em:'🏚️', text:'"지진이 나면 책상 아래로 숨어요" 라고 말해 봐요' },
-  { em:'🏃', text:'"복도에서는 천천히 걸어요" 라고 약속해 봐요' },
-  { em:'🛴', text:'"자전거 탈 때 헬멧을 꼭 써요" 라고 말해 봐요' },
-  { em:'🌟', text:'"우리 모두 안전하게 지내요!" 라고 외쳐 봐요' }
-];
+<!-- 4. 오늘의 약속 -->
+<div class="screen" id="screen-promise">
+  <div class="card" style="max-width: 640px;">
+    <div class="text-7xl mb-2 text-center animate-heart-beat">🤝</div>
+    <h2 class="txt-hero text-rainbow text-center mb-3 flex items-center justify-center gap-2">
+      오늘의 약속
+      <button class="text-xl bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakWithHighlight('promise-text', getPersonalizedPromiseText())">🔊</button>
+    </h2>
+    <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-3xl border-4 border-purple-200 mb-4">
+      <p id="promise-text" class="txt-q text-slate-700 font-bold tts-text text-center">
+        학교 안에서 지켜야 할<br>소중한 규칙을 익히고<br>실천할 수 있어요!
+      </p>
+    </div>
+    <button class="btn-3d bg-purple-500 border-purple-700 text-white w-full text-2xl py-3" onclick="goToCharacter()">
+      🎯 네, 약속해요!
+    </button>
+  </div>
+</div>
 
-const CONCEPT_DATA = {
-  traffic: { sub:'신호등 색깔에 맞는 행동을 옮겨 봐요',
-    targets:[{id:'t1',label:'🔴 빨간불',accepts:'stop'},{id:'t2',label:'🟢 초록불',accepts:'go'},{id:'t3',label:'🟡 노란불',accepts:'care'}],
-    items:[{id:'go',label:'건너요'},{id:'stop',label:'멈춰요'},{id:'care',label:'조심해요'}] },
-  fire: { sub:'화재 상황에 맞는 행동을 옮겨 봐요',
-    targets:[{id:'f1',label:'1️⃣ 불을 봤을 때',accepts:'shout'},{id:'f2',label:'2️⃣ 연기 속에서',accepts:'low'},{id:'f3',label:'3️⃣ 대피한 후',accepts:'call'}],
-    items:[{id:'low',label:'자세 낮추기'},{id:'shout',label:'"불이야!" 외치기'},{id:'call',label:'119에 신고하기'}] },
-  disaster: { sub:'재난 종류에 맞는 행동을 옮겨 봐요',
-    targets:[{id:'d1',label:'🏚️ 지진',accepts:'desk'},{id:'d2',label:'🌬️ 태풍',accepts:'inside'},{id:'d3',label:'🌊 홍수',accepts:'high'}],
-    items:[{id:'inside',label:'안전한 실내에서 기다려요'},{id:'desk',label:'책상 아래로 숨어요'},{id:'high',label:'높은 곳으로 가요'}] },
-  life: { sub:'학교생활에서 올바른 행동을 옮겨 봐요',
-    targets:[{id:'l1',label:'✂️ 가위 건네기',accepts:'grip'},{id:'l2',label:'🏃 복도에서',accepts:'walk'},{id:'l3',label:'🍽️ 급식 전에',accepts:'wash'}],
-    items:[{id:'walk',label:'천천히 걸어요'},{id:'grip',label:'손잡이 쪽으로 건네요'},{id:'wash',label:'손을 씻어요'}] },
-  guard: { sub:'위험한 상황에 맞는 행동을 옮겨 봐요',
-    targets:[{id:'g1',label:'👤 낯선 사람이 따라오라 할 때',accepts:'no'},{id:'g2',label:'🍭 모르는 어른이 뭘 줄 때',accepts:'refuse'},{id:'g3',label:'🛒 가족을 잃었을 때',accepts:'desk'}],
-    items:[{id:'refuse',label:'"안 받아요" 하고 떠나요'},{id:'no',label:'"싫어요!" 외치고 도망'},{id:'desk',label:'안내 데스크로 가요'}] }
-};
+<!-- 5. 캐릭터 선택 -->
+<div class="screen" id="screen-character">
+  <div class="card card-full" style="max-width: 1000px;">
+    <h2 class="txt-hero text-rainbow text-center mb-2 flex items-center justify-center gap-2">
+      💕 함께할 친구 골라요
+      <button class="text-xl bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText('함께할 친구를 골라요')">🔊</button>
+    </h2>
+    <p class="text-xl text-center text-pink-400 font-cute mb-3">마음에 드는 친구를 콕!</p>
+    <div class="flex-1 grid grid-cols-3 md:grid-cols-5 gap-3 my-2 items-center" id="character-grid"></div>
+    <button id="btn-char-go" class="btn-3d bg-pink-500 border-pink-700 text-white w-full text-2xl py-3" onclick="goToMap()" disabled>
+      🚀 출발하기
+    </button>
+  </div>
+</div>
 
-const ENCOURAGEMENTS = ['정말 잘했어요!','대단해요!','완벽해요!','안전 박사예요!','와! 멋져요!','훌륭해요!','최고예요!','척척박사!'];
-
-const FUN_FACTS = {
-  traffic:['💡 차는 멈추는 데 시간이 걸려요!','💡 손을 들면 운전자에게 잘 보여요!','💡 신호등은 모두를 지켜주는 약속이에요.'],
-  fire:['💡 연기는 위로 올라가요. 자세를 낮춰요!','💡 엘리베이터는 멈출 수 있어 위험해요.','💡 "불이야!" 외치면 다른 사람도 알아요.'],
-  disaster:['💡 지진은 1분 정도 강하게 흔들려요.','💡 태풍 후 길은 미끄러워요. 조심!','💡 흐르는 물은 어른도 못 이겨요.'],
-  life:['💡 비누로 30초 이상 씻어야 깨끗!','💡 잠 잘 자고 손 씻으면 건강해요.','💡 깨끗한 책상에서 공부가 잘 돼요!'],
-  guard:['💡 어른은 어린이에게 길을 묻지 않아요.','💡 친절해 보여도 따라가지 않아요.','💡 내 정보는 비밀이에요!']
-};
-
-const TUTORIAL_PAGES = [
-  { em:'👋', title:'이름 고르기', desc:'내 이름을 골라요!' },
-  { em:'🗺️', title:'지도 탐험', desc:'영역을 골라\n안전을 배워요!' },
-  { em:'💜', title:'도움받기', desc:'모르겠으면\n💜 버튼!' },
-  { em:'🎤', title:'또박또박 말해요', desc:'버튼 누르고\n크게 말해요!' },
-  { em:'⭐', title:'별점 주기', desc:'내 목소리 듣고\n별을 줘요!' },
-  { em:'🔊', title:'스피커', desc:'켜면 읽어 줘요!\n위쪽에 있어요.' },
-  { em:'🏆', title:'수료증', desc:'끝나면 상을\n받아요!' }
-];
-
-// ===== 한국어 음성 우선순위 =====
-let cachedVoice = null;
-const selectKoreanVoice = () => {
-  if (!window.speechSynthesis) return null;
-  if (cachedVoice) return cachedVoice;
-  const voices = speechSynthesis.getVoices();
-  if (!voices.length) return null;
-  const ko = voices.filter(v => (v.lang||'').toLowerCase().startsWith('ko'));
-  if (!ko.length) return voices[0];
-  let v = ko.find(x => x.name.toLowerCase().includes('google') && !x.localService);
-  if (!v) v = ko.find(x => x.name.toLowerCase().includes('google'));
-  if (!v) v = ko.find(x => /wavenet|neural2|neural-a/i.test(x.name));
-  if (!v) v = ko.find(x => /wavenet|neural|premium|enhanced|natural/i.test(x.name));
-  cachedVoice = v || ko[0];
-  return cachedVoice;
-};
-
-const speak = (text, opts={}) => {
-  if (!window.speechSynthesis) return;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang='ko-KR';
-  const v = selectKoreanVoice();
-  if (v) u.voice = v;
-  u.pitch = 1.0;
-  u.rate = opts.rate || 0.95;
-  if (opts.onend) u.onend = opts.onend;
-  speechSynthesis.speak(u);
-};
-const stopSpeak = () => { if (window.speechSynthesis) speechSynthesis.cancel(); };
-
-// ===== 효과음 =====
-let audioCtx = null;
-const ac = () => { if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; };
-const playSfx = (kind) => {
-  if (!kind) return;
-  try {
-    const ctx = ac();
-    if (kind==='correct') {
-      [523.25,659.25,783.99].forEach((f,i)=>{
-        const o=ctx.createOscillator(),g=ctx.createGain();
-        o.type='sine'; o.frequency.value=f;
-        g.gain.setValueAtTime(0.15,ctx.currentTime+i*0.1);
-        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.1+0.15);
-        o.connect(g); g.connect(ctx.destination);
-        o.start(ctx.currentTime+i*0.1); o.stop(ctx.currentTime+i*0.1+0.16);
-      });
-    } else if (kind==='wrong') {
-      [440, 392].forEach((f, i) => {
-        const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = 'sine'; o.frequency.value = f;
-        g.gain.setValueAtTime(0.08, ctx.currentTime + i*0.18);
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.18 + 0.25);
-        o.connect(g); g.connect(ctx.destination);
-        o.start(ctx.currentTime + i*0.18);
-        o.stop(ctx.currentTime + i*0.18 + 0.27);
-      });
-    } else if (kind==='pop') {
-      const o=ctx.createOscillator(),g=ctx.createGain();
-      o.type='sine'; o.frequency.value=880;
-      o.frequency.exponentialRampToValueAtTime(1500,ctx.currentTime+0.08);
-      g.gain.setValueAtTime(0.15,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12);
-      o.connect(g); g.connect(ctx.destination);
-      o.start(); o.stop(ctx.currentTime+0.13);
-    } else if (kind==='fanfare') {
-      [392,523.25,659.25,783.99,1046.5].forEach((f,i)=>{
-        const o=ctx.createOscillator(),g=ctx.createGain();
-        o.type='triangle'; o.frequency.value=f;
-        g.gain.setValueAtTime(0.13,ctx.currentTime+i*0.1);
-        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.1+0.4);
-        o.connect(g); g.connect(ctx.destination);
-        o.start(ctx.currentTime+i*0.1); o.stop(ctx.currentTime+i*0.1+0.42);
-      });
-    } else if (kind==='click') {
-      const o=ctx.createOscillator(),g=ctx.createGain();
-      o.type='sine'; o.frequency.value=600;
-      g.gain.setValueAtTime(0.08,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08);
-      o.connect(g); g.connect(ctx.destination);
-      o.start(); o.stop(ctx.currentTime+0.1);
-    }
-  } catch(e) {}
-};
-
-// ===== 폭죽 & 컨페티 =====
-const triggerBurst = (kinds=['🌟','💖','🌸','🦋','🌈','🎉','✨','⭐'], count=22) => {
-  const cx=window.innerWidth/2, cy=window.innerHeight/2;
-  for (let i=0;i<count;i++) {
-    const el=document.createElement('div');
-    el.className='burst-emoji';
-    el.textContent=kinds[Math.floor(Math.random()*kinds.length)];
-    el.style.left=cx+'px'; el.style.top=cy+'px';
-    const a=Math.random()*Math.PI*2, r=140+Math.random()*180;
-    el.style.setProperty('--x', Math.cos(a)*r+'px');
-    el.style.setProperty('--y', Math.sin(a)*r+'px');
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),1500);
-  }
-};
-const triggerConfetti = () => {
-  const colors=['#FF6B9D','#FF9F43','#FFD93D','#6BCB77','#54A0FF','#C56CF0'];
-  for (let i=0;i<60;i++) {
-    const c=document.createElement('div');
-    c.className='confetti';
-    c.style.left=(Math.random()*100)+'%';
-    c.style.background=colors[Math.floor(Math.random()*colors.length)];
-    c.style.borderRadius=Math.random()>0.5?'50%':'2px';
-    c.style.animation=`fall ${2+Math.random()*2}s linear forwards`;
-    c.style.animationDelay=(Math.random()*0.5)+'s';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),4000);
-  }
-};
-
-// ===== 토끼 요정 =====
-const SubjectFairy = ({ size=80 }) => (
-  <motion.div animate={{y:[0,-8,0]}} transition={{repeat:Infinity,duration:2.5}} className="inline-block">
-    <svg width={size} height={size*1.25} viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
-      <path d="M40 70 C 30 20, 50 10, 55 40" fill="#FFF" stroke="#FFB6C1" strokeWidth="4"/>
-      <path d="M80 70 C 90 20, 70 10, 65 40" fill="#FFF" stroke="#FFB6C1" strokeWidth="4"/>
-      <path d="M45 55 C 40 25, 48 20, 50 45" fill="#FFC0CB"/>
-      <path d="M75 55 C 80 25, 72 20, 70 45" fill="#FFC0CB"/>
-      <ellipse cx="60" cy="85" rx="35" ry="30" fill="#FFF" stroke="#FFB6C1" strokeWidth="4"/>
-      <circle cx="48" cy="80" r="4" fill="#333"/>
-      <circle cx="72" cy="80" r="4" fill="#333"/>
-      <ellipse cx="40" cy="88" rx="5" ry="3" fill="#FFB6C1" opacity="0.6"/>
-      <ellipse cx="80" cy="88" rx="5" ry="3" fill="#FFB6C1" opacity="0.6"/>
-      <circle cx="60" cy="86" r="3" fill="#FF69B4"/>
-      <path d="M55 92 Q 60 98 65 92" stroke="#333" strokeWidth="2" fill="none" strokeLinecap="round"/>
-    </svg>
-  </motion.div>
-);
-
-// ===== GAS 호출 =====
-const callGAS = async (action, payload) => {
-  if (!GAS_URL) return { ok:false, error:'GAS URL 없음' };
-  try {
-    const res = await fetch(GAS_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action, payload })
-    });
-    return await res.json();
-  } catch(e) {
-    console.error('GAS error:', e);
-    return { ok:false, error: String(e) };
-  }
-};
-
-// ============================================================
-// 메인 App  ── 캔버스 480×820 기준, 모든 화면 w-full h-full
-// ============================================================
-function App() {
-  // 데이터
-  const [students, setStudents] = useState([]);
-  const [allQuestions, setAllQuestions] = useState([]);
-  const [groupedAreas, setGroupedAreas] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // 앱 상태
-  const [step, setStep] = useState('login');
-  const [studentName, setStudentName] = useState('');
-  const [isSpeakerOn, setIsSpeakerOn] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
-  const [tutorialStep, setTutorialStep] = useState(0);
-
-  // 진행 상태
-  const [completedAreas, setCompletedAreas] = useState(new Set());
-  const [currentArea, setCurrentArea] = useState(null);
-  const [areaQuestions, setAreaQuestions] = useState([]);
-  const [questionCount, setQuestionCount] = useState(5);
-  const [currentQIdx, setCurrentQIdx] = useState(0);
-  const [feedback, setFeedback] = useState(null);
-  const [totalStars, setTotalStars] = useState(0);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [totalAnswered, setTotalAnswered] = useState(0);
-  const [streak, setStreak] = useState(0);
-  const [bestStreak, setBestStreak] = useState(0);
-  const [helpUsedThisQ, setHelpUsedThisQ] = useState(false);
-
-  // 녹음 관련
-  const [preRecordText, setPreRecordText] = useState('');
-  const [preRecordAudio, setPreRecordAudio] = useState('');
-  const [postRecordText, setPostRecordText] = useState('');
-  const [postRecordAudio, setPostRecordAudio] = useState('');
-  const [voiceAnswerText, setVoiceAnswerText] = useState('');
-  const [interimText, setInterimText] = useState('');
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordTarget, setRecordTarget] = useState(null);
-  const [keyboardMode, setKeyboardMode] = useState(false);
-
-  // 중간/최종 녹음 (영역마다)
-  const [midRecording, setMidRecording] = useState(null);
-  const [midRecCount, setMidRecCount] = useState(0);
-  const [midRecPhase, setMidRecPhase] = useState('record');
-
-  // 성찰
-  const [reflectA1, setReflectA1] = useState('');
-  const [reflectA2, setReflectA2] = useState('');
-  const [reflectStars, setReflectStars] = useState(0);
-
-  // 자기평가
-  const [selfStars, setSelfStars] = useState(0);
-
-  // refs
-  const mediaRecorderRef = useRef(null);
-  const recognitionRef = useRef(null);
-  const audioChunksRef = useRef([]);
-  const streamRef = useRef(null);
-
-  // ===== 데이터 로드 =====
-  useEffect(() => {
-    fetch(GAS_URL + '?action=getAppData')
-      .then(r => r.json())
-      .then(data => {
-        const stu = data.students || [];
-        const qs = data.questions || [];
-        setStudents(stu);
-        setAllQuestions(qs);
-        groupQuestions(qs);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        alert('데이터 로드 실패. 임시 데이터로 진행합니다.');
-        loadMock();
-      });
-  }, []);
-
-  // ===== 음성 인식 초기화 (⭐ 한 번만 생성, 현재 타깃은 ref로 읽음 — 첫 녹음 클로저 버그 해결) =====
-  const recordTargetRef = useRef(null);
-  useEffect(() => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { console.warn('이 브라우저는 음성 인식을 지원하지 않아요'); return; }
-    const rec = new SR();
-    rec.lang = 'ko-KR'; rec.continuous = true; rec.interimResults = true;
-    rec.onresult = (e) => {
-      let fin = '', interim = '';
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) fin += e.results[i][0].transcript + ' ';
-        else interim += e.results[i][0].transcript;
-      }
-      const target = recordTargetRef.current;  // ⭐ ref로 현재 값 읽기 (closure 우회)
-      if (fin) {
-        if (target === 'pre') setPreRecordText(p => p + fin);
-        else if (target === 'post') setPostRecordText(p => p + fin);
-        else if (target === 'voice') setVoiceAnswerText(p => p + fin);
-        else if (target === 'mid') setMidRecording(m => m ? {...m, text: (m.text||'') + fin} : m);
-      }
-      setInterimText(interim);
-    };
-    rec.onerror = (e) => console.warn('STT 오류:', e.error || e);
-    rec.onend = () => {};
-    recognitionRef.current = rec;
-  }, []);  // ⭐ 빈 deps - SR은 단 한 번만 생성
-
-  // ===== TTS 음성 미리 로드 =====
-  useEffect(() => {
-    if (window.speechSynthesis) {
-      speechSynthesis.onvoiceschanged = () => selectKoreanVoice();
-      selectKoreanVoice();
-    }
-  }, []);
-
-  const loadMock = () => {
-    setStudents(['김민준','이서연','박지호','최예린','정도윤','장하은','윤시우','강유나']);
-    setAllQuestions([]);
-    setGroupedAreas([]);
-    setIsLoading(false);
-  };
-
-  const groupQuestions = (qs) => {
-    const groups = {};
-    qs.forEach(q => {
-      const a = q.area;
-      if (!a) return;
-      if (!groups[a]) groups[a] = [];
-      groups[a].push(q);
-    });
-    const mapped = Object.keys(groups).filter(id => AREA_INFO[id]).map(id => ({
-      id,
-      ...AREA_INFO[id],
-      questions: groups[id]
-    }));
-    setGroupedAreas(mapped);
-  };
-
-  // ===== 시작 (마이크 권한 1회) =====
-  const startApp = async () => {
-    if (!studentName) { alert('이름을 골라 주세요!'); return; }
-    if (isSpeakerOn) playSfx('click');
-    try {
-      const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-      s.getTracks().forEach(t => t.stop());
-    } catch(e) {
-      console.warn('마이크 권한 거부됨');
-    }
-    setStep('intro');
-    if (isSpeakerOn) speak(`안녕, ${studentName} 대원! 안전탐험을 시작해 볼까요?`);
-  };
-
-  // ===== 녹음 토글 =====
-  const startRecording = async (target) => {
-    if (isSpeakerOn) playSfx('click');
-    if (isRecording) { stopRecording(); return; }
-    if (keyboardMode) { return; }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      streamRef.current = stream;
-      const mr = new MediaRecorder(stream);
-      audioChunksRef.current = [];
-      mr.ondataavailable = e => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
-      mr.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const data = reader.result;
-          if (target === 'pre') setPreRecordAudio(data);
-          else if (target === 'post') setPostRecordAudio(data);
-          else if (target === 'mid') setMidRecording(m => m ? {...m, audio: data} : m);
-        };
-        reader.readAsDataURL(blob);
-        stream.getTracks().forEach(t => t.stop());
-      };
-      mr.start();
-      mediaRecorderRef.current = mr;
-      setRecordTarget(target);
-      setInterimText('');
-      try { recognitionRef.current?.start(); } catch(e) {}
-      setIsRecording(true);
-    } catch(e) {
-      alert('마이크 권한이 필요해요. 키보드로 입력해 보세요!');
-      setKeyboardMode(true);
-    }
-  };
-
-  const stopRecording = () => {
-    try { mediaRecorderRef.current?.stop(); } catch(e) {}
-    try { recognitionRef.current?.stop(); } catch(e) {}
-    setIsRecording(false);
-  };
-
-  // ===== 영역 선택 → 개념학습 → 문제수 선택 =====
-  const selectArea = (area) => {
-    if (isSpeakerOn) playSfx('click');
-    setCurrentArea(area);
-    setStep('concept');
-    if (isSpeakerOn) speak(CONCEPT_DATA[area.id].sub);
-  };
-
-  const startQuiz = (count) => {
-    if (isSpeakerOn) playSfx('click');
-    setQuestionCount(count);
-    const pool = [...currentArea.questions];
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i+1));
-      [pool[i], pool[j]] = [pool[j], pool[i]];
-    }
-    const selected = [];
-    for (let i = 0; i < count; i++) selected.push(pool[i % pool.length]);
-    setAreaQuestions(selected);
-    setCurrentQIdx(0);
-    setFeedback(null);
-    setVoiceAnswerText('');
-    setHelpUsedThisQ(false);
-    setMidRecCount(0);
-    setStep('play');
-    if (isSpeakerOn) speak(selected[0].text);
-  };
-
-  // ===== 정답 처리 =====
-  const handleChoice = (idx) => {
-    if (feedback) return;
-    const q = areaQuestions[currentQIdx];
-    const isCorrect = (idx + 1) === Number(q.answer);
-    processAnswer(q, q.options[idx], isCorrect);
-  };
-
-  const handleVoiceCheck = () => {
-    const q = areaQuestions[currentQIdx];
-    const userText = voiceAnswerText.trim().toLowerCase();
-    if (!userText) {
-      alert('녹음하거나 글로 적어 주세요!');
-      return;
-    }
-    const keywords = String(q.answer).split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
-    const matched = keywords.some(k => userText.includes(k));
-    processAnswer(q, voiceAnswerText, matched);
-  };
-
-  const processAnswer = (q, picked, isCorrect) => {
-    setTotalAnswered(t => t+1);
-    let newStreak = streak;
-    if (isCorrect) {
-      setCorrectCount(c => c+1);
-      setTotalStars(s => s+1);
-      newStreak = streak + 1;
-      setStreak(newStreak);
-      if (newStreak > bestStreak) setBestStreak(newStreak);
-      if (isSpeakerOn) playSfx('correct');
-      triggerBurst(['🌟','✨','💫']);
-      if (newStreak === 3) triggerBurst(['🔥','🔥','🔥','✨','💥']);
-      if (newStreak === 5) { triggerBurst(['⚡','⚡','⚡','🎆','💫']); triggerConfetti(); }
-      if (newStreak >= 7) { triggerBurst(['🏆','✨','🎉','💎']); triggerConfetti(); }
-    } else {
-      setStreak(0);
-      if (isSpeakerOn) playSfx('wrong');
-    }
-
-    const praise = ENCOURAGEMENTS[Math.floor(Math.random()*ENCOURAGEMENTS.length)];
-    let mainText;
-    if (isCorrect) {
-      mainText = newStreak >= 3 ? `🔥 ${newStreak}연속 정답! ${praise}` : `정답이에요! ${praise}`;
-    } else {
-      mainText = '괜찮아요, 다시 기억해 봐요';
-    }
-    let subText = isCorrect ? q.correctFeedback : q.wrongFeedback;
-    if (isCorrect && Math.random() < 0.5 && FUN_FACTS[currentArea.id]) {
-      const facts = FUN_FACTS[currentArea.id];
-      subText += '\n' + facts[Math.floor(Math.random()*facts.length)];
-    }
-    setFeedback({ correct: isCorrect, main: mainText, sub: subText });
-    if (isSpeakerOn) speak(isCorrect ? `${praise} ${q.correctFeedback}` : `괜찮아요. ${q.wrongFeedback}`);
-
-    callGAS('saveAnswer', {
-      student: studentName, area: currentArea.id, q: q.text,
-      picked: String(picked), correctAns: String(q.answer),
-      correct: isCorrect, helpUsed: helpUsedThisQ
-    });
-  };
-
-  // ===== 다음 문제 / 영역 마무리 =====
-  const nextQuestion = () => {
-    setFeedback(null);
-    setVoiceAnswerText('');
-    setInterimText('');
-    setHelpUsedThisQ(false);
-    const nextIdx = currentQIdx + 1;
-    if (nextIdx > 0 && nextIdx % 5 === 0 && nextIdx < areaQuestions.length) {
-      goToMidRecording();
-    } else if (nextIdx >= areaQuestions.length) {
-      goToMidRecording(true);
-    } else {
-      setCurrentQIdx(nextIdx);
-      if (isSpeakerOn) speak(areaQuestions[nextIdx].text);
-    }
-  };
-
-  const retryQuestion = () => {
-    setFeedback(null);
-    setVoiceAnswerText('');
-    setInterimText('');
-  };
-
-  // ===== 도움받기 =====
-  const useHelp = () => {
-    const q = areaQuestions[currentQIdx];
-    setHelpUsedThisQ(true);
-    if (!isSpeakerOn) {
-      const u = new SpeechSynthesisUtterance(q.text);
-      u.lang='ko-KR'; const v = selectKoreanVoice(); if (v) u.voice = v;
-      u.pitch=1.0; u.rate=0.9;
-      speechSynthesis.cancel(); speechSynthesis.speak(u);
-    } else {
-      speak(q.text);
-    }
-  };
-
-  // ===== 중간/최종 녹음 =====
-  const goToMidRecording = (isFinal=false) => {
-    const prompt = RECORD_PROMPTS[Math.floor(Math.random()*RECORD_PROMPTS.length)];
-    setMidRecording({ prompt: prompt.text, em: prompt.em, text:'', audio:'', stars:0, sticker:null, isFinal });
-    setMidRecPhase('record');
-    setKeyboardMode(false);
-    setStep('midrec');
-    if (isSpeakerOn) speak(prompt.text);
-  };
-
-  const finishMidReview = () => {
-    if (!midRecording) return;
-    if (midRecording.stars <= 3) {
-      alert('별점이 3개 이하면 다시 녹음해 봐요!');
-      retryMid();
-      return;
-    }
-    saveMidRec();
-  };
-
-  const retryMid = () => {
-    setMidRecording(m => ({...m, text:'', audio:'', stars:0, sticker:null}));
-    setMidRecPhase('record');
-    setInterimText('');
-  };
-
-  const saveMidRec = () => {
-    if (!midRecording) return;
-    const isFinal = midRecording.isFinal;
-    callGAS('saveRecording', {
-      student: studentName, area: currentArea.id,
-      kind: isFinal ? 'final' : 'mid',
-      prompt: midRecording.prompt,
-      transcript: midRecording.text,
-      stars: midRecording.stars,
-      sticker: midRecording.sticker,
-      audioBase64: midRecording.audio
-    });
-    setTotalStars(s => s + midRecording.stars);
-    setMidRecCount(c => c + 1);
-
-    if (isFinal) {
-      setStep('reflect');
-      if (isSpeakerOn) speak('잠깐, 오늘 배운 것을 정리해 봐요.');
-    } else {
-      const nextIdx = currentQIdx + 1;
-      setCurrentQIdx(nextIdx);
-      setStep('play');
-      setFeedback(null);
-      setVoiceAnswerText('');
-      if (isSpeakerOn && areaQuestions[nextIdx]) speak(areaQuestions[nextIdx].text);
-    }
-  };
-
-  // ===== 성찰 마무리 =====
-  const finishReflect = () => {
-    if (reflectStars > 0 && reflectStars <= 3) {
-      alert('다짐이 약해요. 다시 적어 봐요!');
-      setReflectA2(''); setReflectStars(0);
-      return;
-    }
-    callGAS('saveReflection', {
-      student: studentName, area: currentArea.id,
-      a1: reflectA1, a2: reflectA2, stars: reflectStars
-    });
-    setReflectA1(''); setReflectA2(''); setReflectStars(0);
-    const newDone = new Set(completedAreas).add(currentArea.id);
-    setCompletedAreas(newDone);
-    triggerConfetti();
-    if (isSpeakerOn) playSfx('fanfare');
-    if (newDone.size >= groupedAreas.length) {
-      setStep('eval');
-      if (isSpeakerOn) speak('모든 탐험을 마쳤어요! 스스로 평가해 볼까요?');
-    } else {
-      setStep('map');
-    }
-  };
-
-  // ===== 자기평가 → 사후 녹음 =====
-  const finishEval = () => {
-    if (selfStars === 0) { alert('별점을 매겨 주세요!'); return; }
-    setStep('postrecord');
-    if (isSpeakerOn) speak('이제 배운 후 다짐을 녹음해 봐요.');
-  };
-
-  const restartEval = () => {
-    setSelfStars(0);
-    setCompletedAreas(new Set());
-    setStep('map');
-  };
-
-  // ===== 최종 제출 =====
-  const submitAll = async () => {
-    if (recordTarget === 'post' && isRecording) stopRecording();
-    setIsSubmitting(true);
-    if (preRecordText || preRecordAudio) {
-      await callGAS('saveRecording', {
-        student: studentName, area: 'pre', kind:'pre',
-        prompt: '사전 학습 생각 말하기',
-        transcript: preRecordText, audioBase64: preRecordAudio,
-        stars: 0, sticker: null
-      });
-    }
-    if (postRecordText || postRecordAudio) {
-      await callGAS('saveRecording', {
-        student: studentName, area: 'post', kind:'post',
-        prompt: '사후 학습 다짐 말하기',
-        transcript: postRecordText, audioBase64: postRecordAudio,
-        stars: 0, sticker: null
-      });
-    }
-    await callGAS('saveResult', {
-      student: studentName,
-      accuracy: totalAnswered ? Math.round(correctCount/totalAnswered*100) : 0,
-      stars: totalStars,
-      recordings: midRecCount + (preRecordAudio?1:0) + (postRecordAudio?1:0),
-      areasDone: Array.from(completedAreas),
-      selfStars,
-      progress: '완료',
-      bestStreak
-    });
-    setIsSubmitting(false);
-    setStep('result');
-    triggerConfetti();
-    setTimeout(triggerConfetti, 600);
-    if (isSpeakerOn) playSfx('fanfare');
-  };
-
-  // ===== 스피커 토글 =====
-  const toggleSpeaker = () => {
-    const next = !isSpeakerOn;
-    setIsSpeakerOn(next);
-    if (!next) stopSpeak();
-    else {
-      if (step === 'play' && areaQuestions[currentQIdx]) speak(areaQuestions[currentQIdx].text);
-    }
-  };
-
-  // ===== 로딩 =====
-  if (isLoading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center flex-col text-blue-500 font-bold text-2xl">
-        <Loader2 className="animate-spin w-20 h-20 mb-4"/>
-        데이터를 불러오는 중...
+<!-- 6. 지도 -->
+<div class="screen" id="screen-map">
+  <div class="card card-full p-3" style="max-width: 1100px;">
+    <header class="quiz-header">
+      <div class="flex items-center gap-2">
+        <div id="map-char" class="text-4xl animate-float-slow"></div>
+        <div class="leading-tight">
+          <div class="text-sm text-pink-400 font-cute">탐험가</div>
+          <div class="text-xl font-bold text-pink-600 font-title" id="map-name"></div>
+        </div>
       </div>
-    );
-  }
+      <div class="text-center flex-1 mx-2">
+        <div class="text-lg font-bold text-orange-500 font-title" id="map-status">탐험 시작!</div>
+        <div class="progress-pill mt-1"><div id="map-progress" style="width:0%"></div></div>
+      </div>
+      <div class="flex items-center gap-1 flex-wrap max-w-[140px] justify-end" id="sticker-collection"></div>
+    </header>
+    
+    <main class="flex-1 relative bg-gradient-to-br from-green-50 via-sky-50 to-purple-50 rounded-3xl border-4 border-pink-200 overflow-hidden" id="map-arena" style="min-height: 50vh;"></main>
+    
+    <div class="text-center mt-2">
+      <div class="tutorial-bubble inline-block">✨ 가고 싶은 장소를 콕! 눌러주세요</div>
+    </div>
+  </div>
+</div>
 
-  // ============================================================
-  // 렌더링 — 480×820 캔버스 안에 모든 화면 꽉 채우기
-  // ============================================================
-  return (
-    <div className="w-full h-full font-gowun text-slate-800 flex flex-col items-center justify-center overflow-hidden relative p-3">
-      
-      {/* 배경 떠다니는 데코 */}
-      <div className="bg-decor">
-        <span style={{top:'5%',left:'8%',fontSize:'42px',animationDelay:'0s'}}>✨</span>
-        <span style={{top:'15%',right:'10%',fontSize:'38px',animationDelay:'1s'}}>⭐</span>
-        <span style={{top:'40%',left:'5%',fontSize:'34px',animationDelay:'2s'}}>💖</span>
-        <span style={{top:'55%',right:'8%',fontSize:'46px',animationDelay:'0.5s'}}>🌈</span>
-        <span style={{top:'72%',left:'12%',fontSize:'40px',animationDelay:'1.5s'}}>🌸</span>
-        <span style={{top:'85%',right:'15%',fontSize:'44px',animationDelay:'2.5s'}}>🦋</span>
-        <span style={{top:'25%',left:'45%',fontSize:'32px',animationDelay:'3s'}}>🎀</span>
-        <span style={{top:'62%',right:'42%',fontSize:'36px',animationDelay:'3.5s'}}>💫</span>
+<!-- 7. 퀴즈 -->
+<div class="screen" id="screen-quiz">
+  <div class="card card-full" style="max-width: 1000px;">
+    <header class="quiz-header">
+      <button class="btn-3d bg-slate-200 border-slate-400 text-slate-700 px-3 py-2 text-base" onclick="exitQuiz()">↩ 나가기</button>
+      <div class="flex items-center gap-2">
+        <span id="loc-icon" class="text-3xl"></span>
+        <span id="loc-name" class="text-xl font-bold text-pink-600 font-title"></span>
+      </div>
+      <div class="text-center">
+        <div class="text-base text-purple-400 font-cute"><span id="q-num">1</span>/<span id="q-total">5</span></div>
+        <div class="text-2xl font-title">⭐ <span id="q-score">0</span></div>
+      </div>
+    </header>
+    
+    <main class="flex-1 flex flex-col items-center justify-center p-1 text-center">
+      <div class="bg-gradient-to-br from-sky-50 via-pink-50 to-purple-50 w-full rounded-3xl p-4 border-4 border-pink-200 shadow-inner relative mb-3">
+        <div class="text-5xl mb-1 animate-bounce-soft">🤔</div>
+        <h2 id="q-text" class="txt-q text-slate-700 font-bold tts-text px-10"></h2>
+        <button class="absolute top-2 right-2 text-2xl bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="replayQuestion()">🔊</button>
       </div>
       
-      {/* 상단 바: 스피커 + 도움말 */}
-      <div className="absolute top-3 right-3 z-50 flex gap-2">
-        {(step === 'login' || step === 'intro') && (
-          <button onClick={() => { setShowTutorial(true); setTutorialStep(0); }}
-            className="p-3 bg-white rounded-full shadow-md border-2 border-slate-200">
-            <HelpCircle size={26} className="text-purple-500"/>
-          </button>
-        )}
-        <button onClick={toggleSpeaker}
-          className={`p-3 bg-white rounded-full shadow-md border-2 ${isSpeakerOn?'border-blue-400':'border-slate-200'}`}>
-          {isSpeakerOn ? <Volume2 size={26} className="text-blue-500"/> : <VolumeX size={26} className="text-slate-400"/>}
+      <div class="grid grid-cols-2 gap-3 w-full flex-1">
+        <button id="btn-c1" class="choice-btn" onclick="checkAnswer(1)">
+          <span id="c1-text" class="txt-lg"></span>
+        </button>
+        <button id="btn-c2" class="choice-btn" onclick="checkAnswer(2)">
+          <span id="c2-text" class="txt-lg"></span>
         </button>
       </div>
+      
+      <button class="btn-3d bg-amber-400 border-amber-600 text-white mt-3 text-xl px-6 py-3" onclick="useHelp()">
+        💡 도움 받기
+      </button>
+    </main>
+  </div>
+</div>
 
-      {/* 좌상단 정보 */}
-      {step !== 'login' && step !== 'result' && (
-        <div className="absolute top-3 left-3 z-50 flex gap-2 items-center">
-          <div className="bg-white px-3 py-2 rounded-full shadow font-bold text-base">🙋 {studentName}</div>
-          <div className="bg-yellow-100 px-3 py-2 rounded-full shadow font-bold text-base">⭐ {totalStars}</div>
-          {streak >= 2 && <div className="bg-orange-100 px-3 py-2 rounded-full shadow font-bold text-base">🔥 {streak}</div>}
-        </div>
-      )}
+<!-- 8. 피드백 모달 -->
+<div class="modal" id="modal-feedback">
+  <div class="modal-content text-center">
+    <div id="fb-icon" class="text-7xl mb-2"></div>
+    <h3 id="fb-title" class="text-3xl font-bold mb-3 font-title"></h3>
+    <div class="bg-gradient-to-br from-slate-50 to-pink-50 rounded-2xl p-3 mb-3 relative border-2 border-pink-100">
+      <button class="absolute -top-3 -right-3 text-lg bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText(document.getElementById('fb-desc').textContent)">🔊</button>
+      <p id="fb-desc" class="txt-md text-slate-700 font-bold"></p>
+    </div>
+    <button id="fb-action" class="btn-3d text-white w-full text-2xl py-3"></button>
+  </div>
+</div>
 
-      {/* 튜토리얼 모달 */}
-      <AnimatePresence>
-        {showTutorial && (
-          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{scale:0.8}} animate={{scale:1}} className="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl">
-              <div className="min-h-[280px] flex flex-col items-center justify-center gap-3">
-                <div className="text-8xl">{TUTORIAL_PAGES[tutorialStep].em}</div>
-                <div className="text-4xl font-black bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent">
-                  {TUTORIAL_PAGES[tutorialStep].title}
-                </div>
-                <div className="text-2xl font-bold whitespace-pre-wrap">{TUTORIAL_PAGES[tutorialStep].desc}</div>
-              </div>
-              <div className="flex gap-2 justify-center my-4">
-                {TUTORIAL_PAGES.map((_,i) => (
-                  <div key={i} className={`w-3 h-3 rounded-full transition-all ${i===tutorialStep?'bg-pink-500 scale-125':'bg-slate-300'}`}/>
-                ))}
-              </div>
-              <div className="flex gap-2 justify-center">
-                {tutorialStep > 0 && (
-                  <button onClick={() => setTutorialStep(s => s-1)}
-                    className="px-5 py-3 bg-slate-200 rounded-full font-black text-lg">← 이전</button>
-                )}
-                {tutorialStep < TUTORIAL_PAGES.length - 1 ? (
-                  <button onClick={() => setTutorialStep(s => s+1)}
-                    className="px-6 py-3 bg-gradient-to-r from-pink-500 to-orange-400 text-white rounded-full font-black text-lg shadow">다음 →</button>
-                ) : (
-                  <button onClick={() => setShowTutorial(false)}
-                    className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-full font-black text-lg shadow">시작! 🚀</button>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="w-full h-full max-w-5xl mx-auto flex flex-col items-center justify-center">
-      <AnimatePresence mode="wait">
-
-        {/* 1. 로그인 */}
-        {step === 'login' && (
-          <motion.div key="login" initial={{opacity:0,scale:0.9}} animate={{opacity:1,scale:1}} exit={{opacity:0}}
-            className="bg-white p-7 rounded-[2.5rem] shadow-2xl border-[6px] border-pink-200 w-full text-center space-y-5 relative z-10">
-            <div className="absolute -top-5 -left-5 text-6xl wiggle">🌸</div>
-            <div className="absolute -top-5 -right-5 text-6xl float-y" style={{animationDelay:'0.5s'}}>🎀</div>
-            <div className="absolute -bottom-3 -left-3 text-5xl float-y" style={{animationDelay:'1s'}}>💖</div>
-            <div className="absolute -bottom-3 -right-3 text-5xl wiggle" style={{animationDelay:'1.5s'}}>✨</div>
-            <SubjectFairy size={120}/>
-            <div className="space-y-2">
-              <h1 className="text-6xl font-cafe24 leading-tight">
-                <span className="bg-gradient-to-r from-pink-500 via-orange-400 to-blue-500 bg-clip-text text-transparent">🛡️ 안전탐험 ✨</span>
-              </h1>
-              <p className="text-2xl font-gowun text-slate-600">
-                <span className="hi-yellow">🌟 안전을 배우는</span><br/><span className="hi-pink">신나는 모험! 🌟</span>
-              </p>
-            </div>
-            <div className="bg-gradient-to-br from-pink-50 to-yellow-50 p-5 rounded-3xl border-4 border-pink-200">
-              <p className="text-2xl font-jua text-pink-700 mb-3">👋 내 이름을 골라요!</p>
-              <select value={studentName} onChange={e => setStudentName(e.target.value)}
-                className="w-full text-3xl font-jua p-3 border-4 border-pink-300 rounded-2xl outline-none bg-white text-pink-700 focus:border-pink-500">
-                <option value="">🙋 -- 이름 선택 --</option>
-                {students.map(s => <option key={s} value={s}>{s} 친구</option>)}
-              </select>
-            </div>
-            <button onClick={startApp}
-              className="btn-cute w-full py-5 bg-gradient-to-r from-pink-500 via-rose-500 to-orange-400 text-white text-4xl font-cafe24"
-              style={{boxShadow:'0 6px 0 #DB2777, 0 12px 24px rgba(0,0,0,0.15)'}}>
-              🚀 시작하기 ✨
-            </button>
-          </motion.div>
-        )}
-
-        {/* 2. 인트로 */}
-        {step === 'intro' && (
-          <motion.div key="intro" initial={{scale:0.9}} animate={{scale:1}} exit={{opacity:0}}
-            className="bg-white p-7 rounded-[2.5rem] shadow-2xl border-4 border-blue-100 w-full text-center space-y-5">
-            <SubjectFairy size={120}/>
-            <h1 className="text-4xl font-black text-pink-600">반가워, {studentName} 대원!</h1>
-            <div className="bg-gradient-to-br from-yellow-100 to-orange-100 p-5 rounded-2xl border-2 border-orange-200">
-              <p className="text-2xl font-black text-orange-700 mb-2">"나를 지키는<br/>안전 약속을 배우자!"</p>
-              <p className="text-lg font-bold text-orange-800">🧚 통합교과 요정과 함께<br/>5가지 영역을 탐험해요.</p>
-            </div>
-            <button onClick={() => { setStep('prerecord'); if (isSpeakerOn) speak('먼저 평소 알고 있던 안전 규칙을 자유롭게 말해 봐요.'); }}
-              className="w-full py-5 bg-gradient-to-r from-pink-500 to-orange-400 text-white rounded-3xl text-3xl font-black shadow-xl active:scale-95">
-              사전 학습 시작 <ChevronRight className="inline" size={28}/>
-            </button>
-          </motion.div>
-        )}
-
-        {/* 3. 사전 녹음 */}
-        {step === 'prerecord' && (
-          <motion.div key="pre" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
-            className="bg-white p-6 rounded-[2.5rem] shadow-2xl border-4 border-rose-200 w-full text-center space-y-4">
-            <h1 className="text-4xl font-black text-rose-500">탐험 전 나의 생각</h1>
-            <p className="text-xl font-bold text-slate-600 bg-rose-50 p-3 rounded-xl">
-              평소 알고 있는 '안전 규칙'을<br/>자유롭게 말해 주세요!
-            </p>
-            {!keyboardMode ? (
-              <>
-                <button onClick={() => isRecording ? stopRecording() : startRecording('pre')}
-                  className={`w-32 h-32 rounded-full flex items-center justify-center mx-auto text-white shadow-xl transition-all ${isRecording?'bg-red-500 pulse-record':'bg-rose-400'}`}>
-                  {isRecording ? <Square size={52}/> : <Mic size={52}/>}
-                </button>
-                <p className="text-lg font-bold text-slate-500">
-                  {isRecording ? '녹음 중... (네모 누르면 멈춤)' : '마이크 누르고 말해 봐요'}
-                </p>
-              </>
-            ) : (
-              <p className="text-xl font-bold text-rose-500 py-8">⌨️ 키보드로 직접 적어 보세요</p>
-            )}
-            <textarea value={preRecordText + (isRecording?interimText:'')}
-              onChange={e => setPreRecordText(e.target.value)}
-              placeholder="여기에 말한 내용이 글자로 나타나요. 직접 적어도 돼요!"
-              className="w-full h-24 bg-slate-50 rounded-2xl border-2 border-slate-200 p-3 text-left text-slate-700 font-bold text-lg resize-none outline-none focus:border-rose-400"/>
-            <button onClick={() => { if (isRecording) stopRecording(); setKeyboardMode(!keyboardMode); }}
-              className="text-base text-rose-500 underline font-bold">{keyboardMode?'🎤 마이크로 녹음':'⌨️ 키보드로 입력'}</button>
-            <button onClick={() => { if (isRecording) stopRecording(); setKeyboardMode(false); setStep('map'); }}
-              className="w-full py-4 bg-slate-800 text-white rounded-2xl text-2xl font-black shadow-md active:scale-95">
-              안전 지도 보기 <ChevronRight className="inline" size={26}/>
-            </button>
-          </motion.div>
-        )}
-
-        {/* 4. 지도 */}
-        {step === 'map' && (
-          <motion.div key="map" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
-            className="relative w-full h-full bg-gradient-to-br from-sky-50 to-blue-100 rounded-[2.5rem] border-[8px] border-white shadow-2xl overflow-hidden mt-16">
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white px-5 py-2 rounded-full shadow font-black text-blue-600 text-xl whitespace-nowrap">
-              🗺️ 안전 지도 ({completedAreas.size} / {groupedAreas.length})
-            </div>
-            <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30 z-0" viewBox="0 0 100 100" preserveAspectRatio="none">
-              {groupedAreas.length > 1 && (
-                <path d={`M ${groupedAreas.map(m => `${m.pos.x} ${m.pos.y}`).join(' L ')}`}
-                  fill="none" stroke="#0284C7" strokeWidth="1.2" strokeDasharray="3 3"/>
-              )}
-            </svg>
-            {groupedAreas.map(m => {
-              const isDone = completedAreas.has(m.id);
-              return (
-                <div key={m.id} className="absolute -translate-x-1/2 -translate-y-1/2 z-10"
-                  style={{ left:`${m.pos.x}%`, top:`${m.pos.y}%` }}>
-                  <motion.button whileHover={{scale:1.1}} whileTap={{scale:0.9}} onClick={() => !isDone && selectArea(m)}
-                    disabled={isDone}
-                    className={`px-4 py-3 rounded-2xl shadow-xl border-4 flex flex-col items-center gap-1 transition-colors relative ${isDone?'bg-slate-200 border-slate-300 opacity-60':`${m.bg} border-white text-white scale-110`}`}>
-                    <m.Icon size={36}/>
-                    <span className="text-base font-black whitespace-nowrap">{m.name}</span>
-                    {isDone && <CheckCircle2 className="absolute -top-2 -right-2 text-green-600 bg-white rounded-full p-0.5" size={24}/>}
-                  </motion.button>
-                </div>
-              );
-            })}
-            {completedAreas.size === groupedAreas.length && groupedAreas.length > 0 && (
-              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30">
-                <button onClick={() => { setStep('eval'); if (isSpeakerOn) speak('스스로 평가해 볼까요?'); }}
-                  className="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-2xl font-black shadow-xl">
-                  최종 평가하기 ⭐
-                </button>
-              </div>
-            )}
-          </motion.div>
-        )}
-
-        {/* 5. 개념학습 */}
-        {step === 'concept' && currentArea && (
-          <ConceptScreen
-            data={CONCEPT_DATA[currentArea.id]}
-            areaName={currentArea.name}
-            isSpeakerOn={isSpeakerOn}
-            onDone={() => setStep('count')}
-          />
-        )}
-
-        {/* 6. 문제수 선택 */}
-        {step === 'count' && currentArea && (
-          <motion.div key="count" initial={{opacity:0}} animate={{opacity:1}}
-            className="bg-white p-6 rounded-[2.5rem] shadow-2xl border-4 border-blue-100 w-full text-center space-y-5">
-            <h1 className="text-3xl font-black text-blue-600">🎯 몇 문제 풀어 볼까요?</h1>
-            <p className="text-xl font-bold text-slate-600">하고 싶은 만큼 골라 봐요!</p>
-            <div className="grid grid-cols-3 gap-3">
-              {[3,5,10].map(n => (
-                <button key={n} onClick={() => startQuiz(n)}
-                  className="bg-gradient-to-br from-pink-100 to-yellow-100 rounded-2xl p-5 border-4 border-transparent hover:border-pink-300 active:scale-95">
-                  <div className="text-6xl font-black bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent">{n}</div>
-                  <div className="text-xl font-bold mt-1">문제</div>
-                  <div className="text-sm text-slate-500 mt-1">{n===3?'짧게':n===5?'알맞게':'더 해볼래!'}</div>
-                </button>
-              ))}
-            </div>
-            <button onClick={() => setStep('map')} className="text-base text-slate-500 underline font-bold">← 영역 다시 고르기</button>
-          </motion.div>
-        )}
-
-        {/* 7. 문제 풀이 */}
-        {step === 'play' && areaQuestions.length > 0 && (
-          <PlayScreen
-            area={currentArea}
-            question={areaQuestions[currentQIdx]}
-            qIdx={currentQIdx}
-            totalQ={areaQuestions.length}
-            feedback={feedback}
-            voiceAnswerText={voiceAnswerText}
-            setVoiceAnswerText={setVoiceAnswerText}
-            interimText={interimText}
-            isRecording={isRecording}
-            isSpeakerOn={isSpeakerOn}
-            keyboardMode={keyboardMode}
-            setKeyboardMode={setKeyboardMode}
-            helpUsedThisQ={helpUsedThisQ}
-            onChoice={handleChoice}
-            onVoiceCheck={handleVoiceCheck}
-            onToggleRec={() => isRecording ? stopRecording() : startRecording('voice')}
-            onHelp={useHelp}
-            onNext={nextQuestion}
-            onRetry={retryQuestion}
-            onStopRec={stopRecording}
-          />
-        )}
-
-        {/* 8. 중간/최종 녹음 */}
-        {step === 'midrec' && midRecording && (
-          <RecordReviewScreen
-            recording={midRecording}
-            setRecording={setMidRecording}
-            phase={midRecPhase}
-            setPhase={setMidRecPhase}
-            isRecording={isRecording}
-            interimText={interimText}
-            isSpeakerOn={isSpeakerOn}
-            keyboardMode={keyboardMode}
-            setKeyboardMode={setKeyboardMode}
-            onStartRec={() => startRecording('mid')}
-            onStopRec={stopRecording}
-            onRetry={retryMid}
-            onDone={finishMidReview}
-            title={midRecording.isFinal ? '🎙️ 영역 마무리 녹음' : '🎙️ 중간 녹음'}
-          />
-        )}
-
-        {/* 9. 성찰 */}
-        {step === 'reflect' && (
-          <motion.div key="reflect" initial={{opacity:0}} animate={{opacity:1}}
-            className="bg-white p-6 rounded-[2.5rem] shadow-2xl border-4 border-yellow-100 w-full space-y-4">
-            <h1 className="text-3xl font-black text-yellow-600 text-center">💭 잠깐, 생각해 봐요</h1>
-            <div>
-              <p className="text-xl font-bold mb-2">🌟 가장 기억에 남는 건?</p>
-              <textarea value={reflectA1} onChange={e=>setReflectA1(e.target.value)}
-                placeholder="자유롭게 적어 봐요..."
-                className="w-full h-16 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-2 text-lg font-bold resize-none outline-none focus:border-yellow-400"/>
-            </div>
-            <div>
-              <p className="text-xl font-bold mb-2">🌈 어떤 약속을 지키고 싶나요?</p>
-              <textarea value={reflectA2} onChange={e=>setReflectA2(e.target.value)}
-                placeholder="다짐을 적어 봐요..."
-                className="w-full h-16 bg-pink-50 border-2 border-pink-200 rounded-xl p-2 text-lg font-bold resize-none outline-none focus:border-pink-400"/>
-            </div>
-            <div className="text-center">
-              <p className="text-base font-bold text-slate-500 mb-1">⭐ 다짐을 별로 평가해요</p>
-              <div className="flex justify-center gap-1">
-                {[1,2,3,4,5].map(n => (
-                  <button key={n} onClick={() => setReflectStars(n)}>
-                    <Star size={44} className={n<=reflectStars?'fill-yellow-400 text-yellow-500':'text-slate-200'}/>
-                  </button>
-                ))}
-              </div>
-            </div>
-            {reflectStars > 0 && reflectStars <= 3 && (
-              <p className="text-center text-base text-orange-500 font-bold">⚠️ 다짐이 약해요. 다시 적어 봐요!</p>
-            )}
-            <button onClick={finishReflect}
-              disabled={reflectStars === 0}
-              className="w-full py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-2xl text-2xl font-black shadow disabled:opacity-50">
-              다음으로 ➡️
-            </button>
-          </motion.div>
-        )}
-
-        {/* 10. 자기평가 */}
-        {step === 'eval' && (
-          <motion.div key="eval" initial={{scale:0.9}} animate={{scale:1}}
-            className="bg-white p-7 rounded-[2.5rem] shadow-2xl border-4 border-yellow-200 w-full text-center space-y-5">
-            <h1 className="text-3xl font-black text-yellow-600">⭐ 나의 안전탐험 점수는?</h1>
-            <p className="text-xl font-bold text-slate-600">스스로 얼마나 잘 배웠는지<br/>별을 눌러 평가해 봐요!</p>
-            <div className="flex justify-center gap-2">
-              {[1,2,3,4,5].map(n => (
-                <button key={n} onClick={() => setSelfStars(n)} className="transition-transform hover:scale-125">
-                  <Star size={60} className={n<=selfStars?'fill-yellow-400 text-yellow-500':'text-slate-200'} strokeWidth={1}/>
-                </button>
-              ))}
-            </div>
-            {selfStars > 0 && selfStars <= 3 && (
-              <button onClick={restartEval}
-                className="w-full py-3 bg-orange-100 text-orange-700 border-2 border-orange-300 rounded-2xl text-lg font-black">
-                <RotateCcw className="inline mr-1" size={22}/> 조금 더 다시 해볼래요
-              </button>
-            )}
-            {selfStars > 0 && (
-              <button onClick={finishEval}
-                className="w-full py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-2xl text-2xl font-black shadow active:scale-95">
-                다음 단계로 ➡️
-              </button>
-            )}
-          </motion.div>
-        )}
-
-        {/* 11. 사후 녹음 */}
-        {step === 'postrecord' && (
-          <motion.div key="post" initial={{opacity:0}} animate={{opacity:1}}
-            className="bg-white p-6 rounded-[2.5rem] shadow-2xl border-4 border-rose-200 w-full text-center space-y-4">
-            <h1 className="text-4xl font-black text-rose-500">탐험 후 나의 다짐</h1>
-            <p className="text-xl font-bold text-slate-600 bg-rose-50 p-3 rounded-xl">
-              새롭게 알게 된 점이나<br/>앞으로의 다짐을 말해 주세요!
-            </p>
-            {!keyboardMode ? (
-              <>
-                <button onClick={() => isRecording ? stopRecording() : startRecording('post')}
-                  className={`w-32 h-32 rounded-full flex items-center justify-center mx-auto text-white shadow-xl transition-all ${isRecording?'bg-red-500 pulse-record':'bg-rose-400'}`}>
-                  {isRecording ? <Square size={52}/> : <Mic size={52}/>}
-                </button>
-                <p className="text-lg font-bold text-slate-500">
-                  {isRecording ? '녹음 중...' : '마이크를 누르고 말해 봐요'}
-                </p>
-              </>
-            ) : (
-              <p className="text-xl font-bold text-rose-500 py-8">⌨️ 키보드로 직접 적어 보세요</p>
-            )}
-            <textarea value={postRecordText + (isRecording?interimText:'')}
-              onChange={e => setPostRecordText(e.target.value)}
-              placeholder="여기에 말한 내용이 글자로 나타나요"
-              className="w-full h-20 bg-slate-50 rounded-2xl border-2 border-slate-200 p-3 text-left text-slate-700 font-bold text-lg resize-none outline-none focus:border-rose-400"/>
-            <button onClick={() => { if (isRecording) stopRecording(); setKeyboardMode(!keyboardMode); }}
-              className="text-base text-rose-500 underline font-bold">{keyboardMode?'🎤 마이크로':'⌨️ 키보드로'}</button>
-            <button disabled={isSubmitting} onClick={submitAll}
-              className="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-rose-500 to-orange-400 text-white rounded-2xl text-2xl font-black shadow disabled:opacity-50">
-              {isSubmitting ? <><Loader2 className="animate-spin"/> 저장 중...</> : <>최종 제출하기 <ChevronRight size={28}/></>}
-            </button>
-          </motion.div>
-        )}
-
-        {/* 12. 수료증 */}
-        {step === 'result' && (
-          <motion.div key="result" initial={{scale:0.8,opacity:0}} animate={{scale:1,opacity:1}}
-            className="bg-white p-5 rounded-[2.5rem] shadow-2xl border-[8px] border-orange-300 w-full text-center space-y-3 relative z-10">
-            <div className="absolute -top-6 -left-6 text-6xl wiggle glow-gold">🏆</div>
-            <div className="absolute -top-6 -right-6 text-5xl float-y glow-gold" style={{animationDelay:'0.5s'}}>🎉</div>
-            <div className="absolute -bottom-4 -left-4 text-5xl wiggle" style={{animationDelay:'1s'}}>🎊</div>
-            <div className="absolute -bottom-4 -right-4 text-5xl float-y" style={{animationDelay:'1.5s'}}>✨</div>
-            <SubjectFairy size={100}/>
-            <h1 className="text-4xl font-cafe24">
-              <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">🏆 안전탐험 완료! 🎉</span>
-            </h1>
-            <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 p-4 rounded-3xl border-4 border-dashed border-orange-300 space-y-2 relative">
-              <ShieldCheck size={56} className="text-orange-500 mx-auto float-y"/>
-              <p className="text-2xl font-cafe24 text-orange-700">안전 지킴이 수료증</p>
-              <p className="text-3xl font-jua text-pink-600 txt-shadow-pink">{studentName}</p>
-              <p className="text-base font-gowun text-slate-700">
-                위 대원은 <span className="hi-yellow">모든 안전 미션</span>을<br/>
-                <span className="hi-pink">훌륭히 마쳤음</span>을 증명합니다 ✨
-              </p>
-              <div className="bg-white p-3 rounded-2xl border-2 border-orange-200 text-left text-base space-y-1.5 font-gowun">
-                <div className="flex justify-between"><span>🎯 정답률</span><b className="font-jua text-xl text-orange-600">{totalAnswered?Math.round(correctCount/totalAnswered*100):0}%</b></div>
-                <div className="flex justify-between"><span>⭐ 받은 별</span><b className="font-jua text-xl text-yellow-600">{totalStars}</b></div>
-                <div className="flex justify-between"><span>🔥 최고 연속</span><b className="font-jua text-xl text-orange-500">{bestStreak}</b></div>
-                <div className="flex justify-between"><span>🗺️ 완료 영역</span><b className="font-jua text-xl text-blue-600">{completedAreas.size} / {groupedAreas.length}</b></div>
-              </div>
-              <p className="text-sm font-gaegu text-orange-500">{new Date().toLocaleDateString('ko-KR')}</p>
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-red-500 text-white rounded-full flex items-center justify-center border-[5px] border-double border-white shadow-xl rotate-12">
-                <span className="font-cafe24 text-lg leading-tight">참!<br/>잘했어요</span>
-              </div>
-            </div>
-            <button onClick={() => window.location.reload()}
-              className="btn-cute w-full py-3 bg-gradient-to-r from-slate-400 to-slate-500 text-white text-2xl font-cafe24"
-              style={{boxShadow:'0 5px 0 #475569'}}>
-              🔄 다시 시작
-            </button>
-          </motion.div>
-        )}
-
-      </AnimatePresence>
+<!-- 9. 중간 녹음 -->
+<div class="screen" id="screen-mid-record">
+  <div class="card card-full rec-screen text-center" style="max-width: 720px;">
+    <div class="text-5xl mb-1 animate-heart-beat">🎙️</div>
+    <h2 class="txt-hero text-rainbow mb-1">잠깐!</h2>
+    <p class="text-lg text-purple-400 mb-3 font-cute" id="mid-record-prompt-num">[중간 녹음 1/N]</p>
+    
+    <div class="prompt-box bg-gradient-to-br from-rose-50 to-pink-50 border-4 border-rose-200 mb-3 relative">
+      <button class="absolute -top-2 -right-2 text-base bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText(document.getElementById('mid-prompt-text').textContent)">🔊</button>
+      <p id="mid-prompt-text" class="txt-lg text-slate-700 font-bold mb-2">방금 배운 학교 규칙 중 하나를 골라 말해보세요!</p>
+      <div class="bg-white/80 p-2 rounded-xl border-2 border-rose-300">
+        <p class="text-base text-rose-600 font-cute">💬 예시: "복도에서 사뿐사뿐 걸을 거예요"</p>
       </div>
     </div>
-  );
-}
-
-// ============================================================
-// 개념학습 컴포넌트
-// ============================================================
-function ConceptScreen({ data, areaName, isSpeakerOn, onDone }) {
-  const [placed, setPlaced] = useState({});
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [wrongs, setWrongs] = useState({});
-
-  const handleItemClick = (itemId) => {
-    if (isSpeakerOn) playSfx('click');
-    setSelectedItem(itemId === selectedItem ? null : itemId);
-  };
-
-  const placeOn = (targetId) => {
-    if (!selectedItem) return;
-    const target = data.targets.find(t => t.id === targetId);
-    const correct = target.accepts === selectedItem;
-    setPlaced(prev => ({...prev, [targetId]: selectedItem}));
-    setWrongs(prev => ({...prev, [targetId]: !correct}));
-    setSelectedItem(null);
-    if (correct) {
-      if (isSpeakerOn) playSfx('pop');
-      triggerBurst(['✨','🌟'], 8);
-    }
-  };
-
-  const unplace = (targetId) => {
-    setPlaced(prev => { const c = {...prev}; delete c[targetId]; return c; });
-    setWrongs(prev => { const c = {...prev}; delete c[targetId]; return c; });
-  };
-
-  const allDone = data.targets.every(t => placed[t.id] && !wrongs[t.id]);
-  const placedItems = new Set(Object.values(placed));
-
-  useEffect(() => {
-    if (allDone) {
-      if (isSpeakerOn) playSfx('correct');
-      triggerConfetti();
-    }
-  }, [allDone]);
-
-  return (
-    <motion.div key="concept" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
-      className="w-full h-full flex flex-col items-center gap-3 pt-16 px-3">
-      <h1 className="text-3xl font-black text-purple-600 text-center">🧩 {areaName} 익히기</h1>
-      <p className="text-lg font-bold text-slate-600 text-center">{data.sub}</p>
-      <p className="text-sm text-slate-500 text-center">💡 아래 카드를 골라 → 위 칸에 옮겨 봐요!<br/>틀린 카드는 다시 누르면 돌아와요</p>
-
-      <div className="w-full space-y-2">
-        {data.targets.map(t => {
-          const itemId = placed[t.id];
-          const item = itemId && data.items.find(i => i.id === itemId);
-          const isWrong = wrongs[t.id];
-          return (
-            <div key={t.id}
-              onClick={() => itemId ? unplace(t.id) : placeOn(t.id)}
-              className={`bg-gradient-to-r from-blue-50 to-pink-50 border-4 border-dashed rounded-2xl p-3 flex items-center gap-3 cursor-pointer transition-all ${selectedItem && !itemId?'border-yellow-400 scale-[1.02]':'border-pink-300'}`}>
-              <div className="font-black text-lg flex-shrink-0 w-36">{t.label}</div>
-              <div className={`flex-1 min-h-[52px] rounded-xl flex items-center justify-center font-black text-lg ${item?(isWrong?'bg-red-200 text-red-800':'bg-green-200 text-green-800'):'bg-white/50 text-slate-400'}`}>
-                {item ? item.label : '여기로 옮겨요'}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="w-full grid grid-cols-3 gap-2 mt-1">
-        {data.items.map(i => {
-          const isPlaced = placedItems.has(i.id);
-          if (isPlaced) return <div key={i.id}/>;
-          return (
-            <button key={i.id} onClick={() => handleItemClick(i.id)}
-              className={`bg-gradient-to-br from-yellow-300 to-orange-400 text-white rounded-2xl p-3 font-black text-base shadow-md transition-all ${selectedItem===i.id?'ring-4 ring-pink-400 scale-105':''}`}>
-              {i.label}
-            </button>
-          );
-        })}
-      </div>
-
-      <button onClick={onDone} disabled={!allDone}
-        className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-black text-xl shadow disabled:opacity-40 mt-2">
-        다음으로 ➡️
+    
+    <div id="mid-transcript" class="live-transcript mb-3">🗣️ 말한 내용이 여기에 나와요</div>
+    
+    <details class="mb-3 text-left">
+      <summary class="cursor-pointer text-lg text-purple-500 font-bold font-cute">⌨️ 또는 키보드로 입력하기</summary>
+      <textarea id="mid-keyboard" class="w-full p-3 rounded-xl border-4 border-purple-300 mt-2 text-xl font-bold text-slate-800 font-title bg-white" rows="2" placeholder="여기에 직접 써도 돼요" oninput="onMidKeyboardInput()"></textarea>
+      <button id="mid-keyboard-submit" class="btn-3d bg-purple-500 border-purple-700 text-white w-full text-xl py-2 mt-2" onclick="submitMidByKeyboard()" disabled>
+        📝 글로 보내기
       </button>
-    </motion.div>
-  );
-}
-
-// ============================================================
-// 문제 풀이 컴포넌트
-// ============================================================
-function PlayScreen({ area, question, qIdx, totalQ, feedback, voiceAnswerText, setVoiceAnswerText, interimText, isRecording, isSpeakerOn, keyboardMode, setKeyboardMode, helpUsedThisQ, onChoice, onVoiceCheck, onToggleRec, onHelp, onNext, onRetry, onStopRec }) {
-  return (
-    <motion.div key="play" initial={{y:30,opacity:0}} animate={{y:0,opacity:1}}
-      className="w-full flex flex-col items-center gap-2 pt-16 px-2">
-      <div className="flex items-center gap-2 mb-1">
-        <span className={`${area.bg} text-white px-4 py-1.5 rounded-full text-base font-black flex items-center gap-1`}>
-          <area.Icon size={18}/>{area.name}
-        </span>
-        <span className="text-base font-bold text-slate-500">{qIdx+1} / {totalQ}</span>
-      </div>
-
-      <div className={`bg-white p-4 rounded-3xl shadow-2xl border-4 border-blue-50 w-full transition-all ${feedback?'scale-95 opacity-80':''}`}>
-        <h2 className="text-xl font-black leading-tight flex items-start gap-2 mb-3">
-          <span className="bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-lg">Q</span>
-          <span>{question.text}</span>
-        </h2>
-
-        {question.type === '음성' ? (
-          <div className="flex flex-col items-center gap-2">
-            {!keyboardMode && (
-              <button disabled={feedback!==null} onClick={onToggleRec}
-                className={`w-24 h-24 rounded-full flex items-center justify-center text-white shadow-xl transition-all ${isRecording?'bg-red-500 pulse-record':'bg-blue-500'} ${feedback?'opacity-50':''}`}>
-                {isRecording ? <Square size={40}/> : <Mic size={40}/>}
-              </button>
-            )}
-            <p className="text-base font-bold text-slate-500 text-center">
-              {keyboardMode ? '⌨️ 아래에 직접 적어요' : (isRecording ? '듣고 있어요...' : '🎤 누르고 정답을 말해 봐요')}
-            </p>
-            <textarea
-              value={voiceAnswerText + (isRecording?interimText:'')}
-              onChange={e => setVoiceAnswerText(e.target.value)}
-              placeholder="여기에 글로 적어도 돼요!"
-              disabled={feedback!==null}
-              className="w-full h-14 bg-slate-50 rounded-xl border-2 border-slate-200 p-2 text-base font-bold resize-none outline-none focus:border-blue-400"/>
-            <button onClick={() => { if (isRecording) onStopRec(); setKeyboardMode(!keyboardMode); }}
-              className="text-sm text-blue-500 underline font-bold">{keyboardMode?'🎤 마이크로':'⌨️ 키보드로'}</button>
-            {!feedback && voiceAnswerText && !isRecording && (
-              <button onClick={onVoiceCheck}
-                className="px-5 py-3 bg-green-500 text-white rounded-2xl text-lg font-black shadow active:scale-95">
-                ✅ 정답 확인하기
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {question.options.map((opt, idx) => (
-              <button key={idx} disabled={feedback!==null} onClick={() => onChoice(idx)}
-                className={`w-full p-3 rounded-2xl border-4 text-left text-lg font-bold transition-all ${feedback?((idx+1)===Number(question.answer)?'border-green-500 bg-green-50 text-green-700':'opacity-30 border-slate-100'):'border-slate-100 hover:border-blue-300 hover:bg-blue-50'}`}>
-                <span className="inline-block w-8 h-8 bg-blue-100 text-blue-700 rounded-full text-center mr-2 font-black leading-8">{idx+1}</span>
-                {opt}
-              </button>
-            ))}
-          </div>
-        )}
-
-        <div className="flex justify-between items-center mt-3">
-          <button onClick={onHelp} disabled={helpUsedThisQ}
-            className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full text-base font-black flex items-center gap-1 disabled:opacity-50">
-            💜 도움받기 {helpUsedThisQ && '✓'}
-          </button>
+    </details>
+    
+    <div class="mic-waves mb-2" id="mid-waves" style="display:none"><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div></div>
+    
+    <button id="mid-rec-btn" class="btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2" onclick="toggleMidRecording()">
+      🎤 녹음 시작
+    </button>
+    
+    <div id="mid-after" class="hidden">
+      <audio id="mid-audio" controls class="w-full mb-2 rounded-full"></audio>
+      <div class="star-box bg-gradient-to-br from-yellow-50 to-amber-50 border-4 border-yellow-300 mb-2">
+        <p class="text-xl font-bold mb-1 font-title text-amber-700">⭐ 내 녹음 어땠어요?</p>
+        <div class="star-rating" id="mid-stars">
+          <button class="star-btn" onclick="rateMidRecording(1)">⭐</button>
+          <button class="star-btn" onclick="rateMidRecording(2)">⭐</button>
+          <button class="star-btn" onclick="rateMidRecording(3)">⭐</button>
+          <button class="star-btn" onclick="rateMidRecording(4)">⭐</button>
+          <button class="star-btn" onclick="rateMidRecording(5)">⭐</button>
         </div>
+        <p class="text-sm text-amber-600 mt-1 font-cute">별 3개 이하면 다시 녹음해요!</p>
       </div>
+      <div class="flex gap-2">
+        <button class="btn-3d bg-slate-300 border-slate-500 text-slate-700 flex-1 text-lg py-2" onclick="midReRecord()">🔄 다시 녹음</button>
+        <button id="mid-continue-btn" class="btn-3d bg-green-500 border-green-700 text-white flex-1 text-lg py-2" onclick="midContinue()" disabled>▶ 계속하기</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-      <AnimatePresence>
-        {feedback && (
-          <motion.div initial={{y:20,opacity:0}} animate={{y:0,opacity:1}}
-            className={`p-3 rounded-3xl border-4 shadow-xl w-full ${feedback.correct?'bg-emerald-50 border-emerald-200':'bg-orange-50 border-orange-200'}`}>
-            <div className="flex items-start gap-2 mb-2">
-              <div className="text-3xl">{feedback.correct?'🌟':'💡'}</div>
-              <div className="flex-1">
-                <p className={`text-lg font-black ${feedback.correct?'text-emerald-800':'text-orange-800'}`}>{feedback.main}</p>
-                <p className="text-base font-bold whitespace-pre-wrap mt-1">{feedback.sub}</p>
-              </div>
-            </div>
-            <button onClick={feedback.correct?onNext:onRetry}
-              className={`w-full py-2 rounded-xl text-white font-black text-lg ${feedback.correct?'bg-emerald-600':'bg-orange-500'}`}>
-              {feedback.correct ? <>다음으로 ➡️</> : <><RotateCcw className="inline mr-1" size={20}/> 다시 풀기</>}
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
+<!-- 10. 최종 녹음 -->
+<div class="screen" id="screen-final-record">
+  <div class="card card-full rec-screen" style="max-width: 820px;">
+    <h2 class="txt-hero text-rainbow text-center mb-2 flex items-center justify-center gap-2">
+      🎙️ 내 생각 들려주기
+      <button class="text-xl bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText('오늘 배운 학교 규칙 중에서 친구들에게 알려주고 싶은 것을 말해보세요')">🔊</button>
+    </h2>
+    
+    <div class="prompt-box bg-gradient-to-br from-emerald-50 to-teal-50 border-4 border-emerald-200 mb-3 relative">
+      <button class="absolute -top-2 -right-2 text-base bg-gradient-to-br from-yellow-200 to-yellow-300 p-2 rounded-full border-4 border-yellow-400 shadow" onclick="speakText(document.getElementById('final-prompt').textContent)">🔊</button>
+      <p id="final-prompt" class="txt-lg text-emerald-800 font-bold text-center mb-2">
+        🌈 오늘 배운 학교 규칙 중에서 알려주고 싶은 것을 말해주세요!
+      </p>
+      <div class="bg-white/80 p-2 rounded-xl border-2 border-emerald-300 text-center">
+        <p class="text-base text-emerald-600 font-cute">💬 예시: "도서관에서는 소곤소곤 말해야 해"</p>
+      </div>
+    </div>
+    
+    <div id="final-transcript" class="live-transcript mb-3">🗣️ 내가 한 말이 여기에 나와요</div>
+    
+    <details class="mb-3 text-left">
+      <summary class="cursor-pointer text-lg text-purple-500 font-bold font-cute">⌨️ 또는 키보드로 입력</summary>
+      <textarea id="final-keyboard" class="w-full p-3 rounded-xl border-4 border-purple-300 mt-2 text-xl font-bold text-slate-800 font-title bg-white" rows="2" oninput="onFinalKeyboardInput()"></textarea>
+      <button id="final-keyboard-submit" class="btn-3d bg-purple-500 border-purple-700 text-white w-full text-xl py-2 mt-2" onclick="submitFinalByKeyboard()" disabled>
+        📝 글로 보내기
+      </button>
+    </details>
+    
+    <div class="mic-waves mb-2" id="final-waves" style="display:none"><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div><div class="mic-wave"></div></div>
+    
+    <button id="final-rec-btn" class="btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2" onclick="toggleFinalRecording()">
+      🎤 녹음 시작
+    </button>
+    
+    <div id="final-after" class="hidden">
+      <audio id="final-audio" controls class="w-full mb-2 rounded-full"></audio>
+      <div class="star-box bg-gradient-to-br from-yellow-50 to-amber-50 border-4 border-yellow-300 mb-2 text-center">
+        <p class="text-xl font-bold mb-1 font-title text-amber-700">⭐ 잘 말한 것 같아요?</p>
+        <div class="star-rating" id="final-stars">
+          <button class="star-btn" onclick="rateFinalRecording(1)">⭐</button>
+          <button class="star-btn" onclick="rateFinalRecording(2)">⭐</button>
+          <button class="star-btn" onclick="rateFinalRecording(3)">⭐</button>
+          <button class="star-btn" onclick="rateFinalRecording(4)">⭐</button>
+          <button class="star-btn" onclick="rateFinalRecording(5)">⭐</button>
+        </div>
+        <p class="text-sm text-amber-600 mt-1 font-cute">⚠️ 별 3개 이하면 다시 녹음</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn-3d bg-slate-300 border-slate-500 text-slate-700 flex-1 text-lg py-2" onclick="finalReRecord()">🔄 다시 녹음</button>
+        <button id="final-submit-btn" class="btn-3d bg-emerald-500 border-emerald-700 text-white flex-1 text-lg py-2" onclick="submitAll()" disabled>📤 제출하기</button>
+      </div>
+    </div>
+    
+    <div id="submit-overlay" class="hidden text-center p-4">
+      <div class="text-5xl mb-2 animate-bounce-soft">📤</div>
+      <p class="text-xl font-bold text-pink-600 font-title">선생님께 보내고 있어요...</p>
+    </div>
+  </div>
+</div>
+
+<!-- 11. 내 목소리 다시 듣기 -->
+<div class="screen" id="screen-listen-back">
+  <div class="card card-full" style="max-width: 900px;">
+    <div class="text-center mb-2">
+      <div class="text-6xl mb-1 animate-heart-beat">🎧</div>
+      <h2 class="txt-hero text-rainbow">내 목소리 다시 듣기</h2>
+      <p class="text-lg text-purple-500 font-cute mt-1">오늘 녹음한 내 목소리예요!</p>
+    </div>
+    
+    <div class="flex-1 overflow-y-auto no-scrollbar p-1 space-y-2" id="recording-list"></div>
+    
+    <button class="btn-3d bg-green-500 border-green-700 text-white w-full text-2xl py-3 mt-2 animate-glow" onclick="goToReport()">
+      🏆 결과 보러 가기
+    </button>
+  </div>
+</div>
+
+<!-- 12. 결과 리포트 -->
+<div class="screen" id="screen-report">
+  <div class="card card-full no-scrollbar" style="max-width: 1100px;">
+    <div class="text-center mb-2">
+      <div class="text-6xl mb-1 animate-bounce-soft">🏆</div>
+      <h2 class="txt-hero text-rainbow">정말 멋져요!</h2>
+      <p class="text-2xl text-pink-500 mt-1 font-cute"><span id="report-name" class="font-bold text-pink-600 font-title"></span> 어린이</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+      <div class="bg-gradient-to-br from-slate-50 to-pink-50 p-3 rounded-2xl border-4 border-pink-200">
+        <p class="text-lg font-bold text-center mb-2 font-cute text-pink-600">📊 내가 배운 영역</p>
+        <div style="height: 220px; position: relative;"><canvas id="radar-chart"></canvas></div>
+      </div>
+      <div class="bg-gradient-to-br from-slate-50 to-sky-50 p-3 rounded-2xl border-4 border-sky-200">
+        <p class="text-lg font-bold text-center mb-2 font-cute text-sky-600">🚦 영역별 결과</p>
+        <div id="traffic-lights" class="grid grid-cols-3 gap-2"></div>
+      </div>
+    </div>
+    
+    <div class="bg-gradient-to-br from-pink-50 to-purple-50 p-3 rounded-2xl border-4 border-pink-200 mb-3 text-center">
+      <p class="text-xl font-bold text-pink-700 mb-2 font-cute">🌟 오늘 모은 스티커</p>
+      <div id="report-stickers" class="flex flex-wrap justify-center gap-2"></div>
+    </div>
+    
+    <div class="flex gap-2">
+      <button class="btn-3d bg-green-500 border-green-700 text-white flex-1 text-xl py-3" onclick="downloadCertificate()">📥 수료증 저장</button>
+      <button class="btn-3d bg-slate-300 border-slate-500 text-slate-700 px-4 py-3 text-base" onclick="location.reload()">🏠 처음으로</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- 사용 설명서 -->
+<div class="modal" id="modal-instructions">
+  <div class="modal-content">
+    <h3 class="txt-hero text-rainbow text-center mb-3">📖 활동 안내</h3>
+    <div class="space-y-2 text-base font-cute">
+      <div class="step-card bg-gradient-to-r from-pink-50 to-rose-50 border-pink-200">
+        <p class="font-bold text-pink-700 text-lg">1️⃣ 이름 찾기</p>
+        <p class="text-slate-600 pl-5">선생님이 등록한 이름 중 내 이름을 골라요</p>
+      </div>
+      <div class="step-card bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200">
+        <p class="font-bold text-orange-700 text-lg">2️⃣ 마이크 켜기 (한 번만!)</p>
+        <p class="text-slate-600 pl-5">내 목소리를 녹음하려면 마이크 허락이 필요해요</p>
+      </div>
+      <div class="step-card bg-gradient-to-r from-yellow-50 to-lime-50 border-yellow-200">
+        <p class="font-bold text-yellow-700 text-lg">3️⃣ 문제 풀기 🎯</p>
+        <p class="text-slate-600 pl-5">두 개 중 알맞은 것 골라요. 어려우면 💡 도움받기</p>
+      </div>
+      <div class="step-card bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+        <p class="font-bold text-green-700 text-lg">4️⃣ 중간/최종 녹음 🎤</p>
+        <p class="text-slate-600 pl-5">내 목소리로 또는 ⌨️ 글로 보내기 가능</p>
+      </div>
+      <div class="step-card bg-gradient-to-r from-sky-50 to-cyan-50 border-sky-200">
+        <p class="font-bold text-sky-700 text-lg">5️⃣ 내 목소리 듣기 🎧</p>
+        <p class="text-slate-600 pl-5">오늘 녹음한 내 목소리를 들으며 성장 확인!</p>
+      </div>
+      <div class="bg-slate-50 p-2 rounded-xl mt-2">
+        <p class="text-slate-600 text-sm">🔊 = 문장 듣기 | 💡 = 힌트 | ❓ = 설명서</p>
+        <p class="text-slate-600 text-sm">⭐ 별점 3개 이하면 다시 녹음 가능</p>
+      </div>
+    </div>
+    <button class="btn-3d bg-sky-500 border-sky-700 text-white w-full text-xl py-2 mt-3" onclick="closeInstructions()">알겠어요! ✨</button>
+  </div>
+</div>
+
+<script>
+const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwfoeClzOEET_Y8MySwaW4kAp7tzSK9PqH2u6OKiK8qvLMK4x9b63HzlmNiiGvY03s-MQ/exec';
+
+const state = {
+  name: null, grade: null, cls: null,
+  character: null, characterName: null,
+  questionCount: 5,
+  questionIndex: 0,
+  questions: [],
+  answers: [],
+  helpCount: 0,
+  midRecordings: [],
+  finalRecording: null,
+  stickers: [],
+  audioCtx: null,
+  mediaRecorder: null,
+  mediaStream: null,
+  recognition: null,
+  isMuted: true,
+  isProcessing: false,
+  ttsTimeouts: [],
+};
+
+const defaultStudents = [
+  { grade: '1', cls: '1', name: '홍길동' },
+  { grade: '1', cls: '1', name: '김철수' },
+  { grade: '1', cls: '1', name: '이영희' },
+  { grade: '1', cls: '2', name: '박하은' },
+  { grade: '1', cls: '2', name: '오서연' },
+];
+
+const characters = [
+  { emoji: '🛡️', name: '안전이' },
+  { emoji: '💝', name: '다정이' },
+  { emoji: '🕊️', name: '사뿐이' },
+  { emoji: '😊', name: '방글이' },
+  { emoji: '📖', name: '배움이' },
+];
+
+const defaultMissions = {
+  classroom: { icon: '🏫', name: '교실', position: { top: '28%', left: '22%' },
+    qs: [
+      { q: '수업 시간에 화장실에 가고 싶으면 어떻게 해야 할까요?', c1: '손 들고 말해요', c2: '조용히 혼자 가요', ans: 1, h: '선생님이 걱정하지 않아야 해요', f: '맞아요! 선생님께 알리는 게 예의예요', x: '몰래 가면 위험할 수 있어요', exHelp: '"선생님, 화장실 다녀와도 될까요?"' },
+      { q: '발표할 때는 어떤 목소리로 해야 할까요?', c1: '들리지 않게 작게', c2: '잘 들리게 또박또박', ans: 2, h: '친구가 잘 들어야 해요', f: '정답이에요! 또박또박 말해야 잘 전달돼요', x: '너무 작으면 친구가 못 들어요', exHelp: '"안녕하세요. 제 생각은요..." 처럼 또박또박' },
+    ]
+  },
+  specialroom: { icon: '🔬', name: '특별실', position: { top: '28%', left: '78%' },
+    qs: [
+      { q: '과학실 실험 도구는 어떻게 다뤄야 할까요?', c1: '마음대로 만져요', c2: '선생님 허락 받아요', ans: 2, h: '위험할 수 있어요', f: '훌륭해요! 안전이 가장 중요해요', x: '마음대로 만지면 다칠 수 있어요', exHelp: '"선생님, 이거 만져봐도 될까요?"' },
+      { q: '수업 끝나고 사용한 물건은 어떻게 해야 할까요?', c1: '그냥 두고 가요', c2: '정리하고 가요', ans: 2, h: '다음 친구를 생각해요', f: '딩동댕! 정리정돈은 배려예요', x: '안 치우면 다음 친구가 불편해요', exHelp: '"제자리에 정리하고 가요"' },
+    ]
+  },
+  restroom: { icon: '🚽', name: '화장실', position: { top: '55%', left: '18%' },
+    qs: [
+      { q: '화장실 문을 열기 전엔 어떻게 해야 할까요?', c1: '벌컥 열어요', c2: '똑똑 노크해요', ans: 2, h: '안에 친구가 있을 수 있어요', f: '맞아요! 노크는 예의예요', x: '갑자기 열면 친구가 놀라요', exHelp: '"똑똑똑" 노크 후 잠깐 기다려요' },
+      { q: '화장실을 다 쓴 후에는 어떻게 해야 할까요?', c1: '물 내리고 나와요', c2: '그냥 얼른 나와요', ans: 1, h: '다음 사람도 깨끗하게', f: '잘했어요! 기본 예절이에요', x: '물 안 내리면 지저분해져요', exHelp: '"손잡이를 눌러 물 내리기"' },
+    ]
+  },
+  hallway: { icon: '👣', name: '복도', position: { top: '55%', left: '82%' },
+    qs: [
+      { q: '복도에서는 어떻게 다녀야 할까요?', c1: '신나게 뛰어요', c2: '사뿐사뿐 걸어요', ans: 2, h: '다른 반이 공부 중일 수 있어요', f: '맞아요! 조심조심 걸어요', x: '뛰면 다칠 수 있고 시끄러워요', exHelp: '"사뿐사뿐 걸어다녀요"' },
+      { q: '선생님을 만나면 어떻게 인사해야 할까요?', c1: '멈춰서 인사', c2: '뛰면서 인사', ans: 1, h: '예의를 갖춰요', f: '참 잘했어요!', x: '예의 없으면 서운하세요', exHelp: '"안녕하세요!" 하고 공손하게' },
+    ]
+  },
+  cafeteria: { icon: '🍱', name: '급식실', position: { top: '80%', left: '32%' },
+    qs: [
+      { q: '음식을 받을 때 인사는 어떻게 할까요?', c1: '잘 먹겠습니다', c2: '빨리 주세요', ans: 1, h: '준비해주신 분께 감사', f: '멋져요! 감사한 마음이 따뜻해요', x: '감사 인사가 예의예요', exHelp: '"잘 먹겠습니다!" 하고 인사해요' },
+      { q: '싫어하는 반찬은 어떻게 해야 할까요?', c1: '바닥에 버려요', c2: '조금이라도 먹어봐요', ans: 2, h: '많은 분의 땀이 들어있어요', f: '맞아요! 음식을 아껴요', x: '음식을 버리면 안 돼요', exHelp: '"한 입만 먹어보기"' },
+    ]
+  },
+  library: { icon: '📚', name: '도서관', position: { top: '80%', left: '68%' },
+    qs: [
+      { q: '도서관에서 이야기할 때 어떻게 해야 할까요?', c1: '큰 소리로', c2: '소곤소곤', ans: 2, h: '책 읽는 친구를 생각해요', f: '딩동댕! 조용히 해요', x: '떠들면 방해돼요', exHelp: '"소곤소곤" 작게 말해요' },
+      { q: '다 읽은 책은 어떻게 정리해야 할까요?', c1: '책상 위에 둬요', c2: '원래 자리에 꽂아요', ans: 2, h: '다음 친구도 찾을 수 있게', f: '맞아요! 제자리에 두세요', x: '아무 데나 두면 안 돼요', exHelp: '"빌렸던 자리에 꽂기"' },
+    ]
+  },
+};
+
+let missions = defaultMissions;
+let students = defaultStudents;
+
+window.addEventListener('load', async () => {
+  generateSparkles();
+  await loadDataFromGAS();
+  initCharacters();
+  initSpeechRecognition();
+  if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
+});
+
+function generateSparkles() {
+  const layer = document.getElementById('sparkle-layer');
+  const sparkles = ['✨', '⭐', '💖', '🌸', '💫', '🌟', '💕', '🎀', '🌈'];
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('span');
+    s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+    s.style.left = (Math.random() * 100) + 'vw';
+    s.style.top = (Math.random() * 100) + 'vh';
+    s.style.animationDuration = (10 + Math.random() * 10) + 's';
+    s.style.animationDelay = (Math.random() * -15) + 's';
+    s.style.fontSize = (1.2 + Math.random() * 1.2) + 'rem';
+    s.style.opacity = (0.25 + Math.random() * 0.35);
+    layer.appendChild(s);
+  }
 }
 
-// ============================================================
-// 녹음 + 자기평가 컴포넌트
-// ============================================================
-function RecordReviewScreen({ recording, setRecording, phase, setPhase, isRecording, interimText, isSpeakerOn, keyboardMode, setKeyboardMode, onStartRec, onStopRec, onRetry, onDone, title }) {
-  const stars = recording.stars || 0;
-  const sticker = recording.sticker;
-
-  const goReview = () => {
-    if (isRecording) onStopRec();
-    if (!recording.text && !recording.audio && !keyboardMode) {
-      alert('녹음하거나 글로 적어 주세요!');
-      return;
+async function loadDataFromGAS() {
+  const select = document.getElementById('name-select');
+  if (!GAS_API_URL || GAS_API_URL.trim() === '') { populateStudents(defaultStudents); return; }
+  try {
+    select.innerHTML = '<option value="">불러오는 중...</option>';
+    const res = await fetch(GAS_API_URL);
+    const data = await res.json();
+    if (data.students && data.students.length > 0) {
+      students = data.students;
+      populateStudents(data.students);
+    } else { populateStudents(defaultStudents); }
+    
+    if (data.missionsData && Object.keys(data.missionsData).length > 0) {
+      Object.keys(data.missionsData).forEach(key => {
+        if (defaultMissions[key] && data.missionsData[key].data && data.missionsData[key].data.qs) {
+          defaultMissions[key].qs = data.missionsData[key].data.qs.map(q => ({
+            q: q.q, c1: q.c1, c2: q.c2, ans: q.ans, h: q.h, f: q.f, x: q.x,
+            exHelp: q.exHelp || q.h
+          }));
+        }
+      });
+      missions = defaultMissions;
     }
-    setPhase('review');
-  };
-
-  const playAudio = () => {
-    if (recording.audio) {
-      const a = new Audio(recording.audio);
-      a.play().catch(()=>{});
-    } else if (recording.text) {
-      const u = new SpeechSynthesisUtterance(recording.text);
-      u.lang='ko-KR'; const v=selectKoreanVoice(); if(v) u.voice=v;
-      u.pitch=1.0; u.rate=0.95;
-      speechSynthesis.cancel(); speechSynthesis.speak(u);
-    }
-  };
-
-  const playPrompt = () => {
-    const u = new SpeechSynthesisUtterance(recording.prompt);
-    u.lang='ko-KR'; const v=selectKoreanVoice(); if(v) u.voice=v;
-    u.pitch=1.0; u.rate=0.95;
-    speechSynthesis.cancel(); speechSynthesis.speak(u);
-  };
-
-  return (
-    <motion.div key="midrec" initial={{opacity:0}} animate={{opacity:1}}
-      className="bg-white p-5 rounded-[2.5rem] shadow-2xl border-4 border-pink-100 w-full space-y-3">
-      <h1 className="text-2xl font-black text-pink-600 text-center">{title}</h1>
-      <div className="bg-gradient-to-r from-pink-50 to-yellow-50 p-3 rounded-xl flex items-center gap-2">
-        <span className="text-4xl">{recording.em || '🎙️'}</span>
-        <p className="text-lg font-bold">{recording.prompt}</p>
-      </div>
-
-      {phase === 'record' ? (
-        <>
-          {!keyboardMode ? (
-            <button onClick={isRecording ? onStopRec : onStartRec}
-              className={`w-28 h-28 mx-auto rounded-full flex items-center justify-center text-white shadow-xl ${isRecording?'bg-red-500 pulse-record':'bg-pink-500'}`}>
-              {isRecording ? <Square size={46}/> : <Mic size={46}/>}
-            </button>
-          ) : null}
-          <p className="text-base font-bold text-slate-500 text-center">
-            {keyboardMode ? '⌨️ 글로 적어 봐요' : (isRecording ? '듣고 있어요... (네모 누르면 멈춤)' : '🎤 누르고 또박또박 말해요')}
-          </p>
-          <textarea value={(recording.text||'') + (isRecording?interimText:'')}
-            onChange={e => setRecording(r => ({...r, text: e.target.value}))}
-            placeholder="여기에 글로 적어도 돼요"
-            className="w-full h-20 bg-slate-50 rounded-xl border-2 border-slate-200 p-2 text-lg font-bold resize-none outline-none focus:border-pink-400"/>
-          <div className="flex justify-between items-center">
-            <button onClick={() => { if (isRecording) onStopRec(); setKeyboardMode(!keyboardMode); }}
-              className="text-sm text-blue-500 underline font-bold">{keyboardMode?'🎤 마이크로':'⌨️ 키보드로'}</button>
-            <button onClick={goReview} disabled={!(recording.text || recording.audio || keyboardMode)}
-              className="px-5 py-2.5 bg-pink-500 text-white rounded-full text-lg font-black disabled:opacity-50">
-              📝 다 했어요!
-            </button>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="bg-yellow-50 p-3 rounded-xl text-center">
-            <p className="text-lg font-bold">🎧 들어 보고 별점을 줘 봐요</p>
-            <div className="flex justify-center gap-2 mt-2">
-              <button onClick={playAudio}
-                className="px-4 py-2 bg-emerald-500 text-white rounded-full text-base font-black">
-                ▶️ 내 {recording.audio?'녹음':'글'} 듣기
-              </button>
-              <button onClick={playPrompt}
-                className="px-4 py-2 bg-blue-500 text-white rounded-full text-base font-black">
-                📖 문장 듣기
-              </button>
-            </div>
-          </div>
-          {recording.text && (
-            <div className="bg-slate-50 p-2 rounded-xl text-base font-bold">"{recording.text}"</div>
-          )}
-          <div className="flex justify-center gap-1">
-            {[1,2,3,4,5].map(n => (
-              <button key={n} onClick={() => setRecording(r => ({...r, stars: n}))}>
-                <Star size={42} className={n<=stars?'fill-yellow-400 text-yellow-500':'text-slate-200'}/>
-              </button>
-            ))}
-          </div>
-          {stars > 0 && stars <= 3 && (
-            <p className="text-center text-base text-orange-500 font-bold">⚠️ 다시 해 봐요!</p>
-          )}
-          {stars >= 4 && (
-            <>
-              <p className="text-center text-base font-bold">🎁 칭찬 스티커를 골라 봐요</p>
-              <div className="flex justify-center gap-2">
-                {['🌟','💖','🌸','🦋','🌈','🎉'].map(s => (
-                  <button key={s} onClick={() => { setRecording(r => ({...r, sticker:s})); if (isSpeakerOn) playSfx('pop'); }}
-                    className={`text-4xl p-2 rounded-full transition-all ${sticker===s?'bg-yellow-200 scale-125':''}`}>{s}</button>
-                ))}
-              </div>
-            </>
-          )}
-          <div className="flex gap-2">
-            <button onClick={onRetry}
-              className="flex-1 py-3 bg-orange-100 text-orange-700 border-2 border-orange-300 rounded-2xl font-black text-base">
-              🔁 다시 녹음
-            </button>
-            <button onClick={onDone} disabled={stars < 4}
-              className="flex-1 py-3 bg-gradient-to-r from-pink-500 to-orange-400 text-white rounded-2xl font-black disabled:opacity-50 text-base">
-              ➡️ 다음으로
-            </button>
-          </div>
-        </>
-      )}
-    </motion.div>
-  );
+  } catch (e) {
+    console.warn('데이터 로드 실패:', e);
+    populateStudents(defaultStudents);
+  }
 }
 
-const root = createRoot(document.getElementById('root'));
-root.render(<App />);
+function populateStudents(list) {
+  const select = document.getElementById('name-select');
+  select.innerHTML = '<option value="">이름 선택하기 ✨</option>';
+  list.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = JSON.stringify(s);
+    opt.textContent = `${s.grade}학년 ${s.cls}반 ${s.name}`;
+    select.appendChild(opt);
+  });
+}
+
+function initCharacters() {
+  const grid = document.getElementById('character-grid');
+  grid.innerHTML = '';
+  characters.forEach(c => {
+    const card = document.createElement('button');
+    card.className = 'char-card p-3 rounded-3xl border-4 border-slate-200 hover:border-pink-300 flex flex-col items-center bg-gradient-to-br from-white to-pink-50';
+    card.innerHTML = `<div class="text-5xl md:text-6xl mb-1">${c.emoji}</div><div class="text-base md:text-xl font-bold text-slate-700 font-cute">${c.name}</div>`;
+    card.onclick = () => selectCharacter(c, card);
+    grid.appendChild(card);
+  });
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function toggleSpeaker() {
+  state.isMuted = !state.isMuted;
+  const btn = document.getElementById('speaker-toggle');
+  btn.textContent = state.isMuted ? '🔇' : '🔊';
+  btn.classList.toggle('on', !state.isMuted);
+  if (!state.isMuted) {
+    initAudio();
+    if (state.name) setTimeout(() => speakText(`${state.name}야, 안녕! 같이 학교 규칙 배워볼까?`), 200);
+  }
+}
+
+function initAudio() {
+  if (!state.audioCtx) state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (state.audioCtx.state === 'suspended') state.audioCtx.resume();
+}
+
+function pickKoreanVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  let v = voices.find(x => x.lang === 'ko-KR' && x.name.toLowerCase().includes('google') && !x.localService);
+  if (v) return v;
+  v = voices.find(x => x.lang === 'ko-KR' && /wavenet|neural2/i.test(x.name));
+  if (v) return v;
+  v = voices.find(x => x.lang === 'ko-KR' && /premium|enhanced|natural/i.test(x.name));
+  if (v) return v;
+  v = voices.find(x => x.lang === 'ko-KR' && x.name.toLowerCase().includes('google'));
+  if (v) return v;
+  return voices.find(x => x.lang === 'ko-KR');
+}
+
+function speakText(text, callback) {
+  if (state.isMuted) { if (callback) callback(); return; }
+  if (!('speechSynthesis' in window)) { if (callback) callback(); return; }
+  const synth = window.speechSynthesis;
+  if (synth.speaking) synth.cancel();
+  const speak = () => {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'ko-KR'; utter.rate = 1.0; utter.pitch = 1.0; utter.volume = 1.0;
+    const voice = pickKoreanVoice();
+    if (voice) utter.voice = voice;
+    if (callback) utter.onend = callback;
+    synth.speak(utter);
+  };
+  if (synth.getVoices().length === 0) {
+    synth.onvoiceschanged = () => { speak(); synth.onvoiceschanged = null; };
+  } else { speak(); }
+}
+
+function speakWithHighlight(elementId, text) {
+  if (state.isMuted) return;
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  state.ttsTimeouts.forEach(t => clearTimeout(t));
+  state.ttsTimeouts = [];
+  const chars = text.split('');
+  el.innerHTML = chars.map(c => c === ' ' || c === '\n' ? c : `<span class="tts-char">${c}</span>`).join('');
+  const spans = el.querySelectorAll('.tts-char');
+  const totalMs = text.length * 130;
+  speakText(text, () => spans.forEach(s => s.classList.remove('active')));
+  spans.forEach((s, i) => {
+    const t = setTimeout(() => {
+      spans.forEach(sp => sp.classList.remove('active'));
+      s.classList.add('active');
+    }, (totalMs / spans.length) * i);
+    state.ttsTimeouts.push(t);
+  });
+}
+
+function getPersonalizedPromiseText() {
+  return `${state.name || '친구'}야, 학교 안에서 지켜야 할 소중한 규칙을 익히고 실천할 수 있어요`;
+}
+
+function playCorrectSound() {
+  if (state.isMuted) return;
+  initAudio();
+  const ctx = state.audioCtx;
+  const t = ctx.currentTime;
+  [523.25, 659.25, 783.99].forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, t + i * 0.08);
+    gain.gain.setValueAtTime(0, t + i * 0.08);
+    gain.gain.linearRampToValueAtTime(0.25, t + i * 0.08 + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.4);
+    osc.start(t + i * 0.08); osc.stop(t + i * 0.08 + 0.4);
+  });
+}
+
+function playWrongSound() {
+  if (state.isMuted) return;
+  initAudio();
+  const ctx = state.audioCtx;
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(622, t);
+  osc.frequency.exponentialRampToValueAtTime(466, t + 0.12);
+  osc.frequency.exponentialRampToValueAtTime(550, t + 0.24);
+  osc.frequency.exponentialRampToValueAtTime(415, t + 0.36);
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(0.2, t + 0.02);
+  gain.gain.setValueAtTime(0.2, t + 0.36);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+  osc.start(t); osc.stop(t + 0.5);
+  setTimeout(() => { if (!state.isMuted) speakText('괜찮아요! 다시 해볼까요?'); }, 600);
+}
+
+function playStickerSound() {
+  if (state.isMuted) return;
+  initAudio();
+  const ctx = state.audioCtx;
+  const t = ctx.currentTime;
+  for (let i = 0; i < 5; i++) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    const freq = 800 + Math.random() * 600;
+    osc.frequency.setValueAtTime(freq, t + i * 0.04);
+    gain.gain.setValueAtTime(0, t + i * 0.04);
+    gain.gain.linearRampToValueAtTime(0.15, t + i * 0.04 + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.04 + 0.2);
+    osc.start(t + i * 0.04); osc.stop(t + i * 0.04 + 0.2);
+  }
+}
+
+function onNameSelected() {
+  const sel = document.getElementById('name-select');
+  const btn = document.getElementById('btn-login-start');
+  if (sel.value) {
+    try {
+      const s = JSON.parse(sel.value);
+      state.name = s.name; state.grade = s.grade; state.cls = s.cls;
+      btn.disabled = false;
+    } catch(e) { btn.disabled = true; }
+  } else { btn.disabled = true; }
+}
+
+function goToMicPermission() {
+  if (sessionStorage.getItem('micGranted') === 'true') {
+    setupRecorder().then(() => showScreen('mode'));
+  } else {
+    showScreen('mic');
+  }
+}
+
+async function requestMic() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    state.mediaStream = stream;
+    state.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    sessionStorage.setItem('micGranted', 'true');
+    showScreen('mode');
+  } catch (e) {
+    alert('마이크 사용을 허용해야 녹음을 할 수 있어요!');
+    showScreen('mode');
+  }
+}
+
+async function setupRecorder() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    state.mediaStream = stream;
+    state.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+  } catch (e) { console.warn('마이크 설정 실패', e); }
+}
+
+function selectMode(count) {
+  state.questionCount = count;
+  showScreen('promise');
+  setTimeout(() => speakWithHighlight('promise-text', getPersonalizedPromiseText()), 400);
+}
+
+function goToCharacter() { showScreen('character'); }
+
+function selectCharacter(c, btnEl) {
+  state.character = c.emoji;
+  state.characterName = c.name;
+  document.querySelectorAll('#character-grid .char-card').forEach(b => b.classList.remove('selected'));
+  btnEl.classList.add('selected');
+  document.getElementById('btn-char-go').disabled = false;
+}
+
+function goToMap() {
+  showScreen('map');
+  document.getElementById('map-char').textContent = state.character;
+  document.getElementById('map-name').textContent = state.name;
+  prepareQuestions();
+  renderMissionSpots();
+  updateMapProgress();
+  if (!state.isMuted) setTimeout(() => speakText(`${state.name}야, 지도가 나왔어. 가고 싶은 장소를 골라봐!`), 500);
+}
+
+function prepareQuestions() {
+  const allQs = [];
+  Object.keys(missions).forEach(mId => {
+    missions[mId].qs.forEach(q => allQs.push({ ...q, missionId: mId }));
+  });
+  for (let i = allQs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allQs[i], allQs[j]] = [allQs[j], allQs[i]];
+  }
+  state.questions = allQs.slice(0, state.questionCount);
+  state.questionIndex = 0;
+  state.answers = [];
+}
+
+function renderMissionSpots() {
+  const arena = document.getElementById('map-arena');
+  arena.innerHTML = '';
+  Object.entries(missions).forEach(([id, m]) => {
+    const spot = document.createElement('div');
+    spot.className = 'mission-spot';
+    spot.style.top = m.position.top;
+    spot.style.left = m.position.left;
+    spot.dataset.mission = id;
+    spot.innerHTML = `<div class="spot-inner"><div class="text-5xl md:text-6xl">${m.icon}</div><div class="text-lg md:text-xl font-bold mt-1 text-slate-700 font-title">${m.name}</div></div>`;
+    spot.onclick = () => startQuiz();
+    arena.appendChild(spot);
+  });
+}
+
+function updateMapProgress() {
+  const done = state.questionIndex;
+  const total = state.questionCount;
+  document.getElementById('map-progress').style.width = `${(done / total) * 100}%`;
+  document.getElementById('map-status').textContent = 
+    done === 0 ? '탐험 시작!' : done >= total ? '탐험 완료!' : `${done}/${total} 문제 완료`;
+  const col = document.getElementById('sticker-collection');
+  col.innerHTML = state.stickers.slice(-10).map(s => `<span class="text-2xl">${s}</span>`).join('');
+}
+
+function startQuiz() {
+  if (state.questionIndex >= state.questions.length) { goToFinalRecord(); return; }
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.questions[state.questionIndex];
+  const m = missions[q.missionId];
+  document.getElementById('loc-icon').textContent = m.icon;
+  document.getElementById('loc-name').textContent = m.name;
+  document.getElementById('q-num').textContent = state.questionIndex + 1;
+  document.getElementById('q-total').textContent = state.questionCount;
+  document.getElementById('q-score').textContent = state.answers.filter(a => a.correct).length;
+  
+  const qEl = document.getElementById('q-text');
+  qEl.innerHTML = '';
+  q.q.split('').forEach(c => {
+    if (c === ' ' || c === '\n' || c === '\t') {
+      qEl.appendChild(document.createTextNode(c));
+    } else {
+      const span = document.createElement('span');
+      span.className = 'tts-char';
+      span.textContent = c;
+      qEl.appendChild(span);
+    }
+  });
+  
+  document.getElementById('c1-text').textContent = q.c1;
+  document.getElementById('c2-text').textContent = q.c2;
+  ['btn-c1', 'btn-c2'].forEach(id => {
+    const b = document.getElementById(id);
+    b.classList.remove('correct', 'wrong');
+    b.disabled = false;
+  });
+  state.isProcessing = false;
+  if (!state.isMuted) setTimeout(() => speakWithHighlight('q-text', q.q), 300);
+}
+
+function replayQuestion() {
+  const q = state.questions[state.questionIndex];
+  speakWithHighlight('q-text', q.q);
+}
+
+function useHelp() {
+  const q = state.questions[state.questionIndex];
+  state.helpCount++;
+  document.getElementById('fb-icon').textContent = '💡';
+  document.getElementById('fb-title').textContent = '도움말이에요!';
+  document.getElementById('fb-title').className = 'text-3xl font-bold mb-3 text-amber-600 font-title';
+  document.getElementById('fb-desc').innerHTML = `<div class="mb-2">${q.h}</div><div class="bg-gradient-to-br from-amber-50 to-yellow-50 p-3 rounded-xl border-2 border-amber-200 mt-2"><p class="text-base text-amber-700 mb-1 font-cute">💬 이렇게 말해요</p><p class="text-xl font-bold text-amber-800 font-title">${q.exHelp || q.h}</p></div>`;
+  const btn = document.getElementById('fb-action');
+  btn.textContent = '👍 알겠어요!';
+  btn.className = 'btn-3d bg-amber-500 border-amber-700 text-white w-full text-2xl py-3';
+  btn.onclick = () => document.getElementById('modal-feedback').classList.remove('active');
+  document.getElementById('modal-feedback').classList.add('active');
+  const wasMuted = state.isMuted;
+  state.isMuted = false;
+  speakText(q.h + ' ' + (q.exHelp || ''));
+  state.isMuted = wasMuted;
+}
+
+function checkAnswer(choiceNum) {
+  if (state.isProcessing) return;
+  state.isProcessing = true;
+  const q = state.questions[state.questionIndex];
+  const isCorrect = choiceNum === q.ans;
+  state.answers.push({ q: q.q, correct: isCorrect, missionId: q.missionId, helpUsed: state.helpCount > 0 });
+  state.helpCount = 0;
+  const btn = document.getElementById('btn-c' + choiceNum);
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (isCorrect) {
+    playCorrectSound();
+    confetti({ particleCount: 80, spread: 70, origin: { y: 0.7 } });
+    const newSticker = ['⭐','🌟','✨','💎','🏅'][Math.floor(Math.random() * 5)];
+    state.stickers.push(newSticker);
+    popSticker(newSticker);
+  } else {
+    playWrongSound();
+  }
+  setTimeout(() => showFeedback(q, isCorrect), 800);
+}
+
+function showFeedback(q, isCorrect) {
+  document.getElementById('fb-icon').textContent = isCorrect ? '🎉' : '🤔';
+  const namePrefix = state.name ? `${state.name}야! ` : '';
+  document.getElementById('fb-title').textContent = isCorrect ? `${namePrefix}정답이에요!` : '괜찮아요! 다시 생각해봐요';
+  document.getElementById('fb-title').className = `text-3xl font-bold mb-3 font-title ${isCorrect ? 'text-green-600' : 'text-orange-500'}`;
+  document.getElementById('fb-desc').textContent = isCorrect ? q.f : q.x;
+  const btn = document.getElementById('fb-action');
+  btn.className = `btn-3d ${isCorrect ? 'bg-green-500 border-green-700' : 'bg-orange-500 border-orange-700'} text-white w-full text-2xl py-3`;
+  if (!isCorrect) {
+    btn.textContent = '🔄 다시 해볼래요!';
+    btn.onclick = () => {
+      document.getElementById('modal-feedback').classList.remove('active');
+      state.answers.pop();
+      ['btn-c1', 'btn-c2'].forEach(id => {
+        const b = document.getElementById(id);
+        b.classList.remove('correct', 'wrong');
+        b.disabled = false;
+      });
+      state.isProcessing = false;
+    };
+  } else {
+    btn.textContent = state.questionIndex + 1 >= state.questionCount ? '🏁 모두 끝!' : '▶ 다음 문제';
+    btn.onclick = () => {
+      document.getElementById('modal-feedback').classList.remove('active');
+      proceedAfterFeedback();
+    };
+  }
+  document.getElementById('modal-feedback').classList.add('active');
+  speakText(isCorrect ? `${namePrefix}${q.f}` : q.x);
+}
+
+function proceedAfterFeedback() {
+  state.questionIndex++;
+  updateMapProgress();
+  const shouldMidRecord = (
+    (state.questionCount === 5 && state.questionIndex === 5) ||
+    (state.questionCount === 10 && (state.questionIndex === 5 || state.questionIndex === 10))
+  );
+  if (shouldMidRecord) { startMidRecording(); return; }
+  if (state.questionIndex >= state.questionCount) { goToFinalRecord(); }
+  else { renderQuestion(); }
+}
+
+function exitQuiz() {
+  if (confirm('정말 나갈까요? 진행 상황이 사라져요.')) location.reload();
+}
+
+// 중간 녹음
+function startMidRecording() {
+  showScreen('mid-record');
+  const midNum = state.midRecordings.length + 1;
+  const totalMid = state.questionCount === 5 ? 1 : 2;
+  document.getElementById('mid-record-prompt-num').textContent = `[중간 녹음 ${midNum}/${totalMid}]`;
+  document.getElementById('mid-transcript').textContent = '🗣️ 말한 내용이 여기에 나와요';
+  document.getElementById('mid-transcript').classList.remove('recording');
+  document.getElementById('mid-keyboard').value = '';
+  document.getElementById('mid-after').classList.add('hidden');
+  document.getElementById('mid-rec-btn').classList.remove('hidden');
+  document.getElementById('mid-rec-btn').innerHTML = '🎤 녹음 시작';
+  document.getElementById('mid-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
+  document.getElementById('mid-waves').style.display = 'none';
+  resetStarRating('mid-stars');
+  document.getElementById('mid-continue-btn').disabled = true;
+  document.getElementById('mid-continue-btn').textContent = '▶ 계속하기';
+  document.getElementById('mid-keyboard-submit').disabled = true;
+  if (!state.isMuted) setTimeout(() => speakText(`${state.name}야, 잠깐! 지금까지 배운 학교 규칙 중 하나를 골라 말해볼까?`), 500);
+}
+
+let midRecorder = null;
+let midChunks = [];
+let midTranscriptText = '';
+let isMidRecording = false;
+
+async function toggleMidRecording() {
+  if (!isMidRecording) await startMidRec();
+  else stopMidRec();
+}
+
+async function startMidRec() {
+  initAudio();
+  if (!state.mediaStream) {
+    try { state.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch(e) { alert('마이크가 필요해요!'); return; }
+  }
+  midChunks = [];
+  midTranscriptText = '';
+  isMidRecording = true;
+  midRecorder = new MediaRecorder(state.mediaStream, { mimeType: 'audio/webm' });
+  midRecorder.ondataavailable = e => { if (e.data.size > 0) midChunks.push(e.data); };
+  midRecorder.onstop = onMidRecStop;
+  midRecorder.start();
+  startSpeechRecognition('mid');
+  document.getElementById('mid-rec-btn').innerHTML = '⏹️ 녹음 멈춤';
+  document.getElementById('mid-rec-btn').className = 'btn-3d bg-slate-600 border-slate-800 text-white w-full text-2xl py-3 mb-2 animate-pulse-ring';
+  document.getElementById('mid-waves').style.display = 'flex';
+  document.getElementById('mid-transcript').classList.add('recording');
+  document.getElementById('mid-transcript').textContent = '🎙️ 듣고 있어요...';
+}
+
+function stopMidRec() {
+  if (midRecorder && isMidRecording) {
+    midRecorder.stop();
+    isMidRecording = false;
+    stopSpeechRecognition();
+    document.getElementById('mid-waves').style.display = 'none';
+  }
+}
+
+function onMidRecStop() {
+  const blob = new Blob(midChunks, { type: 'audio/webm' });
+  const hasAudio = blob.size > 1000;
+  document.getElementById('mid-audio').src = URL.createObjectURL(blob);
+  const reader = new FileReader();
+  reader.onloadend = () => { state._lastMidBlob = reader.result; };
+  reader.readAsDataURL(blob);
+  document.getElementById('mid-rec-btn').classList.add('hidden');
+  document.getElementById('mid-after').classList.remove('hidden');
+  document.getElementById('mid-transcript').classList.remove('recording');
+  const recognized = midTranscriptText.trim();
+  const typed = document.getElementById('mid-keyboard').value.trim();
+  let displayText;
+  if (recognized) displayText = '✏️ ' + recognized;
+  else if (typed) displayText = '✏️ ' + typed;
+  else if (hasAudio) displayText = '🎵 목소리는 잘 녹음됐어요! (글자 변환은 안 됐지만 괜찮아요)';
+  else displayText = '⚠️ 녹음이 안 됐어요. 다시 시도해보세요';
+  document.getElementById('mid-transcript').textContent = displayText;
+  if (!state.isMuted) setTimeout(() => speakText('녹음을 들어보고 별점을 매겨보세요'), 500);
+}
+
+function rateMidRecording(stars) {
+  state._lastMidStars = stars;
+  document.querySelectorAll('#mid-stars .star-btn').forEach((b, i) => {
+    if (i < stars) b.classList.add('filled');
+    else b.classList.remove('filled');
+  });
+  const continueBtn = document.getElementById('mid-continue-btn');
+  if (stars <= 3) {
+    continueBtn.disabled = true;
+    continueBtn.textContent = '⚠️ 별 4개 이상';
+    if (!state.isMuted) speakText('별 3개 이하예요. 다시 녹음해볼까요?');
+  } else {
+    continueBtn.disabled = false;
+    continueBtn.textContent = '▶ 계속하기';
+    if (!state.isMuted) speakText('잘했어요!');
+  }
+}
+
+function midReRecord() {
+  document.getElementById('mid-after').classList.add('hidden');
+  document.getElementById('mid-rec-btn').classList.remove('hidden');
+  document.getElementById('mid-rec-btn').innerHTML = '🎤 녹음 시작';
+  document.getElementById('mid-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
+  document.getElementById('mid-transcript').textContent = '🗣️ 말한 내용이 여기에 나와요';
+  document.getElementById('mid-keyboard').value = '';
+  resetStarRating('mid-stars');
+  midTranscriptText = '';
+}
+
+function midContinue() {
+  state.midRecordings.push({
+    text: midTranscriptText.trim() || document.getElementById('mid-keyboard').value.trim() || '',
+    audio: state._lastMidBlob,
+    stars: state._lastMidStars || 5,
+    index: state.questionIndex
+  });
+  if (state.questionIndex >= state.questionCount) { goToFinalRecord(); }
+  else { showScreen('quiz'); renderQuestion(); }
+}
+
+function onMidKeyboardInput() {
+  const text = document.getElementById('mid-keyboard').value.trim();
+  document.getElementById('mid-keyboard-submit').disabled = text.length === 0;
+}
+
+function submitMidByKeyboard() {
+  const text = document.getElementById('mid-keyboard').value.trim();
+  if (!text) return;
+  state.midRecordings.push({ text: text, audio: null, stars: 5, index: state.questionIndex });
+  if (state.questionIndex >= state.questionCount) { goToFinalRecord(); }
+  else { showScreen('quiz'); renderQuestion(); }
+}
+
+// 최종 녹음
+function goToFinalRecord() {
+  showScreen('final-record');
+  document.getElementById('final-transcript').textContent = '🗣️ 내가 한 말이 여기에 나와요';
+  document.getElementById('final-keyboard').value = '';
+  document.getElementById('final-after').classList.add('hidden');
+  document.getElementById('final-rec-btn').classList.remove('hidden');
+  document.getElementById('final-rec-btn').innerHTML = '🎤 녹음 시작';
+  document.getElementById('final-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
+  document.getElementById('final-waves').style.display = 'none';
+  resetStarRating('final-stars');
+  document.getElementById('final-keyboard-submit').disabled = true;
+  if (!state.isMuted) setTimeout(() => speakText(`${state.name}야, 오늘 배운 학교 규칙 중에서 친구들에게 알려주고 싶은 것을 말해봐!`), 500);
+}
+
+let finalRecorder = null;
+let finalChunks = [];
+let finalTranscriptText = '';
+let isFinalRecording = false;
+
+async function toggleFinalRecording() {
+  if (!isFinalRecording) await startFinalRec();
+  else stopFinalRec();
+}
+
+async function startFinalRec() {
+  initAudio();
+  if (!state.mediaStream) {
+    try { state.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch(e) { alert('마이크가 필요해요'); return; }
+  }
+  finalChunks = [];
+  finalTranscriptText = '';
+  isFinalRecording = true;
+  finalRecorder = new MediaRecorder(state.mediaStream, { mimeType: 'audio/webm' });
+  finalRecorder.ondataavailable = e => { if (e.data.size > 0) finalChunks.push(e.data); };
+  finalRecorder.onstop = onFinalRecStop;
+  finalRecorder.start();
+  startSpeechRecognition('final');
+  document.getElementById('final-rec-btn').innerHTML = '⏹️ 녹음 멈춤';
+  document.getElementById('final-rec-btn').className = 'btn-3d bg-slate-600 border-slate-800 text-white w-full text-2xl py-3 mb-2 animate-pulse-ring';
+  document.getElementById('final-waves').style.display = 'flex';
+  document.getElementById('final-transcript').classList.add('recording');
+  document.getElementById('final-transcript').textContent = '🎙️ 듣고 있어요...';
+}
+
+function stopFinalRec() {
+  if (finalRecorder && isFinalRecording) {
+    finalRecorder.stop();
+    isFinalRecording = false;
+    stopSpeechRecognition();
+    document.getElementById('final-waves').style.display = 'none';
+  }
+}
+
+function onFinalRecStop() {
+  const blob = new Blob(finalChunks, { type: 'audio/webm' });
+  const hasAudio = blob.size > 1000;
+  document.getElementById('final-audio').src = URL.createObjectURL(blob);
+  const reader = new FileReader();
+  reader.onloadend = () => { state._lastFinalBlob = reader.result; };
+  reader.readAsDataURL(blob);
+  document.getElementById('final-rec-btn').classList.add('hidden');
+  document.getElementById('final-after').classList.remove('hidden');
+  document.getElementById('final-transcript').classList.remove('recording');
+  const recognized = finalTranscriptText.trim();
+  const typed = document.getElementById('final-keyboard').value.trim();
+  let displayText;
+  if (recognized) displayText = '✏️ ' + recognized;
+  else if (typed) displayText = '✏️ ' + typed;
+  else if (hasAudio) displayText = '🎵 목소리는 잘 녹음됐어요! (글자 변환은 안 됐지만 괜찮아요)';
+  else displayText = '⚠️ 녹음이 안 됐어요. 다시 시도해보세요';
+  document.getElementById('final-transcript').textContent = displayText;
+  if (!state.isMuted) setTimeout(() => speakText('녹음을 들어보고 별점을 매겨주세요'), 500);
+}
+
+function rateFinalRecording(stars) {
+  state._lastFinalStars = stars;
+  document.querySelectorAll('#final-stars .star-btn').forEach((b, i) => {
+    if (i < stars) b.classList.add('filled');
+    else b.classList.remove('filled');
+  });
+  const submitBtn = document.getElementById('final-submit-btn');
+  if (stars <= 3) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⚠️ 별 4개 이상';
+    if (!state.isMuted) speakText('별 3개 이하예요. 다시 녹음해볼까요?');
+  } else {
+    submitBtn.disabled = false;
+    submitBtn.textContent = '📤 제출하기';
+    if (!state.isMuted) speakText('잘했어요! 제출해주세요');
+  }
+}
+
+function finalReRecord() {
+  document.getElementById('final-after').classList.add('hidden');
+  document.getElementById('final-rec-btn').classList.remove('hidden');
+  document.getElementById('final-rec-btn').innerHTML = '🎤 녹음 시작';
+  document.getElementById('final-rec-btn').className = 'btn-3d bg-red-500 border-red-700 text-white w-full text-2xl py-3 mb-2';
+  document.getElementById('final-transcript').textContent = '🗣️ 내가 한 말이 여기에 나와요';
+  document.getElementById('final-keyboard').value = '';
+  resetStarRating('final-stars');
+  finalTranscriptText = '';
+}
+
+function onFinalKeyboardInput() {
+  const text = document.getElementById('final-keyboard').value.trim();
+  document.getElementById('final-keyboard-submit').disabled = text.length === 0;
+}
+
+function submitFinalByKeyboard() {
+  const text = document.getElementById('final-keyboard').value.trim();
+  if (!text) return;
+  finalTranscriptText = text;
+  state._lastFinalBlob = null;
+  state._lastFinalStars = 5;
+  submitAll();
+}
+
+// 음성 인식
+function initSpeechRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { console.warn('음성 인식 미지원'); return; }
+  state.recognitionAvailable = true;
+}
+
+function startSpeechRecognition(target) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  if (state.recognition) {
+    try { state.recognition.onresult = null; state.recognition.onerror = null; state.recognition.onend = null; } catch(e) {}
+    try { state.recognition.abort(); } catch(e) {}
+  }
+  state.recognition = new SR();
+  state.recognition.lang = 'ko-KR';
+  state.recognition.continuous = true;
+  state.recognition.interimResults = true;
+  const transcriptEl = document.getElementById(target + '-transcript');
+  state.recognition.onresult = e => {
+    let interim = '', finalText = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) finalText += t + ' ';
+      else interim += t;
+    }
+    if (target === 'mid') {
+      midTranscriptText += finalText;
+      transcriptEl.innerHTML = '🎙️ ' + midTranscriptText + ' <span class="interim">' + interim + '</span>';
+    } else {
+      finalTranscriptText += finalText;
+      transcriptEl.innerHTML = '🎙️ ' + finalTranscriptText + ' <span class="interim">' + interim + '</span>';
+    }
+  };
+  state.recognition.onerror = e => {
+    if (e.error === 'no-speech' || e.error === 'aborted') return;
+    if (e.error === 'not-allowed') transcriptEl.textContent = '⚠️ 마이크 권한이 필요해요';
+  };
+  state.recognition.onend = () => {
+    const isRecording = (target === 'mid' && isMidRecording) || (target === 'final' && isFinalRecording);
+    if (isRecording) {
+      try { state.recognition.start(); } catch(e) {}
+    }
+  };
+  try { state.recognition.start(); } catch(e) {}
+}
+
+function stopSpeechRecognition() {
+  if (state.recognition) {
+    try { state.recognition.onend = null; state.recognition.stop(); } catch(e) {}
+  }
+}
+
+function resetStarRating(containerId) {
+  document.querySelectorAll('#' + containerId + ' .star-btn').forEach(b => b.classList.remove('filled'));
+}
+
+function popSticker(emoji) {
+  playStickerSound();
+  const colors = ['🌟','💖','🌸','✨','🎀','🦋','💕','⭐','💎'];
+  for (let i = 0; i < 6; i++) {
+    const s = document.createElement('div');
+    s.className = 'sticker-pop';
+    s.textContent = i === 0 ? emoji : colors[Math.floor(Math.random() * colors.length)];
+    s.style.left = (Math.random() * 80 + 10) + 'vw';
+    s.style.top = '60vh';
+    s.style.animationDelay = (i * 0.1) + 's';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 3000);
+  }
+}
+
+async function submitAll() {
+  state.finalRecording = {
+    text: finalTranscriptText.trim() || document.getElementById('final-keyboard').value.trim() || '',
+    audio: state._lastFinalBlob,
+    stars: state._lastFinalStars || 5
+  };
+  document.getElementById('final-after').classList.add('hidden');
+  document.getElementById('submit-overlay').classList.remove('hidden');
+  const results = {};
+  Object.keys(missions).forEach(mId => {
+    const mAns = state.answers.filter(a => a.missionId === mId);
+    if (mAns.length === 0) results[mId] = '미응시';
+    else if (mAns.every(a => a.correct)) results[mId] = '통과';
+    else results[mId] = '재시도';
+  });
+  const payload = {
+    name: state.name, grade: state.grade, cls: state.cls,
+    character: state.characterName,
+    questionCount: state.questionCount,
+    helpCount: state.answers.filter(a => a.helpUsed).length,
+    accuracy: state.answers.length > 0 ? Math.round((state.answers.filter(a => a.correct).length / state.answers.length) * 100) : 0,
+    results: results,
+    answers: state.answers,
+    midRecordings: state.midRecordings.map(r => ({ text: r.text, stars: r.stars, audio: r.audio })),
+    audioBase64: state.finalRecording.audio,
+    finalText: state.finalRecording.text,
+    finalStars: state.finalRecording.stars
+  };
+  if (GAS_API_URL && GAS_API_URL.trim() !== '') {
+    try { await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) }); }
+    catch (e) { console.warn('제출 실패:', e); }
+  }
+  setTimeout(() => {
+    document.getElementById('submit-overlay').classList.add('hidden');
+    showListenBack();
+  }, 1500);
+}
+
+function showListenBack() {
+  showScreen('listen-back');
+  const list = document.getElementById('recording-list');
+  list.innerHTML = '';
+  const hasAny = state.midRecordings.some(r => r.audio) || state.finalRecording?.audio;
+  if (!hasAny) { goToReport(); return; }
+  state.midRecordings.forEach((rec, i) => {
+    if (!rec.audio) return;
+    const card = document.createElement('div');
+    card.className = 'replay-card bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200';
+    const stars = '⭐'.repeat(Math.max(0, Math.min(5, rec.stars || 0)));
+    card.innerHTML = `<div class="flex items-center justify-between mb-1 gap-2 flex-wrap"><div class="flex items-center gap-2"><span class="text-2xl">🎙️</span><h3 class="text-lg font-bold text-rose-600 font-title">중간 녹음 ${i + 1}</h3></div><span class="text-xl">${stars}</span></div><p class="text-base font-bold text-slate-700 mb-1 font-cute">"${rec.text || '(텍스트 없음)'}"</p><audio src="${rec.audio}" controls preload="none"></audio>`;
+    list.appendChild(card);
+  });
+  if (state.finalRecording?.audio) {
+    const card = document.createElement('div');
+    card.className = 'replay-card bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-300';
+    const stars = '⭐'.repeat(Math.max(0, Math.min(5, state.finalRecording.stars || 0)));
+    card.innerHTML = `<div class="flex items-center justify-between mb-1 gap-2 flex-wrap"><div class="flex items-center gap-2"><span class="text-2xl">🌟</span><h3 class="text-lg font-bold text-emerald-600 font-title">최종 녹음</h3></div><span class="text-xl">${stars}</span></div><p class="text-base font-bold text-slate-700 mb-1 font-cute">"${state.finalRecording.text || '(텍스트 없음)'}"</p><audio src="${state.finalRecording.audio}" controls preload="none"></audio>`;
+    list.appendChild(card);
+  }
+  if (!state.isMuted) setTimeout(() => speakText(`${state.name}야, 오늘 녹음한 너의 목소리를 들어볼까?`), 500);
+}
+
+function goToReport() {
+  showScreen('report');
+  document.getElementById('report-name').textContent = state.name;
+  renderTrafficLights();
+  renderRadar();
+  renderReportStickers();
+  confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
+  playStickerSound();
+  if (!state.isMuted) setTimeout(() => speakText(`${state.name}야, 축하해! 정말 멋진 탐험가야!`), 800);
+}
+
+function renderTrafficLights() {
+  const container = document.getElementById('traffic-lights');
+  container.innerHTML = '';
+  Object.entries(missions).forEach(([id, m]) => {
+    const mAns = state.answers.filter(a => a.missionId === id);
+    let lightBg = '#cbd5e1';
+    if (mAns.length === 0) lightBg = '#cbd5e1';
+    else if (mAns.every(a => a.correct)) lightBg = '#10b981';
+    else lightBg = '#f59e0b';
+    const card = document.createElement('div');
+    card.className = 'bg-white p-2 rounded-xl border-2 border-pink-100 flex flex-col items-center';
+    card.innerHTML = `<div class="w-9 h-9 rounded-full mb-1" style="background:${lightBg};box-shadow: 0 0 12px ${lightBg}80"></div><div class="text-2xl">${m.icon}</div><div class="text-sm font-bold font-cute">${m.name}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function renderRadar() {
+  const ctx = document.getElementById('radar-chart');
+  if (!ctx) return;
+  const labels = [], data = [];
+  Object.entries(missions).forEach(([id, m]) => {
+    labels.push(m.name);
+    const mAns = state.answers.filter(a => a.missionId === id);
+    if (mAns.length === 0) data.push(40);
+    else data.push(Math.round((mAns.filter(a => a.correct).length / mAns.length) * 100));
+  });
+  Chart.defaults.font.family = '"Jua", sans-serif';
+  new Chart(ctx, {
+    type: 'radar',
+    data: { labels: labels, datasets: [{ label: '달성도', data: data, backgroundColor: 'rgba(251,191,36,0.3)', borderColor: '#f59e0b', pointBackgroundColor: '#d97706', borderWidth: 3, pointRadius: 5 }] },
+    options: { maintainAspectRatio: false, scales: { r: { beginAtZero: true, max: 100, ticks: { display: false }, pointLabels: { font: { size: 14, weight: 'bold' } } } }, plugins: { legend: { display: false } } }
+  });
+}
+
+function renderReportStickers() {
+  const c = document.getElementById('report-stickers');
+  c.innerHTML = state.stickers.map(s => `<span class="text-4xl animate-pop-in">${s}</span>`).join('') || '<span class="text-base text-slate-400 font-cute">아직 모은 스티커가 없어요</span>';
+}
+
+function downloadCertificate() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 800; canvas.height = 1100;
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 1100);
+  grad.addColorStop(0, '#FEF3C7'); grad.addColorStop(0.5, '#FCE7F3'); grad.addColorStop(1, '#E0F2FE');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, 800, 1100);
+  ctx.strokeStyle = '#F59E0B'; ctx.lineWidth = 12;
+  ctx.setLineDash([20, 12]); ctx.strokeRect(30, 30, 740, 1040);
+  ctx.setLineDash([]);
+  ctx.font = '120px Arial'; ctx.textAlign = 'center';
+  ctx.fillText('🏆', 400, 200);
+  ctx.fillStyle = '#92400e';
+  ctx.font = 'bold 60px "Jua", sans-serif';
+  ctx.fillText('위대한 탐험가 상', 400, 290);
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 50px "Jua", sans-serif';
+  ctx.fillText(`${state.name} 어린이`, 400, 400);
+  ctx.font = '32px sans-serif'; ctx.fillStyle = '#475569';
+  ctx.fillText('학교생활의 소중한 규칙을', 400, 490);
+  ctx.fillText('훌륭하게 익히고 실천하였기에', 400, 540);
+  ctx.fillText('이 상장을 수여합니다', 400, 590);
+  ctx.font = 'bold 28px sans-serif'; ctx.fillStyle = '#0369a1';
+  ctx.fillText(`모은 스티커: ${state.stickers.length}개`, 400, 690);
+  ctx.font = '100px Arial';
+  ctx.fillText(state.character || '⭐', 400, 820);
+  const today = new Date();
+  ctx.font = '26px sans-serif'; ctx.fillStyle = '#64748b';
+  ctx.fillText(`${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`, 400, 950);
+  ctx.fillText('슬기로운 학교생활', 400, 1000);
+  const link = document.createElement('a');
+  link.download = `슬기로운학교생활_수료증_${state.name}.png`;
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
+function openInstructions() { document.getElementById('modal-instructions').classList.add('active'); }
+function closeInstructions() { document.getElementById('modal-instructions').classList.remove('active'); }
 </script>
 </body>
 </html>
