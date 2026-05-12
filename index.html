@@ -695,7 +695,10 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
     
     <details class="mb-3 text-left">
       <summary class="cursor-pointer text-lg text-purple-500 font-bold font-cute">⌨️ 또는 키보드로 입력하기</summary>
-      <textarea id="mid-keyboard" class="w-full p-3 rounded-xl border-4 border-purple-200 mt-2 text-xl" rows="2" placeholder="여기에 직접 써도 돼요"></textarea>
+      <textarea id="mid-keyboard" class="w-full p-4 rounded-xl border-4 border-purple-300 mt-2 text-2xl font-bold text-slate-800 font-title bg-white" rows="2" placeholder="여기에 직접 써도 돼요" oninput="onMidKeyboardInput()" style="line-height:1.5"></textarea>
+      <button id="mid-keyboard-submit" class="btn-3d bg-purple-500 border-purple-700 text-white w-full text-2xl py-3 mt-2" onclick="submitMidByKeyboard()" disabled>
+        📝 글로 보내기
+      </button>
     </details>
     
     <div class="mic-waves mb-3" id="mid-waves" style="display:none">
@@ -760,7 +763,10 @@ h1, h2 { font-family: var(--font-chunky); letter-spacing: -0.02em; }
     
     <details class="mb-2 text-left">
       <summary class="cursor-pointer text-lg text-purple-500 font-bold font-cute">⌨️ 또는 키보드로 입력</summary>
-      <textarea id="final-keyboard" class="w-full p-3 rounded-xl border-4 border-purple-200 mt-2 text-xl" rows="2"></textarea>
+      <textarea id="final-keyboard" class="w-full p-4 rounded-xl border-4 border-purple-300 mt-2 text-2xl font-bold text-slate-800 font-title bg-white" rows="2" oninput="onFinalKeyboardInput()" style="line-height:1.5"></textarea>
+      <button id="final-keyboard-submit" class="btn-3d bg-purple-500 border-purple-700 text-white w-full text-2xl py-3 mt-2" onclick="submitFinalByKeyboard()" disabled>
+        📝 글로 보내기
+      </button>
     </details>
     
     <div class="mic-waves mb-2" id="final-waves" style="display:none">
@@ -1618,6 +1624,29 @@ function midContinue() {
   }
 }
 
+// ⌨️ 키보드만으로 제출 (녹음 없이)
+function onMidKeyboardInput() {
+  const text = document.getElementById('mid-keyboard').value.trim();
+  document.getElementById('mid-keyboard-submit').disabled = text.length === 0;
+}
+
+function submitMidByKeyboard() {
+  const text = document.getElementById('mid-keyboard').value.trim();
+  if (!text) return;
+  state.midRecordings.push({
+    text: text,
+    audio: null,
+    stars: 5,
+    index: state.questionIndex
+  });
+  if (state.questionIndex >= state.questionCount) {
+    goToFinalRecord();
+  } else {
+    showScreen('quiz');
+    renderQuestion();
+  }
+}
+
 // ────────── 최종 녹음 ──────────
 function goToFinalRecord() {
   showScreen('final-record');
@@ -1722,6 +1751,22 @@ function finalReRecord() {
   document.getElementById('final-keyboard').value = '';
   resetStarRating('final-stars');
   finalTranscriptText = '';
+}
+
+// ⌨️ 최종 - 키보드만으로 제출
+function onFinalKeyboardInput() {
+  const text = document.getElementById('final-keyboard').value.trim();
+  document.getElementById('final-keyboard-submit').disabled = text.length === 0;
+}
+
+function submitFinalByKeyboard() {
+  const text = document.getElementById('final-keyboard').value.trim();
+  if (!text) return;
+  // 직접 finalRecording 설정 후 제출
+  finalTranscriptText = text;
+  state._lastFinalBlob = null;
+  state._lastFinalStars = 5;
+  submitAll();
 }
 
 // ────────── 음성 인식 ──────────
